@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import DesmosGraph from './DesmosGraph'
+import DesmosGraph from './Components/DesmosGraph'
 
 function App() {
   return (

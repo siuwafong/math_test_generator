@@ -23,7 +23,7 @@ const DesmosGraph = ({
     elt.style.width = '500px'
     elt.style.height = '350px'
 
-    const calculator = Desmos.GraphingCalculator(elt, {
+    let calculator = Desmos.GraphingCalculator(elt, {
         keypad: keypad,
         expressions: expressions,
         xAxisArrowMode: Desmos.AxisArrowModes.POSITIVE,
