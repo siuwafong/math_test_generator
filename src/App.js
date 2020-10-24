@@ -1,12 +1,13 @@
 import React from 'react';
 import './App.css';
-import DesmosGraph from './Components/DesmosGraph'
+import Quiz from './Components/Quiz'
+import TestButton from './Components/TestButton'
 
 function App() {
   return (
-    <div className="App">
-      <p> HI!!!</p>
-      <DesmosGraph />
+    <div id="App" className="App">
+      <Quiz />
+      <TestButton />
     </div>
   );
 }
