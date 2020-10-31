@@ -1,4 +1,4 @@
-import { evaluate, parse, simplify, rationalize } from 'mathjs'
+import { evaluate, parse, simplify, rationalize, e } from 'mathjs'
 
 
 // Question Types
@@ -14,7 +14,9 @@ const MHF4U = 'mhf4u'
 const MCV4U = 'mcv4u'
 const MDM4U = 'mdm4u'
 
+// Short answer types
 const CHECK_SETS = 'check sets'
+const CHECK_EXPRESSION = 'check expression'
 
 let QuestionSet = []
 
@@ -120,16 +122,62 @@ class expandedPolynomialQuestion extends polynomialQuestion {
     constructor(question, type, details, desmosGraph, answers) {
         super(question, type, details, desmosGraph, answers)
         this.xInts = []
+        this.leadingCoeff = 0
         this.expression = ""
-        this.generateExpression = () => {
+        this.generateExpression = (nonOneCoeff = false ) => {
             for (let i=0; i < this.degree; i++) {
-                this.xInts.push(Math.ceil(Math.random() * 10) - 5)
-                this.expression = this.expression + `(x-${this.xInts[i]})`
+                if (i === 0 && nonOneCoeff === true) {
+                    while (this.leadingCoeff === 0) {
+                        this.leadingCoeff = Math.floor(Math.random() * 8) - 4
+                    }
+                    const tempX = Math.ceil(Math.random() * 10 - 5)
+                    const tempxInt = Number(rationalize(`${tempX} / ${this.leadingCoeff}`).toString())
+
+                    this.xInts.push(tempxInt)
+                    console.log(tempX, tempxInt)
+                    this.expression = this.expression + `(${this.leadingCoeff}x-${tempX})`
+                } else {
+                    this.xInts.push(Math.ceil(Math.random() * 10) - 5)
+                    this.expression = this.expression + `(x-${this.xInts[i]})`
+                }
             }
             this.expression = rationalize(this.expression).toString().replace(/\*/g, '')
         } 
     }
 }
+
+class rationalQuestion extends QuestionClass {
+    constructor(question, type, details, desmosGraph, answers) {
+        super(question, type, details, desmosGraph, answers)
+        this.expression = ""
+        this.k = 0
+        this.a = 1
+        this.b = 1
+        this.c = 1
+        this.d = 1
+        this.generateExpression = (numeratorDegree, denominatorDegree) => {
+            // generate a reciprocal of a linear function
+            if (numeratorDegree === 0 && denominatorDegree === 1) {
+                while (this.k === 0 || this.c === 0) {
+                    this.k = Math.ceil(Math.random() * 9)
+                    this.c = Math.ceil(Math.random() * 20) - 10
+                }
+                this.expression = rationalize(`1/(${this.k} * x - ${this.c})`).toTex().replace('\\cdot', '')
+            }
+            // generate a linear over linear function
+            if (numeratorDegree === 1 && denominatorDegree === 1) {
+                while((this.a / this.c) === (this.b / this.d) || this.a === 0 || this.b === 0 || this.c === 0 || this.d === 0) {
+                    this.a = Math.ceil(Math.random() * 9 ) - 18
+                    this.b = Math.ceil(Math.random() * 9 ) - 18
+                    this.c = Math.ceil(Math.random() * 9 ) - 18
+                    this.d = Math.ceil(Math.random() * 9 ) - 18
+                }
+                this.expression = rationalize(`(${this.a}x+${this.b}) / (${this.c}x+${this.d})`).toTex().replace('\\cdot', '')
+            }
+        }
+    }
+}
+
 
 //  add response messages 
 function addAnswers(question, options=[], correct=[], desmosParameters = {showGraph: null, graphfunction: null}) {
@@ -145,7 +193,9 @@ function addAnswers(question, options=[], correct=[], desmosParameters = {showGr
             question.answers.push(options[i])
         }
         question.answers = new Set(question.answers)
-        console.log(question.answers)
+    }
+    else if (question.type === SHORT_ANSWER && question.details.checkAnswer === CHECK_EXPRESSION) {
+        question.answers = [options]
     }
     question.desmosGraph.showGraph = desmosParameters.showGraph
     question.desmosGraph.graphfunction = desmosParameters.expression
@@ -262,7 +312,7 @@ let quadraticQuestion1 = new simpleFactoredQuadraticQuestion(
     SHORT_ANSWER,
     {
         checkAnswer: CHECK_SETS,
-        strand: 'quadratic expressions',
+        strand: 'quadratic functions',
         course: MPM2D,
         questionInfo: 'assess knowledge of x-intercepts of quadratics'
     }, 
@@ -275,13 +325,32 @@ addAnswers(
     [quadraticQuestion1.x1, quadraticQuestion1.x2]
 )
 
+let quadraticQuestion2 = new simpleFactoredQuadraticQuestion(
+    'What is the equation of this function in standard form?',
+    SHORT_ANSWER,
+    {
+        checkAnswer: CHECK_EXPRESSION,
+        strand: 'quadratic functions',
+        course: MCR3U,
+        questionInfo: 'assess ability to convert graph to equation'
+    }
+)
+
+quadraticQuestion2.generateExpression()
+
+addAnswers(
+    quadraticQuestion2,
+    quadraticQuestion2.expression,
+    [],
+    {
+        showGraph: true,
+        expression: quadraticQuestion2.expression
+    }
+)
+
 // -----------------------------------------------------------------------------------
 // Polynomial Questions
 
-
-// change to a short answer question
-// Use the below function to check for equality of sets
-// isSetsEqual = (a, b) => a.size === b.size && [...a].every(value => b.has(value));
 
 let polynomialQuestion1 = new expandedPolynomialQuestion(
     'What are the x-intercept(s) of this function?',
@@ -301,17 +370,115 @@ addAnswers(
     polynomialQuestion1.xInts
 )
 
+let polynomialQuestion2 = new expandedPolynomialQuestion(
+    'What are the x-intercept(s) of this function?',
+    SHORT_ANSWER,
+    {
+        checkAnswer: CHECK_SETS,
+        strand: 'polynomial functions',
+        course: MHF4U,
+        questionInfo: 'assess knowledge of x-intercepts of polynomials'
+    }
+)
 
+polynomialQuestion2.generateExpression(true);
 
+addAnswers(
+    polynomialQuestion2,
+    polynomialQuestion2.xInts
+)
 
+let polynomialQuestion3 = new expandedPolynomialQuestion(
+    'What is the end behaviour of this function?',
+    MULTIPLE_CHOICE,
+    {
+        strand: 'polynomial functions',
+        course: MHF4U,
+        questionInfo: 'assess end behaviour of polynomial functions'
+    }
+)
 
+polynomialQuestion3.generateExpression(true);
 
+addAnswers(
+    polynomialQuestion3,
+    [`Q2 \\rightarrow Q1`, `Q2 \\rightarrow Q4`, `Q3 \\rightarrow Q1`, `Q3 \\rightarrow Q4`],
+    [
+        polynomialQuestion3.leadingCoeff > 0 &&  polynomialQuestion3.degree % 2 === 0 ? true : false,  
+        polynomialQuestion3.leadingCoeff < 0 &&  polynomialQuestion3.degree % 2 === 1 ? true : false, 
+        polynomialQuestion3.leadingCoeff > 0 &&  polynomialQuestion3.degree % 2 === 1 ? true : false, 
+        polynomialQuestion3.leadingCoeff < 0 &&  polynomialQuestion3.degree % 2 === 0 ? true : false, 
+    ]
+)
 
+let rationalQuestion1 = new rationalQuestion(
+    'What is the vertical asymptote of this function?',
+    MULTIPLE_CHOICE,
+    {
+        strand: 'rational functions',
+        course: MHF4U,
+        questionInfo: 'assess knowledge of the reciprocal of a linear function'
+    }
+)
 
+rationalQuestion1.generateExpression(0, 1)
 
+addAnswers(
+    rationalQuestion1,
+    [
+        `x=${simplify(`${rationalQuestion1.k} / ${rationalQuestion1.c}`).toTex()}`, 
+        `x=${simplify(`${rationalQuestion1.c} / ${rationalQuestion1.k}`).toTex()}`,
+        `x=${simplify(`-${rationalQuestion1.k} / ${rationalQuestion1.c}`).toTex()}`,
+        `x=${simplify(`-${rationalQuestion1.c} / ${rationalQuestion1.k}`).toTex()}`,
+    ],
+    [false, true, false, false]
+)
 
+let rationalQuestion2 = new rationalQuestion(
+    'What is the y-intercept of this function?',
+    MULTIPLE_CHOICE,
+    {
+        strand: 'rational functions',
+        course: MHF4U,
+        questionInfo: 'assess knowledge of the reciprocal of a linear function'
+    }
+)
 
+rationalQuestion2.generateExpression(0, 1)
 
+addAnswers(
+    rationalQuestion2,
+    [
+        `${simplify(`- 1 / ${rationalQuestion2.c}`).toTex()}`,
+        `${simplify(`- 1 / ${rationalQuestion2.k}`).toTex()}`,
+        `${simplify(`${rationalQuestion1.k} / ${rationalQuestion1.c}`).toTex()}`, 
+        `${simplify(`${rationalQuestion1.c} / ${rationalQuestion1.k}`).toTex()}`,
+    ],
+    [true, false, false, false]
+)
+
+let rationalQuestion3 = new rationalQuestion(
+    'What is the horizontal asymptote of this function?',
+    MULTIPLE_CHOICE,
+    {
+        strand: 'rational functions',
+        course: MHF4U,
+        questionInfo: 'assess knowledge of linear over linear rational functions'
+    }
+)
+
+rationalQuestion3.generateExpression(1, 1)
+
+addAnswers(
+    rationalQuestion3,
+    [
+        `y=${simplify(`${rationalQuestion3.a} / ${rationalQuestion3.c}`).toTex()}`, 
+        `y=${simplify(`-${rationalQuestion3.b} / ${rationalQuestion3.a}`).toTex()}`,
+        `y=${simplify(`${rationalQuestion3.b} / ${rationalQuestion3.d}`).toTex()}`,
+        `y=${simplify(`-${rationalQuestion3.d} / ${rationalQuestion3.c}`).toTex()}`,
+    ],
+    [true, false, false, false]
+)
 
 
 

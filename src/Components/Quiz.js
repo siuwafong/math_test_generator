@@ -4,7 +4,7 @@ import MultipleChoiceQuestion from './MultipleChoiceQuestion'
 import ShortAnswerQuestion from './ShortAnswerQuestion'
 import DesmosGraph from './DesmosGraph'
 
-let selectedQuestions = QuestionSet.slice(5)
+let selectedQuestions = QuestionSet.slice(11)
 
 function Quiz() {
 
@@ -15,6 +15,7 @@ function Quiz() {
     const [shuffledArray, setShuffledArray] = useState([])
     const [shuffledState, setShuffledState] = useState(false)    
     const [checkedRadio, setCheckedRadio] = useState(null)
+    const [answerValues, setAnswerValues] = useState(null)
 
     let tempArray
 
@@ -47,12 +48,11 @@ function Quiz() {
             setAnswerMsg(null)
             setShuffledState(false)
             selectedQuestions[currentQuestion].type === 'multiple choice' && setCheckedRadio(null)
-
+            setAnswerValues(null)
         } else {
             console.log("QUIZ IS OVER!")
         }
     }
-
 
 
     return (
@@ -83,7 +83,8 @@ function Quiz() {
                     setAnswerMsg={setAnswerMsg} 
                     score={score} 
                     setScore={setScore}
-
+                    answerValues={answerValues}
+                    setAnswerValues={setAnswerValues}
                     /> 
             }
 

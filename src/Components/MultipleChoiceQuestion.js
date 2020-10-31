@@ -16,22 +16,32 @@ function MultipleChoiceQuestion({
     }) {
 
     const [selectedOption, setSelectedOption] = useState(null)
+    const [correctAnswer, setCorrectAnswer] = useState(null)
+
+
     let choice = ""
 
 
     const handleSubmit = (evt) => {
         evt.preventDefault()
-        setAnswerMsg(selectedOption)
+        setAnswerMsg(
+            correctAnswer === true 
+            ?
+            <div>You answered <InlineMath math={selectedOption} />. That is correct! </div>
+            : 
+            <div>You answered <InlineMath math={selectedOption} />. That is incorrect. </div>
+        )
         setAnswered(() => true)
-        if (selectedOption === "true") {
+        if (correctAnswer === "true") {
             setScore(() => score + 1)
         }
      }
      
      const handleOptionChange = (e, checkedValue) => {
         choice = e.target.value
-        setCheckedRadio(checkedValue)
-        setSelectedOption(choice)
+        // setCheckedRadio(checkedValue)
+        setSelectedOption(checkedValue.option)
+        setCorrectAnswer(checkedValue.correct)
      }
 
     return (
@@ -47,13 +57,13 @@ function MultipleChoiceQuestion({
                             type="radio" 
                             name="option" 
                             value={questionInfo.answers[item].correct} 
-                            onChange={e => handleOptionChange(e, questionInfo.answers[item].option)} 
-                            checked={checkedRadio === questionInfo.answers[item].option}
+                            onChange={e => handleOptionChange(e, questionInfo.answers[item])} 
+                            checked={selectedOption === questionInfo.answers[item].option}
                             ></input>
                         </li>
                     )}
                 </ol>
-                <button type="submit" disabled={answered ? true : false}>SUBMIT</button>
+                <button type="submit" disabled={answered === true || selectedOption === null ? true : false}>SUBMIT</button>
             </form>
             <h3>{answerMsg}</h3>
         </div>
