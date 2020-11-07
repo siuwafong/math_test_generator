@@ -3,10 +3,16 @@ import QuestionSet from './QuestionSet'
 import MultipleChoiceQuestion from './MultipleChoiceQuestion'
 import ShortAnswerQuestion from './ShortAnswerQuestion'
 import DesmosGraph from './DesmosGraph'
+import MultipleAnswerQuestion from './MultipleAnswerQuestion'
 
-let selectedQuestions = QuestionSet.slice(11)
 
-function Quiz() {
+function Quiz({
+    quizQuestions,
+    setQuizQuestions,
+    gameOver,
+    setGameOver,
+    setGameStart
+}) {
 
     const [currentQuestion, setCurrentQuestion] = useState(0)
     const [answered, setAnswered] = useState(false)
@@ -17,53 +23,75 @@ function Quiz() {
     const [checkedRadio, setCheckedRadio] = useState(null)
     const [answerValues, setAnswerValues] = useState(null)
 
-    let tempArray
+    console.log(quizQuestions)
+
+    let tempArray = []
 
     const shuffleAnswers = () => {
-        
-        for (let k=0; k< selectedQuestions[currentQuestion].answers.length; k++) {
-            tempArray.push(k)
+       
+        if (quizQuestions[currentQuestion].details.checkAnswer !== 'check sets') {
+            
+            for (let k=0; k< quizQuestions[currentQuestion].answers.length; k++) {
+                tempArray.push(k)
+            }
+            
+            for(let i=0; i < tempArray.length; i++) {
+                let j = Math.floor(Math.random() * tempArray.length);
+                let temp = tempArray[i]
+                tempArray[i] = tempArray[j]
+                tempArray[j] = temp
+            }
+            console.log(tempArray)
         }
-
-        for(let i=0; i < tempArray.length; i++) {
-            let j = Math.floor(Math.random() * tempArray.length);
-            let temp = tempArray[i]
-            tempArray[i] = tempArray[j]
-            tempArray[j] = temp
-        }
-
+    
     }
 
-    if (shuffledState === false) {
+    if (shuffledState === false && gameOver === false) {
         setShuffledState(true)
-        tempArray = []
+        // let tempArray = []
         shuffleAnswers()
         setShuffledArray(() => tempArray)
     }
-    
+
     const handleClick = (e) => {
-        if (currentQuestion < selectedQuestions.length - 1) {
+        if (currentQuestion < quizQuestions.length - 1) {
             setCurrentQuestion(currentQuestion + 1)
             setAnswered(false)
             setAnswerMsg(null)
             setShuffledState(false)
-            selectedQuestions[currentQuestion].type === 'multiple choice' && setCheckedRadio(null)
+            quizQuestions[currentQuestion].type === 'multiple choice' && setCheckedRadio(null)
             setAnswerValues(null)
+            console.log("onto the next question...")
         } else {
-            console.log("QUIZ IS OVER!")
+            console.log("game over...")
+            setGameOver(() => true)
         }
+    }
+
+    const restartGame = () => {
+        setGameOver(false)
+        setQuizQuestions([])
+        setScore(0)
+        setCurrentQuestion(0)
+        setAnswered(false)
+        setAnswerMsg(null)
+        setCheckedRadio(null)
+        setAnswerValues(null)
+        setGameStart(false)
     }
 
 
     return (
         <div>
             
-            <h3>Your score: {score} / {selectedQuestions.length}</h3>
-            {currentQuestion < selectedQuestions.length && selectedQuestions[currentQuestion].type === 'multiple choice' 
+            
+            <div>
+            {currentQuestion < quizQuestions.length && quizQuestions[currentQuestion].type === 'multiple choice' 
                 && 
                 <MultipleChoiceQuestion 
-                    questionInfo={selectedQuestions[currentQuestion]} 
-                    optionsOrder={shuffledArray} answered={answered} 
+                    questionInfo={quizQuestions[currentQuestion]} 
+                    optionsOrder={shuffledArray} 
+                    answered={answered} 
                     setAnswered={setAnswered} 
                     answerMsg={answerMsg} 
                     setAnswerMsg={setAnswerMsg} 
@@ -74,10 +102,10 @@ function Quiz() {
                     /> 
             }
 
-            {currentQuestion < selectedQuestions.length && selectedQuestions[currentQuestion].type === 'short answer' 
+            {currentQuestion < quizQuestions.length && quizQuestions[currentQuestion].type === 'short answer' 
                 &&
                 <ShortAnswerQuestion
-                    questionInfo={selectedQuestions[currentQuestion]} 
+                    questionInfo={quizQuestions[currentQuestion]} 
                     setAnswered={setAnswered} 
                     answerMsg={answerMsg} 
                     setAnswerMsg={setAnswerMsg} 
@@ -88,11 +116,34 @@ function Quiz() {
                     /> 
             }
 
+            {currentQuestion < quizQuestions.length && quizQuestions[currentQuestion].type === 'multiple answers' 
+                &&
+                <MultipleAnswerQuestion
+                    questionInfo={quizQuestions[currentQuestion]} 
+                    optionsOrder={shuffledArray} answered={answered} 
+                    setAnswered={setAnswered} 
+                    answerMsg={answerMsg} 
+                    setAnswerMsg={setAnswerMsg} 
+                    score={score} 
+                    setScore={setScore}
+                /> 
+            }
+            </div>
+            
 
-            <button onClick={( e => handleClick(e))} disabled={answered  === false ? true : false}>
-                {currentQuestion === selectedQuestions.length - 1 ? `FINISH QUIZ` : `NEXT`}
+            <button onClick={( e => handleClick(e))} disabled={answered  === false || gameOver === true ? true : false}>
+                {currentQuestion === quizQuestions.length - 1 ? `FINISH QUIZ` : `NEXT`}
             </button>
-            {selectedQuestions[currentQuestion].desmosGraph.showGraph  && <DesmosGraph graphfunction={selectedQuestions[currentQuestion].desmosGraph.graphfunction} answered={answered} />}
+            {quizQuestions[currentQuestion].desmosGraph.showGraph  && <DesmosGraph graphfunction={quizQuestions[currentQuestion].desmosGraph.graphfunction} answered={answered} />}
+            
+            {gameOver === true ? 
+            <div>
+                <h3>GAME OVER!...Your score: {score} / {quizQuestions.length}</h3>
+                <button onClick={() => restartGame()}>Restart Game</button>
+            </div>
+            :
+            null    
+            }
 
         </div>
     )

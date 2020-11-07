@@ -23,6 +23,13 @@ const DesmosGraph = ({
     root.appendChild(elt)
 
 
+    let colors = [
+        Desmos.Colors.RED,
+        Desmos.Colors.BLUE,
+        Desmos.Colors.GREEN,
+        Desmos.Colors.PURPLE,
+        Desmos.Colors.ORANGE
+    ]
 
     // let calcRef = useRef(null) 
     // let calcDiv = document.getElementById("calcDiv")
@@ -45,7 +52,17 @@ const DesmosGraph = ({
         xAxisStep: xAxisStep,
         yAxisStep: yAxisStep
     })
-    calculator.setExpression({ id: graphid, latex: graphfunction })
+
+    for (let i = 0; i < graphfunction.length; i++) {
+        calculator.setExpression({ 
+            id: `graphid${i}`, 
+            latex: graphfunction[i].latex, 
+            lineStyle: graphfunction[i].style === 'dashed' ? Desmos.Styles.DASHED : Desmos.Styles.SOLID,
+            color: graphfunction[i].color === "black" ? Desmos.Colors.BLACK : colors[(i+1) % 4],
+            label: graphfunction[i].label,
+            showLabel: graphfunction[i].showLabel
+        })
+    }
 
     // document.body.prepend(elt)
 

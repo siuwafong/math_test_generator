@@ -11,8 +11,6 @@ function MultipleChoiceQuestion({
     setAnswerMsg,
     score,
     setScore,
-    checkedRadio,
-    setCheckedRadio
     }) {
 
     const [selectedOption, setSelectedOption] = useState(null)
@@ -24,6 +22,7 @@ function MultipleChoiceQuestion({
 
     const handleSubmit = (evt) => {
         evt.preventDefault()
+        if (selectedOption !== null) {
         setAnswerMsg(
             correctAnswer === true 
             ?
@@ -32,8 +31,10 @@ function MultipleChoiceQuestion({
             <div>You answered <InlineMath math={selectedOption} />. That is incorrect. </div>
         )
         setAnswered(() => true)
-        if (correctAnswer === "true") {
+        if (correctAnswer === true) {
             setScore(() => score + 1)
+        }
+        setSelectedOption(null)
         }
      }
      
@@ -43,6 +44,7 @@ function MultipleChoiceQuestion({
         setSelectedOption(checkedValue.option)
         setCorrectAnswer(checkedValue.correct)
      }
+
 
     return (
         <div>
@@ -66,6 +68,7 @@ function MultipleChoiceQuestion({
                 <button type="submit" disabled={answered === true || selectedOption === null ? true : false}>SUBMIT</button>
             </form>
             <h3>{answerMsg}</h3>
+            {/* <p><InlineMath math={'\\textcolor{blue}{abc}'} /></p> */}
         </div>
     )
 }
