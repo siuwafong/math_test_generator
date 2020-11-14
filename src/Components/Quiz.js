@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import QuestionSet from './QuestionSet'
 import MultipleChoiceQuestion from './MultipleChoiceQuestion'
 import ShortAnswerQuestion from './ShortAnswerQuestion'
+import ListQuestion from './ListQuestion'
 import DesmosGraph from './DesmosGraph'
 import MultipleAnswerQuestion from './MultipleAnswerQuestion'
-
+import Table from './Table'
+import Image from './Image'
+import { falseDependencies } from 'mathjs'
 
 function Quiz({
     quizQuestions,
@@ -23,7 +25,6 @@ function Quiz({
     const [checkedRadio, setCheckedRadio] = useState(null)
     const [answerValues, setAnswerValues] = useState(null)
 
-    console.log(quizQuestions)
 
     let tempArray = []
 
@@ -41,7 +42,6 @@ function Quiz({
                 tempArray[i] = tempArray[j]
                 tempArray[j] = temp
             }
-            console.log(tempArray)
         }
     
     }
@@ -120,7 +120,22 @@ function Quiz({
                 &&
                 <MultipleAnswerQuestion
                     questionInfo={quizQuestions[currentQuestion]} 
-                    optionsOrder={shuffledArray} answered={answered} 
+                    optionsOrder={shuffledArray} 
+                    answered={answered} 
+                    setAnswered={setAnswered} 
+                    answerMsg={answerMsg} 
+                    setAnswerMsg={setAnswerMsg} 
+                    score={score} 
+                    setScore={setScore}
+                /> 
+            }
+
+            {currentQuestion < quizQuestions.length && quizQuestions[currentQuestion].type === 'sort list' 
+                &&
+                <ListQuestion
+                    questionInfo={quizQuestions[currentQuestion]} 
+                    optionsOrder={shuffledArray} 
+                    answered={answered} 
                     setAnswered={setAnswered} 
                     answerMsg={answerMsg} 
                     setAnswerMsg={setAnswerMsg} 
@@ -135,11 +150,20 @@ function Quiz({
                 {currentQuestion === quizQuestions.length - 1 ? `FINISH QUIZ` : `NEXT`}
             </button>
             {quizQuestions[currentQuestion].desmosGraph.showGraph  && <DesmosGraph graphfunction={quizQuestions[currentQuestion].desmosGraph.graphfunction} answered={answered} />}
-            
+            {quizQuestions[currentQuestion].details.table && <Table questionInfo={quizQuestions[currentQuestion]} />}
+            {quizQuestions[currentQuestion].details.img && <Image imgSrc={quizQuestions[currentQuestion].details.imgSrc} imgDetails={quizQuestions[currentQuestion].details.imgDetails} /> }
+
             {gameOver === true ? 
             <div>
                 <h3>GAME OVER!...Your score: {score} / {quizQuestions.length}</h3>
                 <button onClick={() => restartGame()}>Restart Game</button>
+                {(JSON.parse(localStorage.getItem('highScore')) === "null" || parseInt(JSON.parse(localStorage.getItem('highScore'))) < score ) && localStorage.setItem('highScore', JSON.stringify(score))}
+                {parseInt(JSON.stringify(localStorage.getItem('highScore'))) < score 
+                ? 
+                <p>{`You set a new high score! You scored ${score}` }</p>
+                :
+                <p>{`Your high score was ${parseInt(JSON.parse(localStorage.getItem('highScore')))}`}</p>
+                }
             </div>
             :
             null    

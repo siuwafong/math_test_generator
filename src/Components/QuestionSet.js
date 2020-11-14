@@ -1,12 +1,16 @@
 import { evaluate, parse, simplify, rationalize, e } from 'mathjs'
 import DesmosGraph from './DesmosGraph'
 
+let QuestionSet
+
+export default function generateQuizQuestions() {
 
 // Question Types
 const MULTIPLE_CHOICE = 'multiple choice'
 const TRUE_OR_FALSE = 'true or false'
 const SHORT_ANSWER = 'short answer'
 const MULTIPLE_ANSWERS = 'multiple answers'
+const SORT_LIST = 'sort list'
 
 // Course Codes
 const MPM1D = 'mpm1d'
@@ -21,7 +25,7 @@ const CHECK_SETS = 'check sets'
 const CHECK_EXPRESSION = 'check expression'
 const CHECK_PERMUTATION = 'check permutation'
 
-let QuestionSet = []
+QuestionSet = []
 
 class QuestionClass { 
     constructor(question, type, details=null, checkShortAnswer=null, desmosGraph = {}, desmosNumberLine = false) {
@@ -97,7 +101,6 @@ class expandedPolynomialQuestion extends polynomialQuestion {
                     const tempxInt = Number(rationalize(`${tempX} / ${this.leadingCoeff}`).toString())
 
                     this.xInts.push(tempxInt)
-                    console.log(tempX, tempxInt)
                     this.expression = this.expression + `(${this.leadingCoeff}x-${tempX})`
                 } else {
                     this.xInts.push(Math.ceil(Math.random() * 10) - 5)
@@ -209,12 +212,140 @@ class sinusoidalQuestion extends QuestionClass {
                     this.d = Math.ceil(Math.random() * 10 ) - 5
                     this.c = Math.ceil(Math.random() * 10 ) - 5
                 }
-              this.expression = simplify(`${this.verticalStretch === 1 ? this.a : `(1/${this.a})`}${this.ratio}(${k === true ? this.horizontalCompression === 1 ? this.k : `(1/${this.k})` : ""}(x-${this.d})+${this.c})`).toTex().replace('\\cdot', '')  
+                this.expression = simplify(`${this.verticalStretch === 1 || Math.abs(this.a) === 1 ? this.a : `1/${this.a}`}`)
+                                    .toTex()
+                                    .concat(`{\\text{${this.ratio}}}`)
+                                    .concat("(")
+                                    .concat(simplify(`${k === true ? this.horizontalCompression === 1 ? this.k : `(1/${this.k})` : ""}`).toTex())
+                                    .concat("(")
+                                    .concat(simplify(`x-${this.d}`).toTex())
+                                    .concat("))")
+                                    .concat(`${this.c !== 0 ? this.c > 0 ? `+${this.c}` : `${simplify(`${this.c}`)}` : ""}`)
+                                    .replace('\\cdot', '')
+                                    .replace("1{\\text{sin", "{\\text{sin")
+                                    .replace("1{\\text{cos", "{\\text{cos")
+                                    .replace("1{\\text{tan", "{\\text{tan")
+                                    .replace("1{\\text{csc", "{\\text{csc")
+                                    .replace("1{\\text{sec", "{\\text{sec")
+                                    .replace("1{\\text{cot", "{\\text{cot")
+
+
+
             }
         }
     }
 }
 
+class discreteDistributionQuestion extends QuestionClass {
+    constructor(question, type, details, desmosGraph, answers) {
+        super(question, type, details, desmosGraph, answers)
+        this.list = [
+            {
+                id: 0,
+                definition: "Uniform",
+                description: [
+                    {
+                        type: "text",
+                        content: 'the probability of any outcome is equal'
+                    },
+                    {
+                        type: "math",
+                        content: 'E(X)=\\frac{1}{n}(x_{1}+x_{2}+...x_{n})'
+                    }
+                ]
+            },
+            {
+                id: 1,
+                definition: "Binomial",
+                description: [
+                    {
+                        type: "text",    
+                        content: "the random variable is the number of succcesses and the trials are independent"
+                    },
+                    {
+                        type: "math",
+                        content: "E(X)=np"
+                    }
+                ]
+            },
+            {
+                id: 2,
+                definition: "Hypergeometric",
+                description: [
+                    {
+                        type: "text",    
+                        content: "the random variable is the number of succcesses and the trials are dependent"
+                    },
+                    {
+                        type: "math",
+                        content: "E(X)=\\frac{ra}{n}"
+                    }
+                ]
+            },
+            {
+                id: 3,
+                definition: "Geometric",
+                description: [
+                    {
+                        type: "text",    
+                        content: "the random variable is the number the waiting time and the trials are independent"
+                    },
+                    {
+                        type: "math",
+                        content: "E(X)=\\frac{q}{p}"
+                    }
+                ]
+            },
+        ]
+        this.expression = false
+        this.list1 = []
+        this.list2 = []
+        this.distribution = []
+        this.generateDistribution = () => {
+            const xCount = Math.ceil(Math.random() * 2) + 2
+            let xList = []
+            let pList = []
+            let totalProb = 1
+            while (xList.length < xCount) {
+                const num = Math.ceil(Math.random() * 20)
+                if (xList.indexOf(num) === -1) {
+                    xList.push(num)
+                }
+            }
+            xList.sort((a, b) => a - b)
+            for (let j = 0; j < xCount; j++) {
+                const num2 = Math.ceil(Math.random() * 4) / 10
+                console.log(num2)
+                if (j === (xCount - 1)) {
+                    pList.push(Number(totalProb.toFixed(1)))
+                }
+                else if (totalProb - num2 > 0 ) {
+                    pList.push(num2)
+                    totalProb = totalProb - num2
+                } else if (totalProb !== 0) {
+                    pList.push(totalProb)
+                    totalProb = 0
+                } else {
+                    pList.push(0)
+                }
+            }
+            for (let k = 0; k < xCount; k++) {
+                this.distribution.push({
+                    xValue: xList[k],
+                    yValue: pList[k]
+                })
+            }
+        }
+    }
+}
+
+class matchDiscreteDistribution extends  QuestionClass {
+    constructor(question, type, details, desmosGraph, answers) {
+        super(question, type, details, desmosGraph, answers)
+        this.list1 = this.list.map(item => item.distribution)
+        this.list2 = this.list.map(item => item.characteristics.content)
+    }
+}
 
 //  add response messages 
 const addAnswers = (question, options=[], correct=[], desmosParameters = {showGraph: null, graphfunction: null}) => {
@@ -226,7 +357,6 @@ const addAnswers = (question, options=[], correct=[], desmosParameters = {showGr
             })
         }
     } else if (question.type === SHORT_ANSWER && question.details.checkAnswer === CHECK_SETS) {
-        console.log(question, options)
         for (let i=0; i < options.length; i++) {
             question.answers.push(options[i])
         }
@@ -234,6 +364,9 @@ const addAnswers = (question, options=[], correct=[], desmosParameters = {showGr
     }
     else if (question.type === SHORT_ANSWER && question.details.checkAnswer === CHECK_EXPRESSION || question.details.checkAnswer === CHECK_PERMUTATION) {
         question.answers = [options]
+    }
+    else if (question.type === SORT_LIST) {
+        question.answers = options
     }
     question.desmosGraph.showGraph = desmosParameters.showGraph
     question.desmosGraph.graphfunction = desmosParameters.expression
@@ -601,7 +734,7 @@ let sinusoidalQuestion1 = new sinusoidalQuestion(
     }
 )
 
-sinusoidalQuestion1.generateExpression("sin") 
+sinusoidalQuestion1.generateExpression("sin", true) 
 
 addAnswers(
     sinusoidalQuestion1,
@@ -610,8 +743,83 @@ addAnswers(
     ],
     [true, false, false, false]
 )
+
+let discreteDistributionQuestion1 = new discreteDistributionQuestion(
+    'Match each probability distribution with its definition',
+    SORT_LIST,
+    {
+        // img: true,
+        // imgSrc: '/img/triangle_obtuse.png',
+        // imgDetails: [{
+        //     text: "Random Text",
+        //     position: {
+        //         position: 'absolute',
+        //         top: 20,
+        //         left: 16,
+        //         color: 'red',
+        //     }
+        // }],
+        strand: 'Discrete Probability Distributions',
+        course: MDM4U,
+        questionInfo: 'Assess knowledge of characteristics of discrete probability disributions'
+    }
+) 
+
+addAnswers(
+    discreteDistributionQuestion1,
+    discreteDistributionQuestion1.list.map(item => new Object({id: item.id, definition: item.definition, description: [item.description[0]]}))
+)
+
+let discreteDistributionQuestion2 = new discreteDistributionQuestion(
+    'Match each probability distribution with its expectation formula',
+    SORT_LIST,
+    {
+        strand: 'Discrete Probability Distributions',
+        course: MDM4U,
+        questionInfo: 'Assess knowledge of characteristics of discrete probability disributions'
+    }
+) 
+
+addAnswers(
+    discreteDistributionQuestion2,
+    discreteDistributionQuestion2.list.map(item => new Object({id: item.id, definition: item.definition, description: [item.description[1]]}))
+)
+
+let discreteDistributionQuestion3 = new discreteDistributionQuestion(
+    'What is the expected value for this probability distribution?',
+    SHORT_ANSWER,
+    {
+        table: true,
+        tableHeadings: ['x', 'P(x)'],
+        checkAnswer: CHECK_EXPRESSION,
+        strand: 'Discrete Probability Distributions',
+        course: MDM4U,
+        questionInfo: 'Assess knowledge of characteristics of discrete probability disributions'
+    }
+)
+
+discreteDistributionQuestion3.generateDistribution()
+
+discreteDistributionQuestion3.details.tableValues = discreteDistributionQuestion3.distribution
+
+// discreteDistributionQuestion3.expression = "E(X)="
+
+addAnswers(
+    discreteDistributionQuestion3,
+    simplify(discreteDistributionQuestion3.distribution.reduce((acc, cur) => {
+        return acc + (cur.xValue * cur.yValue)
+    }, 0).toFixed(1)).toTex()
+)
+
+
 // ----------------------------------------------------------------------------------
-export default QuestionSet
+return QuestionSet
+
+}
+// ----------------------------------------------------------------------------------
+
+generateQuizQuestions()
+
 
 
     

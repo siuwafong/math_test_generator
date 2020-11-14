@@ -1,0 +1,40 @@
+.selectableListItem {
+    list-style-type: none;
+    height: 40px;
+    width: 200px;
+    /* background-color: #d9e0cd; */
+    margin: 10px 10px;
+    padding: 10px 10px;
+    border-radius: 10px;
+    text-align: center;
+    border: solid 2px black;
+    box-shadow: 5px 5px 2px 1px #d9e0cd;
+}
+
+.unselectableListItem {
+    list-style-type: none;
+    height: 40px;
+    width: 400px;
+    /* background-color: #d9e0cd; */
+    margin: 10px 10px;
+    padding: 10px 10px;
+    border-radius: 10px;
+    border: solid 2px black;
+    box-shadow: 5px 5px 2px 1px #d9e0cd;   
+}
+
+.listsContainer {
+    list-style-type: none;
+}
+
+.listsContainer {
+    display: flex;
+}
+
+.incorrectColor {
+    background-color: crimson;
+}
+
+.correctColor {
+    background-color: #61c79a;
+}

@@ -152,3 +152,18 @@
 //         ]
 //     }
 // )
+
+
+
+
+                this.expression = simplify(`${this.verticalStretch === 1 || Math.abs(this.a) === 1 ? this.a : `1/${this.a}`}`)
+                                    .toTex()
+                                    .concat(simplify(`${this.ratio} (${k === true ? this.horizontalCompression === 1 ? this.k : `(1/${this.k})` : ""}(x-${this.d}))+${this.c}`)
+                                        .toTex()
+                                        .replace('\\cdot', ''))
+                                        .replace("1\\sin", "\\sin")
+                                        .replace("1\\cos", "\\cos")
+                                        .replace("1\\tan", "\\tan")
+                                        .replace("1\\csc", "\\csc")
+                                        .replace("1\\sec", "\\sec")
+                                        .replace("1\\cot", "\\cot")

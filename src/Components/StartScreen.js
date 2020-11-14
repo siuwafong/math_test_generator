@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import QuestionSet from './QuestionSet'
+import React, { useState, useEffect } from 'react'
+import generateQuizQuestions  from './QuestionSet'
 
 function StartScreen({
     gameStart,
@@ -8,17 +8,26 @@ function StartScreen({
     setQuizQuestions
 }) {
 
-    const [checkedTopics, setCheckedTopics] = useState([])
+    // useEffect(() => {
+    //      setQuestionSet(() => generateQuizQuestions())
+    // }
+    //     , [])
 
-    const coursesSet = [...new Set(QuestionSet.map(item => (item.details.course).toUpperCase()))]
-    const courses =  Array.from(coursesSet)
-    let topicsSet = new Set()
-    let topics = {}
-    for (let i = 0; i < courses.length; i++) {
-       topicsSet = new Set(QuestionSet.filter(item => item.details.course === courses[i].toLowerCase()).map(itm => itm.details.strand))
-        topics[courses[i]] =  Array.from(topicsSet)
-    }
+        const [checkedTopics, setCheckedTopics] = useState([])
+        const [QuestionSet, setQuestionSet] = useState(() => generateQuizQuestions())
 
+
+        const coursesSet = [...new Set(QuestionSet.map(item => (item.details.course).toUpperCase()))]
+        const courses =  Array.from(coursesSet)
+        let topicsSet = new Set()
+        let topics = {}
+        for (let i = 0; i < courses.length; i++) {
+        topicsSet = new Set(QuestionSet.filter(item => item.details.course === courses[i].toLowerCase()).map(itm => itm.details.strand))
+            topics[courses[i]] =  Array.from(topicsSet)
+        }
+
+
+    
     const handleOptionChange = (e) => {
         if (checkedTopics.includes(e.target.value)) {
             setCheckedTopics(checkedTopics.filter(item => item !== e.target.value))

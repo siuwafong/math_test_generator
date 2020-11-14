@@ -75,7 +75,7 @@ function MultipleAnswerQuestion({
     return (
         <div>
             <p>{questionInfo.question}</p>
-            {questionInfo.desmosGraph.showGraph !== true && <p><InlineMath math={questionInfo.expression} /></p>}
+            {questionInfo.desmosGraph.showGraph !== true && questionInfo.expression !== false && <p><InlineMath math={questionInfo.expression} /></p>}
             <form onSubmit={e => handleSubmit(e)}>
                 <ol>
                     {optionsOrder.map(item => 
