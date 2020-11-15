@@ -6,17 +6,22 @@ import DesmosGraph from './DesmosGraph'
 import MultipleAnswerQuestion from './MultipleAnswerQuestion'
 import Table from './Table'
 import Image from './Image'
-import { falseDependencies } from 'mathjs'
+import Timer from './Timer'
+import generateQuizQuestions  from './QuestionSet'
+
 
 function Quiz({
     quizQuestions,
     setQuizQuestions,
     gameOver,
     setGameOver,
-    setGameStart
+    setGameStart,
+    checkedTopics, 
+    setCheckedTopics, 
+    gameType
 }) {
 
-    const [currentQuestion, setCurrentQuestion] = useState(0)
+    const [currentQuestion, setCurrentQuestion] = useState(gameType === "standard" ? 0 : Math.ceil(Math.random() * quizQuestions.length))
     const [answered, setAnswered] = useState(false)
     const [answerMsg, setAnswerMsg] = useState(null)
     const [score, setScore] = useState(0)
@@ -24,6 +29,8 @@ function Quiz({
     const [shuffledState, setShuffledState] = useState(false)    
     const [checkedRadio, setCheckedRadio] = useState(null)
     const [answerValues, setAnswerValues] = useState(null)
+    const [timedQuestions, setTimedQuestions] = useState([])
+
 
 
     let tempArray = []
@@ -54,17 +61,30 @@ function Quiz({
     }
 
     const handleClick = (e) => {
-        if (currentQuestion < quizQuestions.length - 1) {
+        if ((currentQuestion < quizQuestions.length - 1 && gameType === "standard") || gameType === "timed") {
+            if (gameType === "standard") {
             setCurrentQuestion(currentQuestion + 1)
+            } else if (gameType === "timed") {
+                let currentNumber = currentQuestion
+                let currentQuestions = [...timedQuestions, ...currentNumber]
+                if (currentQuestions.length === quizQuestions.length) {
+                    generateQuizQuestions();
+                }
+                setTimedQuestions([...timedQuestions, ...currentNumber])
+                while (currentQuestions.includes(currentNumber)) {
+                    currentNumber = Math.floor(Math.random() * quizQuestions.length)
+                }
+                setCurrentQuestion(currentNumber)
+            }
             setAnswered(false)
             setAnswerMsg(null)
             setShuffledState(false)
             quizQuestions[currentQuestion].type === 'multiple choice' && setCheckedRadio(null)
             setAnswerValues(null)
-            console.log("onto the next question...")
         } else {
-            console.log("game over...")
-            setGameOver(() => true)
+            if (gameType === "standard") {
+                setGameOver(() => true)
+            }
         }
     }
 
@@ -78,13 +98,22 @@ function Quiz({
         setCheckedRadio(null)
         setAnswerValues(null)
         setGameStart(false)
+        setCheckedTopics([])
     }
 
+    const setHighScore = () => {
+        if (gameType === "standard") {
+            (JSON.parse(localStorage.getItem('stdHighScore')) === "null" || Number(JSON.parse(localStorage.getItem('stdHighScore'))) < (score/quizQuestions.length).toFixed(2) ) && localStorage.setItem('stdHighScore', JSON.stringify((score/quizQuestions.length).toFixed(2)))
+        } else if (gameType === "timed") {
+            (JSON.parse(localStorage.getItem("timedHighScore")) === "null" || Number(JSON.parse(localStorage.getItem("timedHighScore"))) < score) && localStorage.setItem("timedHighScore", JSON.stringify(score))
+        }
+    }
 
     return (
         <div>
             
-            
+            {gameType === "timed" && <Timer setGameOver={setGameOver}/>}
+
             <div>
             {currentQuestion < quizQuestions.length && quizQuestions[currentQuestion].type === 'multiple choice' 
                 && 
@@ -99,6 +128,7 @@ function Quiz({
                     setScore={setScore}
                     checkedRadio={checkedRadio}
                     setCheckedRadio={setCheckedRadio}
+                    gameOver={gameOver}
                     /> 
             }
 
@@ -113,6 +143,7 @@ function Quiz({
                     setScore={setScore}
                     answerValues={answerValues}
                     setAnswerValues={setAnswerValues}
+                    gameOver={gameOver}
                     /> 
             }
 
@@ -127,6 +158,7 @@ function Quiz({
                     setAnswerMsg={setAnswerMsg} 
                     score={score} 
                     setScore={setScore}
+                    gameOver={gameOver}
                 /> 
             }
 
@@ -141,6 +173,7 @@ function Quiz({
                     setAnswerMsg={setAnswerMsg} 
                     score={score} 
                     setScore={setScore}
+                    gameOver={gameOver}
                 /> 
             }
             </div>
@@ -155,15 +188,25 @@ function Quiz({
 
             {gameOver === true ? 
             <div>
-                <h3>GAME OVER!...Your score: {score} / {quizQuestions.length}</h3>
+                <h3>GAME OVER!...Your score on this quiz for: {checkedTopics.map((topic, idx) => <span className="checkedTopic" >{idx === checkedTopics.length - 1 ? `${topic}` : `${topic}, `}, </span>)}: {score} / {quizQuestions.length} ({(score/quizQuestions.length).toFixed(2) * 100}%)</h3>
                 <button onClick={() => restartGame()}>Restart Game</button>
-                {(JSON.parse(localStorage.getItem('highScore')) === "null" || parseInt(JSON.parse(localStorage.getItem('highScore'))) < score ) && localStorage.setItem('highScore', JSON.stringify(score))}
-                {parseInt(JSON.stringify(localStorage.getItem('highScore'))) < score 
-                ? 
-                <p>{`You set a new high score! You scored ${score}` }</p>
-                :
-                <p>{`Your high score was ${parseInt(JSON.parse(localStorage.getItem('highScore')))}`}</p>
-                }
+                
+                    {setHighScore()}
+                    
+                    {gameType === "standard" 
+                    ? 
+                        Number(JSON.parse(localStorage.getItem('stdHighScore'))) < Number((score/quizQuestions.length).toFixed(2)) 
+                        ? 
+                        <p>{`You set a new high score for standard mode! You scored ${(score/quizQuestions.length).toFixed(2)}%` }</p>
+                        :
+                        <p>{`Your high score for standard mode is ${parseInt(JSON.parse(localStorage.getItem('stdHighScore')))*100}%`}</p>
+                    :
+                        Number(JSON.parse(localStorage.getItem('timedHighScore'))) < score
+                        ?
+                        <p>{`You set a new high score for timed mode! You scored ${score} questions correct in 10 minutes!` }</p>
+                        :
+                        <p>{`Your high score for timed mode is ${JSON.parse(localStorage.getItem('timedHighScore'))}`}</p>
+                    }
             </div>
             :
             null    

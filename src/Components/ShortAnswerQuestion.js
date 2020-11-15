@@ -11,7 +11,8 @@ function ShortAnswerQuestion({
     score,
     setScore,
     answerValues,
-    setAnswerValues
+    setAnswerValues,
+    gameOver
 }) {
 
 
@@ -69,7 +70,7 @@ function ShortAnswerQuestion({
                         <li> {item} </li>
                         )}
                 </ul>
-                <button type="submit" disabled={answerMsg !== null}>SUBMIT</button>
+                <button type="submit" disabled={answerMsg !== null || gameOver === true }>SUBMIT</button>
                 <h3> {answerMsg} </h3>
                 
                 <p>{answerMsg !== null && `Your answer:`} </p> {answerMsg !== null && questionInfo.details.checkAnswer === "check expression" ? <InlineMath math={simplify(answerValues).toTex().replace("~", "").replace('\\cdot', '').trim().replace("+-", "-")} /> : answerValues} 

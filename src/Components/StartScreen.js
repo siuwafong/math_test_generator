@@ -5,7 +5,11 @@ function StartScreen({
     gameStart,
     setGameStart,
     quizQuestions,
-    setQuizQuestions
+    setQuizQuestions,
+    checkedTopics,
+    setCheckedTopics,
+    gameType,
+    setGameType
 }) {
 
     // useEffect(() => {
@@ -13,9 +17,7 @@ function StartScreen({
     // }
     //     , [])
 
-        const [checkedTopics, setCheckedTopics] = useState([])
         const [QuestionSet, setQuestionSet] = useState(() => generateQuizQuestions())
-
 
         const coursesSet = [...new Set(QuestionSet.map(item => (item.details.course).toUpperCase()))]
         const courses =  Array.from(coursesSet)
@@ -48,6 +50,11 @@ function StartScreen({
         setGameStart(true)
     }
 
+    const changeMode = (e) => {
+        const choice = e.target.value
+        setGameType(choice)
+    }
+
     return (
         <div>
             <ul>
@@ -71,6 +78,16 @@ function StartScreen({
                     </div>
                 )}
             </ul>
+
+            <div>
+                <label for="standard">Standard Mode</label>
+                <input name="standard" type="radio" value="standard" checked={gameType === "standard"} onChange={(e) => changeMode(e)}></input>
+            </div>
+            <div>
+                <label for="timed">Timed Mode</label>
+                <input name="timed" type="radio" value="timed" checked={gameType === "timed"} onChange={(e) => changeMode(e)}></input>
+            </div>
+            
             <button onClick={() => handleClick()}>Start Quiz</button>
         </div>
     )

@@ -11,7 +11,8 @@ function ListQuestion({
     answerMsg,
     setAnswerMsg,
     setScore,
-    score
+    score,
+    gameOver
 }) {
 
 
@@ -102,7 +103,7 @@ function ListQuestion({
                     </ul>
                 </div>
             </div>
-            <button onClick={() => handleClick()} disabled={answered === true ? true : false}>SUBMIT</button>
+            <button onClick={() => handleClick()} disabled={answered === true || gameOver === true ? true : false} >SUBMIT</button>
             <h3>{answerMsg}</h3>
         </div>
     )

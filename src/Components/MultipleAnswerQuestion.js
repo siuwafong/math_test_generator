@@ -11,6 +11,7 @@ function MultipleAnswerQuestion({
     setAnswerMsg,
     score,
     setScore,
+    gameOver
 }) {
 
     const [unselectedOptions, setUnselectedOptions] = useState(questionInfo.answers.map(item => item.option))
@@ -93,7 +94,7 @@ function MultipleAnswerQuestion({
                         </li>
                     )}
                 </ol>
-                <button type="submit" disabled={answered === true || selectedOptions === null ? true : false}>SUBMIT</button>
+                <button type="submit" disabled={answered === true || selectedOptions === null || gameOver === true ? true : false}>SUBMIT</button>
             </form>
             <h3>{answerMsg}</h3>
         </div>

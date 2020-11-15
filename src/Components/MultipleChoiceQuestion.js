@@ -11,6 +11,7 @@ function MultipleChoiceQuestion({
     setAnswerMsg,
     score,
     setScore,
+    gameOver
     }) {
 
     const [selectedOption, setSelectedOption] = useState(null)
@@ -65,7 +66,7 @@ function MultipleChoiceQuestion({
                         </li>
                     )}
                 </ol>
-                <button type="submit" disabled={answered === true || selectedOption === null ? true : false}>SUBMIT</button>
+                <button type="submit" disabled={answered === true || selectedOption === null || gameOver === true ? true : false}>SUBMIT</button>
             </form>
             <h3>{answerMsg}</h3>
             {/* <p><InlineMath math={'\\textcolor{blue}{abc}'} /></p> */}

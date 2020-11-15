@@ -9,6 +9,8 @@ function App() {
   const [gameStart, setGameStart] = useState(false)
   const [gameOver, setGameOver] = useState(false)
   const [quizQuestions, setQuizQuestions] = useState([])
+  const [checkedTopics, setCheckedTopics] = useState([])
+  const [gameType, setGameType] = useState("standard")
 
   return (
     <div id="App" className="App">
@@ -17,6 +19,10 @@ function App() {
         setGameStart={setGameStart}
         quizQuestions={quizQuestions}
         setQuizQuestions={setQuizQuestions}
+        checkedTopics={checkedTopics}
+        setCheckedTopics={setCheckedTopics}
+        gameType={gameType}
+        setGameType={setGameType}
       />}
 
       {gameStart === true && <Quiz 
@@ -25,6 +31,9 @@ function App() {
         quizQuestions={quizQuestions}
         setQuizQuestions={setQuizQuestions}
         setGameStart={setGameStart}
+        checkedTopics={checkedTopics}
+        setCheckedTopics={setCheckedTopics}
+        gameType={gameType}
       />}
 
       <TestButton />
