@@ -8,7 +8,7 @@ import Table from './Table'
 import Image from './Image'
 import Timer from './Timer'
 import generateQuizQuestions  from './QuestionSet'
-
+import './Quiz.css'
 
 function Quiz({
     quizQuestions,
@@ -18,10 +18,11 @@ function Quiz({
     setGameStart,
     checkedTopics, 
     setCheckedTopics, 
-    gameType
+    gameType,
+    setQuestionSet
 }) {
 
-    const [currentQuestion, setCurrentQuestion] = useState(gameType === "standard" ? 0 : Math.ceil(Math.random() * quizQuestions.length))
+    const [currentQuestion, setCurrentQuestion] = useState(gameType === "standard" ? 0 : Math.floor(Math.random() * quizQuestions.length))
     const [answered, setAnswered] = useState(false)
     const [answerMsg, setAnswerMsg] = useState(null)
     const [score, setScore] = useState(0)
@@ -66,15 +67,30 @@ function Quiz({
             setCurrentQuestion(currentQuestion + 1)
             } else if (gameType === "timed") {
                 let currentNumber = currentQuestion
-                let currentQuestions = [...timedQuestions, ...currentNumber]
+                let currentQuestions = [...timedQuestions, currentNumber]
+                console.log(currentQuestions.length, quizQuestions.length)
                 if (currentQuestions.length === quizQuestions.length) {
-                    generateQuizQuestions();
+                    console.log("regenerating new parameters")
+                    // generateQuizQuestions()
+                    for (let i = 0; i < checkedTopics.length; i++) {
+                        const courseAndTopic = checkedTopics[i].split("-")
+                        const selectedCourse = courseAndTopic[0]
+                        const selectedTopic = courseAndTopic[1]
+                        const filteredQuestions = generateQuizQuestions().filter(item => item.details.course.toUpperCase() === selectedCourse).filter(item => item.details.strand === selectedTopic)
+                        setQuizQuestions([...filteredQuestions])
+                    }
                 }
-                setTimedQuestions([...timedQuestions, ...currentNumber])
+                setTimedQuestions([...timedQuestions, currentNumber])
+
+                if (currentQuestions.length !== quizQuestions.length) {
                 while (currentQuestions.includes(currentNumber)) {
                     currentNumber = Math.floor(Math.random() * quizQuestions.length)
                 }
                 setCurrentQuestion(currentNumber)
+                } else {
+                    setTimedQuestions([])
+                    setCurrentQuestion(Math.floor(Math.random() * quizQuestions.length))
+                }
             }
             setAnswered(false)
             setAnswerMsg(null)
@@ -99,6 +115,7 @@ function Quiz({
         setAnswerValues(null)
         setGameStart(false)
         setCheckedTopics([])
+        setQuestionSet(() => generateQuizQuestions())
     }
 
     const setHighScore = () => {
@@ -180,7 +197,7 @@ function Quiz({
             
 
             <button onClick={( e => handleClick(e))} disabled={answered  === false || gameOver === true ? true : false}>
-                {currentQuestion === quizQuestions.length - 1 ? `FINISH QUIZ` : `NEXT`}
+                {currentQuestion === quizQuestions.length - 1  && gameType === "standard" ? `FINISH QUIZ` : `NEXT`}
             </button>
             {quizQuestions[currentQuestion].desmosGraph.showGraph  && <DesmosGraph graphfunction={quizQuestions[currentQuestion].desmosGraph.graphfunction} answered={answered} />}
             {quizQuestions[currentQuestion].details.table && <Table questionInfo={quizQuestions[currentQuestion]} />}
@@ -188,7 +205,17 @@ function Quiz({
 
             {gameOver === true ? 
             <div>
-                <h3>GAME OVER!...Your score on this quiz for: {checkedTopics.map((topic, idx) => <span className="checkedTopic" >{idx === checkedTopics.length - 1 ? `${topic}` : `${topic}, `}, </span>)}: {score} / {quizQuestions.length} ({(score/quizQuestions.length).toFixed(2) * 100}%)</h3>
+                <h3>GAME OVER!...Your score on this quiz for: </h3>
+                        <ul>
+                        {checkedTopics.map((topic, idx) => <span className="checkedTopic" >{idx === checkedTopics.length - 1 ? `${topic}` : `${topic}, `} </span>)}  
+                        </ul>
+                {gameType === "standard"
+                ?
+                <p>{score} / {quizQuestions.length} ({(score/quizQuestions.length).toFixed(2) * 100}%)</p>
+                :
+                <p>{score}</p>
+                }
+
                 <button onClick={() => restartGame()}>Restart Game</button>
                 
                     {setHighScore()}

@@ -3,6 +3,7 @@ import './App.css';
 import Quiz from './Components/Quiz'
 import StartScreen from './Components/StartScreen'
 import TestButton from './Components/TestButton'
+import generateQuizQuestions  from './Components/QuestionSet'
 
 function App() {
 
@@ -11,6 +12,7 @@ function App() {
   const [quizQuestions, setQuizQuestions] = useState([])
   const [checkedTopics, setCheckedTopics] = useState([])
   const [gameType, setGameType] = useState("standard")
+  const [QuestionSet, setQuestionSet] = useState(() => generateQuizQuestions())
 
   return (
     <div id="App" className="App">
@@ -23,6 +25,8 @@ function App() {
         setCheckedTopics={setCheckedTopics}
         gameType={gameType}
         setGameType={setGameType}
+        QuestionSet={QuestionSet}
+        setQuestionSet={setQuestionSet}
       />}
 
       {gameStart === true && <Quiz 
@@ -34,6 +38,8 @@ function App() {
         checkedTopics={checkedTopics}
         setCheckedTopics={setCheckedTopics}
         gameType={gameType}
+        QuestionSet={QuestionSet}
+        setQuestionSet={setQuestionSet}
       />}
 
       <TestButton />

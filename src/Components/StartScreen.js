@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import generateQuizQuestions  from './QuestionSet'
+import generateQuizQuestions from './QuestionSet'
 
 function StartScreen({
     gameStart,
@@ -9,15 +9,10 @@ function StartScreen({
     checkedTopics,
     setCheckedTopics,
     gameType,
-    setGameType
+    setGameType,
+    QuestionSet,
+    setQuestionSet
 }) {
-
-    // useEffect(() => {
-    //      setQuestionSet(() => generateQuizQuestions())
-    // }
-    //     , [])
-
-        const [QuestionSet, setQuestionSet] = useState(() => generateQuizQuestions())
 
         const coursesSet = [...new Set(QuestionSet.map(item => (item.details.course).toUpperCase()))]
         const courses =  Array.from(coursesSet)
@@ -44,8 +39,11 @@ function StartScreen({
             const selectedCourse = courseAndTopic[0]
             const selectedTopic = courseAndTopic[1]
             const filteredQuestions = QuestionSet.filter(item => item.details.course.toUpperCase() === selectedCourse).filter(item => item.details.strand === selectedTopic)
-            setQuizQuestions([...quizQuestions, ...filteredQuestions])
-            // filteredQuestions.forEach(question => quizQuestions.push(question))
+            // ---testing questions code---
+            setQuizQuestions([QuestionSet[12]])
+
+            // ---actual code---
+            // setQuizQuestions([...quizQuestions, ...filteredQuestions])
         }
         setGameStart(true)
     }
@@ -61,7 +59,6 @@ function StartScreen({
                 {courses.map(course => 
                     <div>
                         <li>{course}</li>
-
                         {topics[course].map((item, idx) => 
                         <div>
                             {item}

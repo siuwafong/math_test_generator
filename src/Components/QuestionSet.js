@@ -315,15 +315,14 @@ class discreteDistributionQuestion extends QuestionClass {
             xList.sort((a, b) => a - b)
             for (let j = 0; j < xCount; j++) {
                 const num2 = Math.ceil(Math.random() * 4) / 10
-                console.log(num2)
                 if (j === (xCount - 1)) {
                     pList.push(Number(totalProb.toFixed(1)))
                 }
                 else if (totalProb - num2 > 0 ) {
-                    pList.push(num2)
+                    pList.push(num2.toFixed(1))
                     totalProb = totalProb - num2
                 } else if (totalProb !== 0) {
-                    pList.push(totalProb)
+                    pList.push(totalProb.toFixed(1))
                     totalProb = 0
                 } else {
                     pList.push(0)
@@ -397,6 +396,7 @@ const permutator = (inputArr) => {
 // ---------------------------------------------------------------------------
 // Quadratic Questions
 
+// Q0
 let quadraticQuestion1 = new simpleFactoredQuadraticQuestion(
     'What are the x-intercept(s) of this function?',
     SHORT_ANSWER,
@@ -415,6 +415,7 @@ addAnswers(
     [quadraticQuestion1.x1, quadraticQuestion1.x2]
 )
 
+// Q1
 let quadraticQuestion2 = new simpleFactoredQuadraticQuestion(
     'What is the equation of this function in standard form?',
     SHORT_ANSWER,
@@ -442,6 +443,7 @@ addAnswers(
     }
 )
 
+// Q2
 let quadraticQuestion3 = new simpleFactoredQuadraticQuestion(
     'What is this quadratic expression in factored form?',
     SHORT_ANSWER,
@@ -466,7 +468,7 @@ addAnswers(
 // -----------------------------------------------------------------------------------
 // Polynomial Questions
 
-
+// Q3
 let polynomialQuestion1 = new expandedPolynomialQuestion(
     'What are the x-intercept(s) of this function?',
     SHORT_ANSWER,
@@ -485,6 +487,7 @@ addAnswers(
     polynomialQuestion1.xInts
 )
 
+// Q4
 let polynomialQuestion2 = new expandedPolynomialQuestion(
     'What are the x-intercept(s) of this function?',
     SHORT_ANSWER,
@@ -503,6 +506,7 @@ addAnswers(
     polynomialQuestion2.xInts
 )
 
+// Q5
 let polynomialQuestion3 = new expandedPolynomialQuestion(
     'What is the end behaviour of this function?',
     MULTIPLE_CHOICE,
@@ -526,6 +530,7 @@ addAnswers(
     ]
 )
 
+// Q6
 let rationalQuestion1 = new rationalQuestion(
     'What is the vertical asymptote of this function?',
     MULTIPLE_CHOICE,
@@ -549,6 +554,7 @@ addAnswers(
     [false, true, false, false]
 )
 
+// Q7
 let rationalQuestion2 = new rationalQuestion(
     'What is the y-intercept of this function?',
     MULTIPLE_CHOICE,
@@ -572,6 +578,7 @@ addAnswers(
     [true, false, false, false]
 )
 
+// Q8
 let rationalQuestion3 = new rationalQuestion(
     'What is the horizontal asymptote of this function?',
     MULTIPLE_CHOICE,
@@ -595,6 +602,7 @@ addAnswers(
     [true, false, false, false]
 )
 
+// Q9
 let rationalQuestion4 = new rationalQuestion(
     'What is the vertical asymptote of this function?',
     MULTIPLE_CHOICE,
@@ -618,6 +626,7 @@ addAnswers(
     [false, false, false, true]
 )
 
+// Q10
 let rationalQuestion5 = new rationalQuestion(
     'What is the y-intercept of this function?',
     MULTIPLE_CHOICE,
@@ -641,6 +650,7 @@ addAnswers(
     [false, false, true, false]
 )
 
+// Q11
 let rationalQuestion6 = new rationalQuestion(
     'What is the x-intercept of this function?',
     MULTIPLE_CHOICE,
@@ -664,6 +674,7 @@ addAnswers(
     [false, true, false, false]
 )
 
+// Q12
 let rationalQuestion7 = new graphRationalQuestion(
     'What is the equation of this function?',
     SHORT_ANSWER,
@@ -699,6 +710,7 @@ addAnswers(
     }
 )
 
+// Q13
 let rationalQuestion8 = new rationalQuestion(
     'What are the vertical asymptotes of this function?',
     MULTIPLE_ANSWERS,
@@ -722,8 +734,9 @@ addAnswers(
     [false, false, true, true]
 )
 
-// Sinusoidal Questions
+// Sinusoidal Questions --------------------------------------------------------------
 
+// Q14
 let sinusoidalQuestion1 = new sinusoidalQuestion(
     'What is the amplitude of this function?',
     MULTIPLE_CHOICE,
@@ -744,6 +757,9 @@ addAnswers(
     [true, false, false, false]
 )
 
+// Discrete Probability Distribution Questions -----------------------------------------
+
+// Q15
 let discreteDistributionQuestion1 = new discreteDistributionQuestion(
     'Match each probability distribution with its definition',
     SORT_LIST,
@@ -770,6 +786,7 @@ addAnswers(
     discreteDistributionQuestion1.list.map(item => new Object({id: item.id, definition: item.definition, description: [item.description[0]]}))
 )
 
+// Q16
 let discreteDistributionQuestion2 = new discreteDistributionQuestion(
     'Match each probability distribution with its expectation formula',
     SORT_LIST,
@@ -785,6 +802,7 @@ addAnswers(
     discreteDistributionQuestion2.list.map(item => new Object({id: item.id, definition: item.definition, description: [item.description[1]]}))
 )
 
+// Q17
 let discreteDistributionQuestion3 = new discreteDistributionQuestion(
     'What is the expected value for this probability distribution?',
     SHORT_ANSWER,
