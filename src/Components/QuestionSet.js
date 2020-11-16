@@ -55,6 +55,7 @@ class quadraticQuestion extends QuestionClass {
         this.x2 = Math.floor(Math.random() * 20) - 10
         this.coeff1 = Math.ceil(Math.random() * 5)
         this.coeff2 = Math.ceil(Math.random() * 5)
+        this.negative = Math.floor(Math.random() * 2)
         this.expression = ""
     }
 }
@@ -63,6 +64,7 @@ class simpleFactoredQuadraticQuestion extends quadraticQuestion {
     constructor(question, type, details, desmosGraph, answers) {
         super(question, type, details, desmosGraph, answers)
         this.generateExpression = (string = false) => {
+            
             while (this.x1 === 0 || this.x2 === 0 || this.x1 === 1 || this.x2 === 1) {
                 this.x1 = Math.floor(Math.random() * 20) - 20
                 this.x2 = Math.floor(Math.random() * 20) - 20
@@ -71,7 +73,11 @@ class simpleFactoredQuadraticQuestion extends quadraticQuestion {
                 // make a string for the expression
                 this.expression = ""
             }
-            this.expression = rationalize(`(x-${this.x1}) * (x-${this.x2})`).toString().replace("*", "")
+            if (this.negative === 0) {
+                this.expression = rationalize(`(x-${this.x1}) * (x-${this.x2})`).toString().replace("*", "")
+            } else {
+                this.expression = rationalize(`(x-${this.x1}) * (x-${this.x2}) * -1`).toString().replace("*", "")
+            }
         }
     }
 }
@@ -116,6 +122,7 @@ class rationalQuestion extends QuestionClass {
     constructor(question, type, details, desmosGraph, answers) {
         super(question, type, details, desmosGraph, answers)
         this.expression = ""
+        this.shortAnswerSolution = ""
         this.k = 1
         this.a = 0
         this.b = 1
@@ -135,6 +142,7 @@ class rationalQuestion extends QuestionClass {
                     this.c = Math.ceil(Math.random() * 20) - 10
                 }
                 this.expression = rationalize(`1/(${this.a} * x - ${this.c})`).toTex().replace('\\cdot', '')
+                this.shortAnswerSolution = `1/${this.a}x-${this.c}`
             }
             // generate a linear over linear function
             if (numeratorDegree === 1 && denominatorDegree === 1) {
@@ -145,6 +153,7 @@ class rationalQuestion extends QuestionClass {
                     this.d = Math.ceil(Math.random() * 18 ) - 9
                 }
                 this.expression = rationalize(`(${this.a}x+${this.b}) / (${this.c}x+${this.d})`).toTex().replace('\\cdot', '')
+                this.shortAnswerSolution = `(${this.a}x+${this.b})/(${this.c}+${this.d})`
             }
             // generate a reciprocal of a quadratic function
             if (numeratorDegree === 0 && denominatorDegree === 2) {
@@ -154,6 +163,7 @@ class rationalQuestion extends QuestionClass {
                     this.d = Math.ceil(Math.random() * 18) - 9
                 }
                 this.expression = rationalize(`${this.k} / ((${this.a}x - ${this.b})(${this.c}x - ${this.d}))`).toTex().replace(/\\cdot/g, '')
+                this.shortAnswerSolution = `${this.k} / ((${this.a}-${this.b}})(${this.c}-${this.d}))`
             }
         }
     }
@@ -171,11 +181,12 @@ class graphRationalQuestion extends rationalQuestion{
             
             // generate a reciprocal of a linear function
             if (numeratorDegree === 0 && denominatorDegree === 1) {
-                while (this.a === 0 || this.c === 0 || Math.abs(this.a) === 3) {
+                while (this.a === 0 || this.c === 0 || Math.abs(this.a) === 3 || (this.a / this.k) === (this.c / this.k) ) {
                     this.a = Math.ceil(Math.random() * 10) - 5
                     this.c = Math.ceil(Math.random() * 20) - 10
                 }
                 this.expression = rationalize(`${this.k}/(${this.a} * x - ${this.c})`).toTex().replace('\\cdot', '')
+                this.shortAnswerSolution = `${this.k}/(${this.a}x-${this.c})`
             }
             // generate a linear over linear function
             if (numeratorDegree === 1 && denominatorDegree === 1) {
@@ -186,6 +197,7 @@ class graphRationalQuestion extends rationalQuestion{
                     this.d = Math.ceil(Math.random() * 9 ) - 18
                 }
                 this.expression = rationalize(`(${this.a}x+${this.b}) / (${this.c}x+${this.d})`).toTex().replace('\\cdot', '')
+                this.shortAnswerSolution = `(${this.a}x+${this.b})/(${this.c}x+${this.d})`
             }
         }
 
@@ -459,7 +471,12 @@ quadraticQuestion3.generateExpression();
 
 addAnswers(
     quadraticQuestion3,
-    permutator([`(x${quadraticQuestion3.x1 > 0 ? `-${quadraticQuestion3.x1}` : `+${quadraticQuestion3.x1}`.replace("-", "")})`, `(x${quadraticQuestion3.x2 > 0 ? `-${quadraticQuestion3.x2}` : `+${quadraticQuestion3.x2}`.replace("-", "")})`]),
+    quadraticQuestion3.negative === 0 
+    ? 
+    permutator([`(x${quadraticQuestion3.x1 > 0 ? `-${quadraticQuestion3.x1}` : `+${quadraticQuestion3.x1}`.replace("-", "")})`, `(x${quadraticQuestion3.x2 > 0 ? `-${quadraticQuestion3.x2}` : `+${quadraticQuestion3.x2}`.replace("-", "")})`])
+    :
+    permutator([`(x${quadraticQuestion3.x1 > 0 ? `-${quadraticQuestion3.x1}` : `+${quadraticQuestion3.x1}`.replace("-", "")})`, `(x${quadraticQuestion3.x2 > 0 ? `-${quadraticQuestion3.x2}` : `+${quadraticQuestion3.x2}`.replace("-", "")})`]).map(item => `-${item}`)
+    ,
     []
 )
 // checking sets converts the expressions to numbers, which leads to an error
@@ -570,10 +587,10 @@ rationalQuestion2.generateExpression(0, 1)
 addAnswers(
     rationalQuestion2,
     [
-        `${simplify(`- 1 / ${rationalQuestion2.c}`).toTex()}`,
-        `${simplify(`- 1 / ${rationalQuestion2.a}`).toTex()}`,
-        `${simplify(`${rationalQuestion1.a} / ${rationalQuestion1.c}`).toTex()}`, 
-        `${simplify(`${rationalQuestion1.c} / ${rationalQuestion1.a}`).toTex()}`,
+        `(0, ${simplify(`- 1 / ${rationalQuestion2.c}`).toTex()})`,
+        `(0, ${simplify(`- 1 / ${rationalQuestion2.a}`).toTex()})`,
+        `(0, ${simplify(`${rationalQuestion1.a} / ${rationalQuestion1.c}`).toTex()})`, 
+        `(0, ${simplify(`${rationalQuestion1.c} / ${rationalQuestion1.a}`).toTex()})`,
     ],
     [true, false, false, false]
 )
@@ -642,10 +659,10 @@ rationalQuestion5.generateExpression(1, 1)
 addAnswers(
     rationalQuestion5,
     [
-        `${simplify(`${rationalQuestion5.a} / ${rationalQuestion5.c}`).toTex()}`, 
-        `${simplify(`-${rationalQuestion5.b} / ${rationalQuestion5.a}`).toTex()}`,
-        `${simplify(`${rationalQuestion5.b} / ${rationalQuestion5.d}`).toTex()}`,
-        `${simplify(`-${rationalQuestion5.d} / ${rationalQuestion5.c}`).toTex()}`,
+        `(0, ${simplify(`${rationalQuestion5.a} / ${rationalQuestion5.c}`).toTex()})`, 
+        `(0, ${simplify(`-${rationalQuestion5.b} / ${rationalQuestion5.a}`).toTex()})`,
+        `(0, ${simplify(`${rationalQuestion5.b} / ${rationalQuestion5.d}`).toTex()})`,
+        `(0, ${simplify(`-${rationalQuestion5.d} / ${rationalQuestion5.c}`).toTex()})`,
     ],
     [false, false, true, false]
 )
@@ -666,10 +683,10 @@ rationalQuestion6.generateExpression(1, 1)
 addAnswers(
     rationalQuestion6,
     [
-        `${simplify(`${rationalQuestion6.a} / ${rationalQuestion6.c}`).toTex()}`, 
-        `${simplify(`-${rationalQuestion6.b} / ${rationalQuestion6.a}`).toTex()}`,
-        `${simplify(`${rationalQuestion6.b} / ${rationalQuestion6.d}`).toTex()}`,
-        `${simplify(`-${rationalQuestion6.d} / ${rationalQuestion6.c}`).toTex()}`,
+        `(${simplify(`${rationalQuestion6.a} / ${rationalQuestion6.c}`).toTex()}, 0)`, 
+        `(${simplify(`-${rationalQuestion6.b} / ${rationalQuestion6.a}`).toTex()}, 0)`,
+        `(${simplify(`${rationalQuestion6.b} / ${rationalQuestion6.d}`).toTex()}, 0)`,
+        `(${simplify(`-${rationalQuestion6.d} / ${rationalQuestion6.c}`).toTex()}, 0)`,
     ],
     [false, true, false, false]
 )
@@ -680,6 +697,9 @@ let rationalQuestion7 = new graphRationalQuestion(
     SHORT_ANSWER,
     {
         checkAnswer: CHECK_EXPRESSION,
+        parseExpression: function(expression) {
+            return simplify(expression.trim()).toTex().replace("~", "").replace('\\cdot', '').trim().replace("+-", "-").replace("-(", "(").replace("x)", "x")
+        },
         strand: 'rational functions',
         course: MHF4U,
         questionInfo: 'assess knowledge of the reciprocal of linear functions',
@@ -752,7 +772,7 @@ sinusoidalQuestion1.generateExpression("sin", true)
 addAnswers(
     sinusoidalQuestion1,
     [
-        sinusoidalQuestion1.verticalStretch ? sinusoidalQuestion1.a.toString() : simplify(`1/${sinusoidalQuestion1.a}`).toTex(), sinusoidalQuestion1.horizontalCompression ? sinusoidalQuestion1.k.toString() : simplify(`1/${sinusoidalQuestion1.k}`).toTex(), sinusoidalQuestion1.d.toString(), sinusoidalQuestion1.c.toString()
+        sinusoidalQuestion1.verticalStretch ? Math.abs(sinusoidalQuestion1.a).toString() : simplify(`1/${Math.abs(sinusoidalQuestion1.a)}`).toTex(), sinusoidalQuestion1.horizontalCompression ? Math.abs(sinusoidalQuestion1.k).toString() : simplify(`1/${Math.abs(sinusoidalQuestion1.k)}`).toTex(), Math.abs(sinusoidalQuestion1.d).toString(), Math.abs(sinusoidalQuestion1.c).toString()
     ],
     [true, false, false, false]
 )

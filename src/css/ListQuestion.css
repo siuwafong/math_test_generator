@@ -23,6 +23,10 @@
     box-shadow: 5px 5px 2px 1px #d9e0cd;   
 }
 
+.selectableListItem + li {
+    list-style-type: none;
+}
+
 .listsContainer {
     list-style-type: none;
 }

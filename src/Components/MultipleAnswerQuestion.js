@@ -94,7 +94,7 @@ function MultipleAnswerQuestion({
                         </li>
                     )}
                 </ol>
-                <button type="submit" disabled={answered === true || selectedOptions === null || gameOver === true ? true : false}>SUBMIT</button>
+                <button type="submit" disabled={answered === true || selectedOptions.length === 0 || gameOver === true ? true : false}>SUBMIT</button>
             </form>
             <h3>{answerMsg}</h3>
         </div>

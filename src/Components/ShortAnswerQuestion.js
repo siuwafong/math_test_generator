@@ -49,8 +49,17 @@ function ShortAnswerQuestion({
                     console.log(rationalize(shortAnswerResponse.trim()).toTex().replace("~", ""), questionInfo.answers[0])
                     // TODO: quadratic and rational are giving different answers
                     console.log(simplify(shortAnswerResponse.trim()).toTex().replace("~", "").replace('\\cdot', '').trim(), questionInfo.answers[0])
-                    
-                    if (simplify(shortAnswerResponse.trim()).toTex().replace("~", "").replace('\\cdot', '').trim().replace("+-", "-") === questionInfo.answers[0]) {
+
+                    if (questionInfo.details.parseExpression !== undefined) {
+                        console.log("checking parsed expression", questionInfo.details.parseExpression(shortAnswerResponse))
+                        if (questionInfo.details.parseExpression(shortAnswerResponse) === questionInfo.details.parseExpression(questionInfo.shortAnswerSolution)  ) {
+                            setScore(() => score + 1)
+                        setAnswerMsg(`Correct!`)
+                        } else {
+                            setAnswerMsg("Incorrect")
+                        }
+                    }
+                    else if (simplify(shortAnswerResponse.trim()).toTex().replace("~", "").replace('\\cdot', '').trim().replace("+-", "-") === questionInfo.answers[0]) {
                     setScore(() => score + 1)
                         setAnswerMsg(`Correct!`)
                     } else {
@@ -95,7 +104,7 @@ function ShortAnswerQuestion({
                         <li> {item} </li>
                         )}
                 </ul>
-                <button type="submit" disabled={answerMsg !== null || gameOver === true }>SUBMIT</button>
+                <button type="submit" disabled={answerMsg !== null || gameOver === true || shortAnswerResponse === ""}>SUBMIT</button>
                 <h3> {answerMsg} </h3>
                 
                 <p>{answerMsg !== null && `Your answer:`} </p> {answerMsg !== null && questionInfo.details.checkAnswer === "check expression" ? <InlineMath math={simplify(answerValues).toTex().replace("~", "").replace('\\cdot', '').trim().replace("+-", "-")} /> : answerValues} 

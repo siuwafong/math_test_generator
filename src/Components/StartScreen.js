@@ -34,19 +34,20 @@ function StartScreen({
     }
 
     const handleClick = () => {
-        for (let i = 0; i < checkedTopics.length; i++) {
-            const courseAndTopic = checkedTopics[i].split("-")
-            const selectedCourse = courseAndTopic[0]
-            const selectedTopic = courseAndTopic[1]
-            const filteredQuestions = QuestionSet.filter(item => item.details.course.toUpperCase() === selectedCourse).filter(item => item.details.strand === selectedTopic)
-            // ---testing questions code---
-            setQuizQuestions([QuestionSet[12]])
+            for (let i = 0; i < checkedTopics.length; i++) {
+                const courseAndTopic = checkedTopics[i].split("-")
+                const selectedCourse = courseAndTopic[0]
+                const selectedTopic = courseAndTopic[1]
+                const filteredQuestions = QuestionSet.filter(item => item.details.course.toUpperCase() === selectedCourse).filter(item => item.details.strand === selectedTopic)
+                // ---testing questions code---
+                // setQuizQuestions([QuestionSet[17]])
 
-            // ---actual code---
-            // setQuizQuestions([...quizQuestions, ...filteredQuestions])
+                // ---actual code---
+                setQuizQuestions([...quizQuestions, ...filteredQuestions])
+            }
+            setGameStart(true)
         }
-        setGameStart(true)
-    }
+    
 
     const changeMode = (e) => {
         const choice = e.target.value
@@ -85,7 +86,7 @@ function StartScreen({
                 <input name="timed" type="radio" value="timed" checked={gameType === "timed"} onChange={(e) => changeMode(e)}></input>
             </div>
             
-            <button onClick={() => handleClick()}>Start Quiz</button>
+            <button onClick={() => handleClick()} disabled={checkedTopics.length === 0}>Start Quiz</button>
         </div>
     )
 }
