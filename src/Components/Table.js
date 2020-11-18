@@ -1,5 +1,5 @@
 import React from 'react'
-import './Table.css'
+import '../css/Table.css'
 
 function Table({questionInfo}) {
     return (

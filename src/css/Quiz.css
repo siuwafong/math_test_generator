@@ -1,0 +1,11 @@
+.checkedTopic {
+    font-size: 10px;
+}
+
+.quizContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 100px auto;
+    border: 2px solid black
+}

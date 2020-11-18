@@ -8,7 +8,7 @@ import Table from './Table'
 import Image from './Image'
 import Timer from './Timer'
 import generateQuizQuestions  from './QuestionSet'
-import './Quiz.css'
+import '../css/Quiz.css'
 
 function Quiz({
     quizQuestions,
@@ -19,8 +19,10 @@ function Quiz({
     checkedTopics, 
     setCheckedTopics, 
     gameType,
-    setQuestionSet
+    setQuestionSet,
+    time
 }) {
+
 
     const [currentQuestion, setCurrentQuestion] = useState(gameType === "standard" ? 0 : Math.floor(Math.random() * quizQuestions.length))
     const [answered, setAnswered] = useState(false)
@@ -32,6 +34,7 @@ function Quiz({
     const [answerValues, setAnswerValues] = useState(null)
     const [timedQuestions, setTimedQuestions] = useState([])
 
+    console.log("current question # is...", currentQuestion)
 
 
     let tempArray = []
@@ -71,14 +74,17 @@ function Quiz({
                 console.log(currentQuestions.length, quizQuestions.length)
                 if (currentQuestions.length === quizQuestions.length) {
                     console.log("regenerating new parameters")
+                    let tempQuizQuestions = []
                     // generateQuizQuestions()
                     for (let i = 0; i < checkedTopics.length; i++) {
                         const courseAndTopic = checkedTopics[i].split("-")
                         const selectedCourse = courseAndTopic[0]
                         const selectedTopic = courseAndTopic[1]
                         const filteredQuestions = generateQuizQuestions().filter(item => item.details.course.toUpperCase() === selectedCourse).filter(item => item.details.strand === selectedTopic)
-                        setQuizQuestions([...filteredQuestions])
+                        tempQuizQuestions = [...tempQuizQuestions, ...filteredQuestions]
                     }
+                    console.log(tempQuizQuestions)
+                    setQuizQuestions(() => tempQuizQuestions)
                 }
                 setTimedQuestions([...timedQuestions, currentNumber])
 
@@ -127,9 +133,9 @@ function Quiz({
     }
 
     return (
-        <div>
+        <div className="quizContainer">
             
-            {gameType === "timed" && <Timer setGameOver={setGameOver}/>}
+            {gameType === "timed" && <Timer setGameOver={setGameOver} time={time}/>}
 
             <div>
             {currentQuestion < quizQuestions.length && quizQuestions[currentQuestion].type === 'multiple choice' 
@@ -195,13 +201,15 @@ function Quiz({
             }
             </div>
             
+            {quizQuestions[currentQuestion].desmosGraph.showGraph  && <DesmosGraph graphfunction={quizQuestions[currentQuestion].desmosGraph.graphfunction} answered={answered} />}
+            {quizQuestions[currentQuestion].details.table && <Table questionInfo={quizQuestions[currentQuestion]} />}
+            {quizQuestions[currentQuestion].details.img && <Image imgSrc={quizQuestions[currentQuestion].details.imgSrc} imgDetails={quizQuestions[currentQuestion].details.imgDetails} /> }
+
 
             <button onClick={( e => handleClick(e))} disabled={answered  === false || gameOver === true ? true : false}>
                 {currentQuestion === quizQuestions.length - 1  && gameType === "standard" ? `FINISH QUIZ` : `NEXT`}
             </button>
-            {quizQuestions[currentQuestion].desmosGraph.showGraph  && <DesmosGraph graphfunction={quizQuestions[currentQuestion].desmosGraph.graphfunction} answered={answered} />}
-            {quizQuestions[currentQuestion].details.table && <Table questionInfo={quizQuestions[currentQuestion]} />}
-            {quizQuestions[currentQuestion].details.img && <Image imgSrc={quizQuestions[currentQuestion].details.imgSrc} imgDetails={quizQuestions[currentQuestion].details.imgDetails} /> }
+
 
             {gameOver === true ? 
             <div>
@@ -230,7 +238,7 @@ function Quiz({
                     :
                         Number(JSON.parse(localStorage.getItem('timedHighScore'))) < score
                         ?
-                        <p>{`You set a new high score for timed mode! You scored ${score} questions correct in 10 minutes!` }</p>
+                        <p>{`You set a new high score for timed mode! You scored ${score} questions correct in ${time} minutes!` }</p>
                         :
                         <p>{`Your high score for timed mode is ${JSON.parse(localStorage.getItem('timedHighScore'))}`}</p>
                     }

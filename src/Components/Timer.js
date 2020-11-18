@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 
-export default function Timer({setGameOver}) {
+export default function Timer({setGameOver, time}) {
 
     const [timeLeft, setTimeLeft] = useState({
-        minutes: 1,
+        minutes: time,
         seconds: 0
     })
 

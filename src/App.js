@@ -13,6 +13,7 @@ function App() {
   const [checkedTopics, setCheckedTopics] = useState([])
   const [gameType, setGameType] = useState("standard")
   const [QuestionSet, setQuestionSet] = useState(() => generateQuizQuestions())
+  const [time, setTime] = useState(10)
 
   return (
     <div id="App" className="App">
@@ -27,6 +28,8 @@ function App() {
         setGameType={setGameType}
         QuestionSet={QuestionSet}
         setQuestionSet={setQuestionSet}
+        time={time}
+        setTime={setTime}
       />}
 
       {gameStart === true && <Quiz 
@@ -40,6 +43,7 @@ function App() {
         gameType={gameType}
         QuestionSet={QuestionSet}
         setQuestionSet={setQuestionSet}
+        time={time}
       />}
 
       <TestButton />

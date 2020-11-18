@@ -218,7 +218,7 @@ class sinusoidalQuestion extends QuestionClass {
         this.generateExpression = (ratio, k = false) => {
             if (ratio === "sin" || ratio === "cos" || ratio === "tan" || ratio === "csc" || ratio === "sec") {
                 this.ratio = ratio
-                while (this.a === 0 || this.k === 0 || Math.abs(this.k) === 1 || this.a === this.k || this.k === this.d || this.d === this.c || this.a === this.d || this.k === this.c || this.a === this.c) {
+                while (this.a === 0 || this.k === 0 || Math.abs(this.k) === 1 || Math.abs(this.a) === Math.abs(this.k) || Math.abs(this.k) === Math.abs(this.d) || Math.abs(this.d) === Math.abs(this.c) || Math.abs(this.a) === Math.abs(this.d) || Math.abs(this.k) === Math.abs(this.c) || Math.abs(this.a) === Math.abs(this.c)) {
                     this.a = Math.ceil(Math.random() * 10 ) - 5
                     this.k = Math.ceil(Math.random() * 10 ) - 5
                     this.d = Math.ceil(Math.random() * 10 ) - 5
@@ -414,7 +414,7 @@ let quadraticQuestion1 = new simpleFactoredQuadraticQuestion(
     SHORT_ANSWER,
     {
         checkAnswer: CHECK_SETS,
-        strand: 'quadratic relations',
+        strand: 'Quadratic Relations',
         course: MPM2D,
         questionInfo: 'assess knowledge of x-intercepts of quadratics'
     }, 
@@ -433,7 +433,7 @@ let quadraticQuestion2 = new simpleFactoredQuadraticQuestion(
     SHORT_ANSWER,
     {
         checkAnswer: CHECK_EXPRESSION,
-        strand: 'quadratic functions',
+        strand: 'Quadratic Functions',
         course: MCR3U,
         questionInfo: 'assess ability to convert graph to equation'
     }
@@ -461,7 +461,7 @@ let quadraticQuestion3 = new simpleFactoredQuadraticQuestion(
     SHORT_ANSWER,
     {
         checkAnswer: CHECK_PERMUTATION,
-        strand: 'quadratic functions',
+        strand: 'Quadratic Functions',
         course: MCR3U,
         questionInfo: 'assess ability to factor quadratic functions'
     }
@@ -491,7 +491,7 @@ let polynomialQuestion1 = new expandedPolynomialQuestion(
     SHORT_ANSWER,
     {
         checkAnswer: CHECK_SETS,
-        strand: 'polynomial functions',
+        strand: 'Polynomial Functions',
         course: MHF4U,
         questionInfo: 'assess knowledge of x-intercepts of polynomials'
     }
@@ -510,7 +510,7 @@ let polynomialQuestion2 = new expandedPolynomialQuestion(
     SHORT_ANSWER,
     {
         checkAnswer: CHECK_SETS,
-        strand: 'polynomial functions',
+        strand: 'Polynomial Functions',
         course: MHF4U,
         questionInfo: 'assess knowledge of x-intercepts of polynomials'
     }
@@ -528,7 +528,7 @@ let polynomialQuestion3 = new expandedPolynomialQuestion(
     'What is the end behaviour of this function?',
     MULTIPLE_CHOICE,
     {
-        strand: 'polynomial functions',
+        strand: 'Polynomial Functions',
         course: MHF4U,
         questionInfo: 'assess end behaviour of polynomial functions'
     }
@@ -552,7 +552,7 @@ let rationalQuestion1 = new rationalQuestion(
     'What is the vertical asymptote of this function?',
     MULTIPLE_CHOICE,
     {
-        strand: 'rational functions',
+        strand: 'Rational Functions',
         course: MHF4U,
         questionInfo: 'assess knowledge of the reciprocal of a linear function'
     }
@@ -576,7 +576,7 @@ let rationalQuestion2 = new rationalQuestion(
     'What is the y-intercept of this function?',
     MULTIPLE_CHOICE,
     {
-        strand: 'rational functions',
+        strand: 'Rational Functions',
         course: MHF4U,
         questionInfo: 'assess knowledge of the reciprocal of a linear function'
     }
@@ -600,7 +600,7 @@ let rationalQuestion3 = new rationalQuestion(
     'What is the horizontal asymptote of this function?',
     MULTIPLE_CHOICE,
     {
-        strand: 'rational functions',
+        strand: 'Rational Functions',
         course: MHF4U,
         questionInfo: 'assess knowledge of linear over linear rational functions'
     }
@@ -624,7 +624,7 @@ let rationalQuestion4 = new rationalQuestion(
     'What is the vertical asymptote of this function?',
     MULTIPLE_CHOICE,
     {
-        strand: 'rational functions',
+        strand: 'Rational Functions',
         course: MHF4U,
         questionInfo: 'assess knowledge of linear over linear rational functions'
     }
@@ -648,7 +648,7 @@ let rationalQuestion5 = new rationalQuestion(
     'What is the y-intercept of this function?',
     MULTIPLE_CHOICE,
     {
-        strand: 'rational functions',
+        strand: 'Rational Functions',
         course: MHF4U,
         questionInfo: 'assess knowledge of linear over linear rational functions'
     }
@@ -672,7 +672,7 @@ let rationalQuestion6 = new rationalQuestion(
     'What is the x-intercept of this function?',
     MULTIPLE_CHOICE,
     {
-        strand: 'rational functions',
+        strand: 'Rational Functions',
         course: MHF4U,
         questionInfo: 'assess knowledge of linear over linear functions'
     }
@@ -700,7 +700,7 @@ let rationalQuestion7 = new graphRationalQuestion(
         parseExpression: function(expression) {
             return simplify(expression.trim()).toTex().replace("~", "").replace('\\cdot', '').trim().replace("+-", "-").replace("-(", "(").replace("x)", "x")
         },
-        strand: 'rational functions',
+        strand: 'Rational Functions',
         course: MHF4U,
         questionInfo: 'assess knowledge of the reciprocal of linear functions',
         hints: ['leave your numerator as a positive number', 'all numbers should be integers', 'use forward slashes ("/") to create a fraction', 'separate the numerator and denominator with brackets']
@@ -735,7 +735,7 @@ let rationalQuestion8 = new rationalQuestion(
     'What are the vertical asymptotes of this function?',
     MULTIPLE_ANSWERS,
     {
-        strand: 'rational functions',
+        strand: 'Rational Functions',
         course: MHF4U,
         questionInfo: 'assess knowledge of reciprocal of quadratic functions',
     }
@@ -840,14 +840,14 @@ discreteDistributionQuestion3.generateDistribution()
 
 discreteDistributionQuestion3.details.tableValues = discreteDistributionQuestion3.distribution
 
-// discreteDistributionQuestion3.expression = "E(X)="
-
 addAnswers(
     discreteDistributionQuestion3,
     simplify(discreteDistributionQuestion3.distribution.reduce((acc, cur) => {
         return acc + (cur.xValue * cur.yValue)
     }, 0).toFixed(1)).toTex()
 )
+
+
 
 
 // ----------------------------------------------------------------------------------
