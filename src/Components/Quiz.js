@@ -205,48 +205,51 @@ function Quiz({
             {quizQuestions[currentQuestion].details.table && <Table questionInfo={quizQuestions[currentQuestion]} />}
             {quizQuestions[currentQuestion].details.img && <Image imgSrc={quizQuestions[currentQuestion].details.imgSrc} imgDetails={quizQuestions[currentQuestion].details.imgDetails} /> }
 
+            <div className="buttonsContainer">
+                <button onClick={( e => handleClick(e))} disabled={answered  === false || gameOver === true ? true : false}>
+                    {currentQuestion === quizQuestions.length - 1  && gameType === "standard" ? `FINISH QUIZ` : `NEXT`}
+                </button>
 
-            <button onClick={( e => handleClick(e))} disabled={answered  === false || gameOver === true ? true : false}>
-                {currentQuestion === quizQuestions.length - 1  && gameType === "standard" ? `FINISH QUIZ` : `NEXT`}
-            </button>
+                <button>
+                    Show Solution
+                </button>
 
-
-            {gameOver === true ? 
-            <div>
-                <h3>GAME OVER!...Your score on this quiz for: </h3>
-                        <ul>
-                        {checkedTopics.map((topic, idx) => <span className="checkedTopic" >{idx === checkedTopics.length - 1 ? `${topic}` : `${topic}, `} </span>)}  
-                        </ul>
-                {gameType === "standard"
-                ?
-                <p>{score} / {quizQuestions.length} ({(score/quizQuestions.length).toFixed(2) * 100}%)</p>
-                :
-                <p>{score}</p>
-                }
-
-                <button onClick={() => restartGame()}>Restart Game</button>
-                
-                    {setHighScore()}
-                    
-                    {gameType === "standard" 
-                    ? 
-                        Number(JSON.parse(localStorage.getItem('stdHighScore'))) < Number((score/quizQuestions.length).toFixed(2)) 
-                        ? 
-                        <p>{`You set a new high score for standard mode! You scored ${(score/quizQuestions.length).toFixed(2)}%` }</p>
-                        :
-                        <p>{`Your high score for standard mode is ${parseInt(JSON.parse(localStorage.getItem('stdHighScore')))*100}%`}</p>
+                {gameOver === true ? 
+                <div>
+                    <h3>GAME OVER!...Your score on this quiz for: </h3>
+                            <ul>
+                            {checkedTopics.map((topic, idx) => <span className="checkedTopic" >{idx === checkedTopics.length - 1 ? `${topic}` : `${topic}, `} </span>)}  
+                            </ul>
+                    {gameType === "standard"
+                    ?
+                    <p>{score} / {quizQuestions.length} ({(score/quizQuestions.length).toFixed(2) * 100}%)</p>
                     :
-                        Number(JSON.parse(localStorage.getItem('timedHighScore'))) < score
-                        ?
-                        <p>{`You set a new high score for timed mode! You scored ${score} questions correct in ${time} minutes!` }</p>
-                        :
-                        <p>{`Your high score for timed mode is ${JSON.parse(localStorage.getItem('timedHighScore'))}`}</p>
+                    <p>{score}</p>
                     }
-            </div>
-            :
-            null    
-            }
 
+                    <button onClick={() => restartGame()}>Restart Game</button>
+                    
+                        {setHighScore()}
+                        
+                        {gameType === "standard" 
+                        ? 
+                            Number(JSON.parse(localStorage.getItem('stdHighScore'))) < Number((score/quizQuestions.length).toFixed(2)) 
+                            ? 
+                            <p>{`You set a new high score for standard mode! You scored ${(score/quizQuestions.length).toFixed(2)}%` }</p>
+                            :
+                            <p>{`Your high score for standard mode is ${parseInt(JSON.parse(localStorage.getItem('stdHighScore')))*100}%`}</p>
+                        :
+                            Number(JSON.parse(localStorage.getItem('timedHighScore'))) < score
+                            ?
+                            <p>{`You set a new high score for timed mode! You scored ${score} questions correct in ${time} minutes!` }</p>
+                            :
+                            <p>{`Your high score for timed mode is ${JSON.parse(localStorage.getItem('timedHighScore'))}`}</p>
+                        }
+                </div>
+                :
+                null    
+                }
+            </div>
         </div>
     )
 }

@@ -9,3 +9,8 @@
     margin: 100px auto;
     border: 2px solid black
 }
+
+.buttonsContainer {
+    display: flex;
+    flex-direction: row;
+}
