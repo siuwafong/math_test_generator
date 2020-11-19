@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import "katex/dist/katex.min.css"
 import { InlineMath, BlockMath } from 'react-katex';
+import '../css/MultipleAnswerQuestion.css'
 
 function MultipleAnswerQuestion({
     questionInfo, 
@@ -78,9 +79,9 @@ function MultipleAnswerQuestion({
             <p>{questionInfo.question}</p>
             {questionInfo.desmosGraph.showGraph !== true && questionInfo.expression !== false && <p><InlineMath math={questionInfo.expression} /></p>}
             <form onSubmit={e => handleSubmit(e)}>
-                <ol>
+                <ol type="a">
                     {optionsOrder.map(item => 
-                        <li>
+                        <li className="multipleAnswerListItem">
                         <InlineMath math={questionInfo.answers[item].option} />    
                         <input 
                             type="checkbox" 
@@ -94,7 +95,9 @@ function MultipleAnswerQuestion({
                         </li>
                     )}
                 </ol>
-                <button type="submit" disabled={answered === true || selectedOptions.length === 0 || gameOver === true ? true : false}>SUBMIT</button>
+                <div className="submitContainer">
+                    <button type="submit" disabled={answered === true || selectedOptions.length === 0 || gameOver === true ? true : false}>SUBMIT</button>
+                </div>
             </form>
             <h3>{answerMsg}</h3>
         </div>

@@ -152,7 +152,7 @@ class rationalQuestion extends QuestionClass {
                     this.c = Math.ceil(Math.random() * 18 ) - 9
                     this.d = Math.ceil(Math.random() * 18 ) - 9
                 }
-                this.expression = rationalize(`(${this.a}x+${this.b}) / (${this.c}x+${this.d})`).toTex().replace('\\cdot', '')
+                this.expression = rationalize(`(${this.a}x+${this.b}) / (${this.c}x+${this.d})`).toTex().replace(/\\cdot/g, '')
                 this.shortAnswerSolution = `(${this.a}x+${this.b})/(${this.c}+${this.d})`
             }
             // generate a reciprocal of a quadratic function
@@ -416,7 +416,9 @@ let quadraticQuestion1 = new simpleFactoredQuadraticQuestion(
         checkAnswer: CHECK_SETS,
         strand: 'Quadratic Relations',
         course: MPM2D,
-        questionInfo: 'assess knowledge of x-intercepts of quadratics'
+        questionInfo: 'assess knowledge of x-intercepts of quadratics',
+        label: '{\\text{x-intercepts:}}',
+        hints: ['separate each x-intercept with a comma']
     }, 
 )
 
@@ -435,7 +437,9 @@ let quadraticQuestion2 = new simpleFactoredQuadraticQuestion(
         checkAnswer: CHECK_EXPRESSION,
         strand: 'Quadratic Functions',
         course: MCR3U,
-        questionInfo: 'assess ability to convert graph to equation'
+        questionInfo: 'assess ability to convert graph to equation',
+        label: 'f(x)=',
+        hints: ['type exponents using "^"']
     }
 )
 
@@ -463,7 +467,9 @@ let quadraticQuestion3 = new simpleFactoredQuadraticQuestion(
         checkAnswer: CHECK_PERMUTATION,
         strand: 'Quadratic Functions',
         course: MCR3U,
-        questionInfo: 'assess ability to factor quadratic functions'
+        questionInfo: 'assess ability to factor quadratic functions',
+        label: 'f(x)=',
+        hints: ['If the function has a negative leading coefficient, put a "-" sign in front']
     }
 )
 
@@ -493,7 +499,9 @@ let polynomialQuestion1 = new expandedPolynomialQuestion(
         checkAnswer: CHECK_SETS,
         strand: 'Polynomial Functions',
         course: MHF4U,
-        questionInfo: 'assess knowledge of x-intercepts of polynomials'
+        questionInfo: 'assess knowledge of x-intercepts of polynomials',
+        label: '{\\text{x-intercepts:}}',
+        hints: ['separate the each x-intercept with a comma']
     }
 )
 
@@ -512,7 +520,9 @@ let polynomialQuestion2 = new expandedPolynomialQuestion(
         checkAnswer: CHECK_SETS,
         strand: 'Polynomial Functions',
         course: MHF4U,
-        questionInfo: 'assess knowledge of x-intercepts of polynomials'
+        questionInfo: 'assess knowledge of x-intercepts of polynomials',
+        label: '{\\text{x-intercepts:}}',
+        hints: ['separate the each x-intercept with a comma']
     }
 )
 
@@ -703,6 +713,7 @@ let rationalQuestion7 = new graphRationalQuestion(
         strand: 'Rational Functions',
         course: MHF4U,
         questionInfo: 'assess knowledge of the reciprocal of linear functions',
+        label: 'f(x)=',
         hints: ['leave your numerator as a positive number', 'all numbers should be integers', 'use forward slashes ("/") to create a fraction', 'separate the numerator and denominator with brackets']
     }
 )
@@ -832,7 +843,8 @@ let discreteDistributionQuestion3 = new discreteDistributionQuestion(
         checkAnswer: CHECK_EXPRESSION,
         strand: 'Discrete Probability Distributions',
         course: MDM4U,
-        questionInfo: 'Assess knowledge of characteristics of discrete probability disributions'
+        questionInfo: 'Assess knowledge of characteristics of discrete probability disributions',
+        label: 'E(X)='
     }
 )
 

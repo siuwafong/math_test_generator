@@ -1,0 +1,38 @@
+.gameStartContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin-top: 19px;
+}
+
+.gameStartModal {
+    flex-direction: column;
+    height: 500px;
+    width: 500px;
+    display: -webkit-box;      
+    display: -moz-box;         
+    display: -ms-flexbox;      
+    display: -webkit-flex;    
+    background-color: firebrick;
+    border-radius: 10%;
+    z-index: 2;
+}
+
+.modalText {
+    color: white;
+}
+
+.options {
+    display: flex;
+    justify-content: space-evenly;  
+}
+
+.courseListing {
+    margin: 0 40px;
+}
+
+.gameTitle {
+    display: flex;
+    justify-content: center
+}

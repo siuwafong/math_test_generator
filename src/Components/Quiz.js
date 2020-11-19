@@ -33,9 +33,9 @@ function Quiz({
     const [checkedRadio, setCheckedRadio] = useState(null)
     const [answerValues, setAnswerValues] = useState(null)
     const [timedQuestions, setTimedQuestions] = useState([])
+    const [errorMsg, setErrorMsg] = useState(null)
 
     console.log("current question # is...", currentQuestion)
-
 
     let tempArray = []
 
@@ -103,6 +103,7 @@ function Quiz({
             setShuffledState(false)
             quizQuestions[currentQuestion].type === 'multiple choice' && setCheckedRadio(null)
             setAnswerValues(null)
+            setErrorMsg("")
         } else {
             if (gameType === "standard") {
                 setGameOver(() => true)
@@ -167,6 +168,8 @@ function Quiz({
                     answerValues={answerValues}
                     setAnswerValues={setAnswerValues}
                     gameOver={gameOver}
+                    errorMsg={errorMsg}
+                    setErrorMsg={setErrorMsg}
                     /> 
             }
 
@@ -206,13 +209,18 @@ function Quiz({
             {quizQuestions[currentQuestion].details.img && <Image imgSrc={quizQuestions[currentQuestion].details.imgSrc} imgDetails={quizQuestions[currentQuestion].details.imgDetails} /> }
 
             <div className="buttonsContainer">
-                <button onClick={( e => handleClick(e))} disabled={answered  === false || gameOver === true ? true : false}>
-                    {currentQuestion === quizQuestions.length - 1  && gameType === "standard" ? `FINISH QUIZ` : `NEXT`}
-                </button>
+                
+                    <button className="submitBtn" onClick={( e => handleClick(e))} disabled={answered  === false || gameOver === true ? true : false}>
+                        {currentQuestion === quizQuestions.length - 1  && gameType === "standard" ? `FINISH QUIZ` : `NEXT`}
+                    </button>
+                
 
-                <button>
-                    Show Solution
-                </button>
+                
+                    <button className="solutionBtn" disabled="true">
+                        Show Solution
+                    </button>
+                
+            </div>
 
                 {gameOver === true ? 
                 <div>
@@ -249,7 +257,7 @@ function Quiz({
                 :
                 null    
                 }
-            </div>
+            
         </div>
     )
 }

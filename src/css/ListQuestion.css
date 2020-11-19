@@ -42,3 +42,10 @@
 .correctColor {
     background-color: #61c79a;
 }
+
+.submitContainer {
+    display: flex;
+    flex-direction: column;
+    margin: 10px auto;
+    justify-content: "space-around"
+}

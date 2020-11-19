@@ -1,0 +1,12 @@
+.submitContainer {
+    display: flex;
+    flex-direction: column;
+    margin: 10px auto;
+    justify-content: "space-around"
+}
+
+.multipleAnswerListItem {
+    position: relative;
+    /* justify-content: space-between; */
+    margin-top: 15px;
+}

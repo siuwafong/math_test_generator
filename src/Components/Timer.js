@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import '../css/Timer.css'
 
 export default function Timer({setGameOver, time}) {
 
@@ -34,7 +35,7 @@ export default function Timer({setGameOver, time}) {
     })
 
     return (
-        <div>
+        <div class="timerContainer">
              <span>Time Left: </span>   <span>{timeLeft.minutes} : </span> <span>{timeLeft.seconds < 10 ? `0${timeLeft.seconds}` : timeLeft.seconds}</span>
         </div>
     )

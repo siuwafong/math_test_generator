@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { InlineMath, BlockMath } from 'react-katex';
 import { simplify, rationalize, evaluate } from 'mathjs'
+import '../css/ShortAnswerQuestion.css'
 
 function ShortAnswerQuestion({
     questionInfo, 
@@ -12,12 +13,13 @@ function ShortAnswerQuestion({
     setScore,
     answerValues,
     setAnswerValues,
-    gameOver
+    gameOver,
+    errorMsg,
+    setErrorMsg
 }) {
 
 
     const [shortAnswerResponse, setShortAnswerResponse] = useState("")
-    const [errorMsg, setErrorMsg] = useState("")
 
     const handleChange = e => {
             setShortAnswerResponse(e.target.value)
@@ -95,16 +97,23 @@ function ShortAnswerQuestion({
     return (
         <div>
             <p>{questionInfo.question}</p>
-            {questionInfo.desmosGraph.showGraph !== true && questionInfo.expression !== false && <p><InlineMath math={questionInfo.expression} /></p>}
+            {questionInfo.desmosGraph.showGraph !== true && questionInfo.expression !== false && <p className="questionExpression"><InlineMath math={questionInfo.expression} /></p>}
             {errorMsg}
             <form onSubmit={e => handleSubmit(e)}>
-                <input disabled={answerMsg !== null} value={shortAnswerResponse} type="text" onChange={e => handleChange(e)} placeholder="Type your answer here"></input>
+                <div className="shortAnswerForm">
+                    <label className="shortAnswerLabel" for="shortAnswer"><InlineMath math={questionInfo.details.label} /></label> 
+                    <input name="shortAnswer" className="shortAnswerInput" maxlength="20" disabled={answerMsg !== null} value={shortAnswerResponse} type="text" onChange={e => handleChange(e)} placeholder="Type your answer here"></input>
+                </div>
                 <ul>
                     {questionInfo.details.hints && questionInfo.details.hints.map(item => 
-                        <li> {item} </li>
+                        <li className="hint"> {item} </li>
                         )}
                 </ul>
-                <button type="submit" disabled={answerMsg !== null || gameOver === true || shortAnswerResponse === ""}>SUBMIT</button>
+
+                <div className="submitBtnContainer">
+                    <button type="submit" disabled={answerMsg !== null || gameOver === true || shortAnswerResponse === ""}>SUBMIT</button>
+                </div>
+
                 <h3> {answerMsg} </h3>
                 
                 <p>{answerMsg !== null && `Your answer:`} </p> {answerMsg !== null && questionInfo.details.checkAnswer === "check expression" ? <InlineMath math={simplify(answerValues).toTex().replace("~", "").replace('\\cdot', '').trim().replace("+-", "-")} /> : answerValues} 

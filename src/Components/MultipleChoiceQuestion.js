@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import "katex/dist/katex.min.css"
 import { InlineMath, BlockMath } from 'react-katex';
+import '../css/MultipleChoiceQuestion.css'
 
 function MultipleChoiceQuestion({
     questionInfo, 
@@ -17,9 +18,7 @@ function MultipleChoiceQuestion({
     const [selectedOption, setSelectedOption] = useState(null)
     const [correctAnswer, setCorrectAnswer] = useState(null)
 
-
     let choice = ""
-
 
     const handleSubmit = (evt) => {
         evt.preventDefault()
@@ -48,28 +47,30 @@ function MultipleChoiceQuestion({
 
 
     return (
-        <div>
+        <div className={answered === false && 'questionContainer'}>
             <p>{questionInfo.question}</p>
-            {questionInfo.desmosGraph.showGraph !== true && questionInfo.expression !== false && <p><InlineMath math={questionInfo.expression} /></p>}
+            {questionInfo.desmosGraph.showGraph !== true && questionInfo.expression !== false && <p className="questionExpression"><InlineMath  math={questionInfo.expression} /></p>}
             <form onSubmit={e => handleSubmit(e)}>
-                <ol>
+                <ol type="a">
                     {optionsOrder.map(item => 
-                        <li>
-                        <InlineMath math={questionInfo.answers[item].option} />    
-                        <input 
-                            type="radio" 
-                            name="option" 
-                            value={questionInfo.answers[item].correct} 
-                            onChange={e => handleOptionChange(e, questionInfo.answers[item])} 
-                            checked={selectedOption === questionInfo.answers[item].option}
-                            ></input>
+                        <li className="multipleChoiceListItem">
+                            <input 
+                                className="multipleChoiceRadio"
+                                type="radio" 
+                                name="option" 
+                                value={questionInfo.answers[item].correct} 
+                                onChange={e => handleOptionChange(e, questionInfo.answers[item])} 
+                                checked={selectedOption === questionInfo.answers[item].option}
+                                ></input>
+                            <span className="multipleChoiceOption"> <InlineMath  math={questionInfo.answers[item].option} />  </span>
                         </li>
                     )}
                 </ol>
-                <button type="submit" disabled={answered === true || selectedOption === null || gameOver === true ? true : false}>SUBMIT</button>
+                <div className="submitContainer">
+                    <button type="submit" disabled={answered === true || selectedOption === null || gameOver === true ? true : false}>SUBMIT</button>
+                </div>
             </form>
             <h3>{answerMsg}</h3>
-            {/* <p><InlineMath math={'\\textcolor{blue}{abc}'} /></p> */}
         </div>
     )
 }

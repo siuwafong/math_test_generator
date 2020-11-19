@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import generateQuizQuestions from './QuestionSet'
+import '../css/StartScreen.css'
 
 function StartScreen({
     gameStart,
@@ -59,15 +60,17 @@ function StartScreen({
     }
 
     return (
-        <div className="container">
+        <div className="gameStartContainer">
+            <div className="gameStartModal">
+            <h2 className="gameTitle"> Math Quiz Generator</h2>
             <ul>
                 {courses.map(course => 
-                    <div>
+                    <div className="modalText">
                         <li>{course}</li>
                         {topics[course].map((item, idx) => 
                         <div>
-                            {item}
                             <input
+                                className="courseCheckbox"
                                 type="checkbox"
                                 value={`${course}-${item}`}
                                 key={idx}
@@ -75,27 +78,32 @@ function StartScreen({
                                 checked={checkedTopics.includes(`${course}-${item}`)} 
                             > 
                             </input>
+                            <span className="courseListing">{item}</span>
                         </div>
                             )}
                     </div>
                 )}
             </ul>
+            
+            <div className="modalText options">
+                <div>
+                    <label for="standard">Standard Mode</label>
+                    <input name="standard" type="radio" value="standard" checked={gameType === "standard"} onChange={(e) => changeMode(e)}></input>
+                </div>
+                <div>
+                    <label for="timed">Timed Mode</label>
+                    <input name="timed" type="radio" value="timed" checked={gameType === "timed"} onChange={(e) => changeMode(e)}></input>
+                </div>
+                <div>
+                    <label for="timer">Minutes</label>
+                    <input disabled={gameType !== "timed"} name="timer" type="number" min="1" max="20" step="1" value={time} onChange={(e) => setTime(e.target.value)}></input>
+                </div>
 
-            <div>
-                <label for="standard">Standard Mode</label>
-                <input name="standard" type="radio" value="standard" checked={gameType === "standard"} onChange={(e) => changeMode(e)}></input>
-            </div>
-            <div>
-                <label for="timed">Timed Mode</label>
-                <input name="timed" type="radio" value="timed" checked={gameType === "timed"} onChange={(e) => changeMode(e)}></input>
-            </div>
-            <div>
-                <label for="timer">Minutes</label>
-                <input disabled={gameType !== "timed"} name="timer" type="number" min="1" max="20" step="1" value={time} onChange={(e) => setTime(e.target.value)}></input>
             </div>
             
             <button onClick={() => handleClick()} disabled={checkedTopics.length === 0}>Start Quiz</button>
         </div>
+    </div>
     )
 }
 

@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import Desmos from 'desmos'
-import './DesmosGraph.css'
+import '../css/DesmosGraph.css'
 
 const DesmosGraph = ({ 
     graphfunction = 'y=x',

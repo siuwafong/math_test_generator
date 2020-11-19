@@ -10,7 +10,7 @@ export default function TestButton() {
     return (
         <div>
             <button onClick={() => testFunction()}>
-                TEST FUNCTION
+                TEST FUNCTION!
             </button>
         </div>
     )
