@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import "katex/dist/katex.min.css"
 import { InlineMath, BlockMath } from 'react-katex';
 import '../css/MultipleAnswerQuestion.css'
+import { Button, Box } from '@material-ui/core';
 
 function MultipleAnswerQuestion({
     questionInfo, 
@@ -12,7 +13,8 @@ function MultipleAnswerQuestion({
     setAnswerMsg,
     score,
     setScore,
-    gameOver
+    gameOver,
+    
 }) {
 
     const [unselectedOptions, setUnselectedOptions] = useState(questionInfo.answers.map(item => item.option))

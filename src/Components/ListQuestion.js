@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { InlineMath, BlockMath } from 'react-katex';
 import '../css/ListQuestion.css'
+import { Button, Box, Icon } from '@material-ui/core';
+import SendIcon from '@material-ui/icons/Send';
 
 function ListQuestion({
     questionInfo, 
@@ -12,7 +14,8 @@ function ListQuestion({
     setAnswerMsg,
     setScore,
     score,
-    gameOver
+    gameOver,
+    
 }) {
 
 
@@ -103,7 +106,11 @@ function ListQuestion({
                     </ul>
                 </div>
             </div>
-            <button onClick={() => handleClick()} disabled={answered === true || gameOver === true ? true : false} >SUBMIT</button>
+            <div className="submitBtnContainer">
+                <Button className="submitBtn" size="large" variant="contained" color="primary" endIcon={<SendIcon />} onClick={() => handleClick()} disabled={answered === true || gameOver === true ? true : false} >
+                    SUBMIT
+                </Button>
+            </div>
             <h3>{answerMsg}</h3>
         </div>
     )

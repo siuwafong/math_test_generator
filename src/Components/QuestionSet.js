@@ -181,16 +181,16 @@ class graphRationalQuestion extends rationalQuestion{
             
             // generate a reciprocal of a linear function
             if (numeratorDegree === 0 && denominatorDegree === 1) {
-                while (this.a === 0 || this.c === 0 || Math.abs(this.a) === 3 || (this.a / this.k) === (this.c / this.k) ) {
-                    this.a = Math.ceil(Math.random() * 10) - 5
-                    this.c = Math.ceil(Math.random() * 20) - 10
+                while (this.a === 0 || this.c === 0 || Math.abs(this.a) === 3 || (this.a / this.k) === (this.c / this.k) || this.k % 2 === 0 && this.a % 2 === 0 && this.c % 2 === 0 || this.k % 3 === 0 && this.a % 3 === 0 && this.c % 3 === 0 || this.k % 5 === 0 && this.a % 5 === 0 && this.c % 5 === 0) {
+                    this.a = Math.ceil(Math.random() * 10) - 6
+                    this.c = Math.ceil(Math.random() * 20) - 12
                 }
                 this.expression = rationalize(`${this.k}/(${this.a} * x - ${this.c})`).toTex().replace('\\cdot', '')
                 this.shortAnswerSolution = `${this.k}/(${this.a}x-${this.c})`
             }
             // generate a linear over linear function
             if (numeratorDegree === 1 && denominatorDegree === 1) {
-                while((this.a / this.c) === (this.b / this.d) || (this.a / this.c ) === (this.a / this.b) || (this.b / this.d) === (this.a / this.b) || this.a === 0 || this.b === 0 || this.c === 0 || this.d === 0) {
+                while((this.a / this.c) === (this.b / this.d) || (this.a / this.c ) === (- this.d / this.c) || (this.b / this.d) === (-this.b / this.a) || this.a === 0 || this.b === 0 || this.c === 0 || this.d === 0) {
                     this.a = Math.ceil(Math.random() * 9 ) - 18
                     this.b = Math.ceil(Math.random() * 9 ) - 18
                     this.c = Math.ceil(Math.random() * 9 ) - 18
@@ -418,11 +418,26 @@ let quadraticQuestion1 = new simpleFactoredQuadraticQuestion(
         course: MPM2D,
         questionInfo: 'assess knowledge of x-intercepts of quadratics',
         label: '{\\text{x-intercepts:}}',
-        hints: ['separate each x-intercept with a comma']
+        hints: ['separate each x-intercept with a comma'],
     }, 
 )
 
 quadraticQuestion1.generateExpression();
+
+quadraticQuestion1.details.solutionSteps = [
+        {type: 'text', content: 'If the function is in the form', },
+        {type: 'math', content: 'x^{2}+bx+c'},
+        {type: 'text', content: 'then we can find two numbers that add to b and multiply to c'},
+        {type: 'text', content: 'In this case, '},
+        {type: 'text', content: `${quadraticQuestion1.negative === 1 ? "the function has leading coefficient of -1, so we can factor that out" : ""}`},
+        {type: 'math', content: `b=${-quadraticQuestion1.x1 + -quadraticQuestion1.x2} \\hspace{20px} c=${quadraticQuestion1.x1 * quadraticQuestion1.x2}`},
+        {type: 'text', content: 'We can see that'},
+        {type: 'math', content: `${-quadraticQuestion1.x1} + ${-quadraticQuestion1.x2} = ${-quadraticQuestion1.x1 + (-quadraticQuestion1.x2)} \\hspace{20px} ${-quadraticQuestion1.x1} \\times ${-quadraticQuestion1.x2} = ${-quadraticQuestion1.x1 * -quadraticQuestion1.x2}`},
+        {type: 'text', content: 'So in factored form, we have:'},
+        {type: 'math', content: `(${simplify(`x-${quadraticQuestion1.x1}`).toString()} )( ${simplify(`x-${quadraticQuestion1.x2}`).toString()})`},
+        {type: 'text', content: 'The x-intercepts are where the function equals zero, so:'},
+        {type: 'math', content: `x=${quadraticQuestion1.x1}, ${quadraticQuestion1.x2}`},
+    ]
 
 addAnswers(
     quadraticQuestion1,
@@ -439,11 +454,16 @@ let quadraticQuestion2 = new simpleFactoredQuadraticQuestion(
         course: MCR3U,
         questionInfo: 'assess ability to convert graph to equation',
         label: 'f(x)=',
-        hints: ['type exponents using "^"']
+        hints: ['type exponents using "^"'],
+        solutionSteps: ['']
     }
 )
 
 quadraticQuestion2.generateExpression()
+
+quadraticQuestion2.solutionSteps = [
+
+]
 
 addAnswers(
     quadraticQuestion2,

@@ -49,3 +49,14 @@
     margin: 10px auto;
     justify-content: "space-around"
 }
+
+.submitBtnContainer {
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+}
+
+.subitBtn {
+    width: 200px;
+    height: 200px;
+}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import generateQuizQuestions from './QuestionSet'
 import '../css/StartScreen.css'
+import { Button, Box } from '@material-ui/core';
 
 function StartScreen({
     gameStart,
@@ -101,7 +102,11 @@ function StartScreen({
 
             </div>
             
-            <button onClick={() => handleClick()} disabled={checkedTopics.length === 0}>Start Quiz</button>
+            <div className="startBtnContainer">
+                <Button variant='contained' color="primary" onClick={() => handleClick()} disabled={checkedTopics.length === 0}>
+                    Start Quiz
+                </Button>
+            </div>
         </div>
     </div>
     )

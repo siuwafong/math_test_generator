@@ -8,7 +8,10 @@ import Table from './Table'
 import Image from './Image'
 import Timer from './Timer'
 import generateQuizQuestions  from './QuestionSet'
+import { InlineMath, BlockMath } from 'react-katex';
 import '../css/Quiz.css'
+import { Button, Box } from '@material-ui/core';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 function Quiz({
     quizQuestions,
@@ -23,8 +26,9 @@ function Quiz({
     time
 }) {
 
-
-    const [currentQuestion, setCurrentQuestion] = useState(gameType === "standard" ? 0 : Math.floor(Math.random() * quizQuestions.length))
+    const [currentQuestion, setCurrentQuestion] = useState(Math.floor(Math.random() * quizQuestions.length))
+    // const [currentQuestion, setCurrentQuestion] = useState(gameType === "standard" ? 0 : Math.floor(Math.random() * quizQuestions.length))
+    const [questionsRemaining, setQuestionsRemaining] = useState([...Array(quizQuestions.length).keys()].filter(item => item !== currentQuestion))
     const [answered, setAnswered] = useState(false)
     const [answerMsg, setAnswerMsg] = useState(null)
     const [score, setScore] = useState(0)
@@ -34,7 +38,9 @@ function Quiz({
     const [answerValues, setAnswerValues] = useState(null)
     const [timedQuestions, setTimedQuestions] = useState([])
     const [errorMsg, setErrorMsg] = useState(null)
+    const [showSolution, setShowSolution] = useState(false)
 
+    console.log(questionsRemaining)
     console.log("current question # is...", currentQuestion)
 
     let tempArray = []
@@ -65,9 +71,13 @@ function Quiz({
     }
 
     const handleClick = (e) => {
-        if ((currentQuestion < quizQuestions.length - 1 && gameType === "standard") || gameType === "timed") {
+        // currentQuestion < quizQuestions.length - 1
+        if (( questionsRemaining.length > 0 && gameType === "standard") || gameType === "timed") {
             if (gameType === "standard") {
-            setCurrentQuestion(currentQuestion + 1)
+            const tempNewQuestion = questionsRemaining[Math.floor(Math.random() * questionsRemaining.length)]
+            console.log("tempNewQuestion is:", tempNewQuestion)
+            setCurrentQuestion(tempNewQuestion)
+            setQuestionsRemaining(() => questionsRemaining.filter(item => item !== tempNewQuestion))
             } else if (gameType === "timed") {
                 let currentNumber = currentQuestion
                 let currentQuestions = [...timedQuestions, currentNumber]
@@ -75,7 +85,6 @@ function Quiz({
                 if (currentQuestions.length === quizQuestions.length) {
                     console.log("regenerating new parameters")
                     let tempQuizQuestions = []
-                    // generateQuizQuestions()
                     for (let i = 0; i < checkedTopics.length; i++) {
                         const courseAndTopic = checkedTopics[i].split("-")
                         const selectedCourse = courseAndTopic[0]
@@ -104,6 +113,7 @@ function Quiz({
             quizQuestions[currentQuestion].type === 'multiple choice' && setCheckedRadio(null)
             setAnswerValues(null)
             setErrorMsg("")
+            setShowSolution(false)
         } else {
             if (gameType === "standard") {
                 setGameOver(() => true)
@@ -131,6 +141,10 @@ function Quiz({
         } else if (gameType === "timed") {
             (JSON.parse(localStorage.getItem("timedHighScore")) === "null" || Number(JSON.parse(localStorage.getItem("timedHighScore"))) < score) && localStorage.setItem("timedHighScore", JSON.stringify(score))
         }
+    }
+
+    const handleShowSolution = () => {
+        setShowSolution(true);
     }
 
     return (
@@ -208,56 +222,67 @@ function Quiz({
             {quizQuestions[currentQuestion].details.table && <Table questionInfo={quizQuestions[currentQuestion]} />}
             {quizQuestions[currentQuestion].details.img && <Image imgSrc={quizQuestions[currentQuestion].details.imgSrc} imgDetails={quizQuestions[currentQuestion].details.imgDetails} /> }
 
-            <div className="buttonsContainer">
-                
-                    <button className="submitBtn" onClick={( e => handleClick(e))} disabled={answered  === false || gameOver === true ? true : false}>
-                        {currentQuestion === quizQuestions.length - 1  && gameType === "standard" ? `FINISH QUIZ` : `NEXT`}
-                    </button>
-                
-
-                
-                    <button className="solutionBtn" disabled="true">
+            <div className="buttonsContainer" >
+                <Box mx={3} hidden={gameOver === true}>
+                    <Button variant="contained"  color="primary" className="submitBtn" onClick={( e => handleClick(e))} disabled={answered  === false || gameOver === true ? true : false} hidden={gameOver === true}>
+                        {questionsRemaining.length === 0  && gameType === "standard" ? `FINISH QUIZ` : `NEXT`}
+                    </Button>
+                </Box>
+                <Box mx={3} hidden={gameOver === true}>
+                    <Button variant="contained" color="secondary" className="solutionBtn" disabled={answered === false || gameOver === true} onClick={() => handleShowSolution()} hidden={gameOver === true}>
                         Show Solution
-                    </button>
-                
+                    </Button>
+                </Box>
             </div>
 
-                {gameOver === true ? 
-                <div>
-                    <h3>GAME OVER!...Your score on this quiz for: </h3>
-                            <ul>
-                            {checkedTopics.map((topic, idx) => <span className="checkedTopic" >{idx === checkedTopics.length - 1 ? `${topic}` : `${topic}, `} </span>)}  
-                            </ul>
-                    {gameType === "standard"
-                    ?
-                    <p>{score} / {quizQuestions.length} ({(score/quizQuestions.length).toFixed(2) * 100}%)</p>
-                    :
-                    <p>{score}</p>
-                    }
-
-                    <button onClick={() => restartGame()}>Restart Game</button>
-                    
-                        {setHighScore()}
-                        
-                        {gameType === "standard" 
-                        ? 
-                            Number(JSON.parse(localStorage.getItem('stdHighScore'))) < Number((score/quizQuestions.length).toFixed(2)) 
-                            ? 
-                            <p>{`You set a new high score for standard mode! You scored ${(score/quizQuestions.length).toFixed(2)}%` }</p>
-                            :
-                            <p>{`Your high score for standard mode is ${parseInt(JSON.parse(localStorage.getItem('stdHighScore')))*100}%`}</p>
-                        :
-                            Number(JSON.parse(localStorage.getItem('timedHighScore'))) < score
-                            ?
-                            <p>{`You set a new high score for timed mode! You scored ${score} questions correct in ${time} minutes!` }</p>
-                            :
-                            <p>{`Your high score for timed mode is ${JSON.parse(localStorage.getItem('timedHighScore'))}`}</p>
-                        }
-                </div>
+            <div hidden={gameOver === true} className={showSolution === true && "showSolutions"}>
+                <ul >
+                    {showSolution === true && quizQuestions[currentQuestion].details.solutionSteps.map(item => (
+                        <li className={`solutionStep ${showSolution === true && `showSolutions`}`} >
+                            {item.type === `text` ? item.content : <InlineMath math={item.content} />}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+                
+            {gameOver === true ? 
+            <div className="gameOverContainer">
+                <h3>GAME OVER!...Your score on this quiz for: </h3>
+                        <ul>
+                        {checkedTopics.map((topic, idx) => <span className="checkedTopic" >{idx === checkedTopics.length - 1 ? `${topic}` : `${topic}, `} </span>)}  
+                        </ul>
+                {gameType === "standard"
+                ?
+                <p>{score} / {quizQuestions.length} ({(score/quizQuestions.length).toFixed(2) * 100}%)</p>
                 :
-                null    
+                <p>{score}</p>
                 }
-            
+
+            <Button onClick={() => restartGame()} variant="contained" color="secondary" endIcon={<RefreshIcon />}>
+                        Restart Game
+                    </Button>
+                    
+                    {setHighScore()}
+                    
+                    {gameType === "standard" 
+                    ? 
+                        Number(JSON.parse(localStorage.getItem('stdHighScore'))) < Number((score/quizQuestions.length).toFixed(2)) 
+                        ? 
+                        <p>{`You set a new high score for standard mode! You scored ${(score/quizQuestions.length).toFixed(2)}%` }</p>
+                        :
+                        <p>{`Your high score for standard mode is ${parseInt(JSON.parse(localStorage.getItem('stdHighScore')))*100}%`}</p>
+                    :
+                        Number(JSON.parse(localStorage.getItem('timedHighScore'))) < score
+                        ?
+                        <p>{`You set a new high score for timed mode! You scored ${score} questions correct in ${time} minutes!` }</p>
+                        :
+                        <p>{`Your high score for timed mode is ${JSON.parse(localStorage.getItem('timedHighScore'))}`}</p>
+                    }
+            </div>
+            :
+            null    
+            }
+        
         </div>
     )
 }

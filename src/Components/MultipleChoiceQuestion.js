@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import "katex/dist/katex.min.css"
 import { InlineMath, BlockMath } from 'react-katex';
 import '../css/MultipleChoiceQuestion.css'
+import { Button, Box } from '@material-ui/core';
 
 function MultipleChoiceQuestion({
     questionInfo, 
@@ -12,7 +13,8 @@ function MultipleChoiceQuestion({
     setAnswerMsg,
     score,
     setScore,
-    gameOver
+    gameOver,
+    
     }) {
 
     const [selectedOption, setSelectedOption] = useState(null)

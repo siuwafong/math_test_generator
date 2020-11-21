@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { InlineMath, BlockMath } from 'react-katex';
 import { simplify, rationalize, evaluate } from 'mathjs'
 import '../css/ShortAnswerQuestion.css'
+import { Button, Box } from '@material-ui/core';
 
 function ShortAnswerQuestion({
     questionInfo, 
@@ -15,7 +16,8 @@ function ShortAnswerQuestion({
     setAnswerValues,
     gameOver,
     errorMsg,
-    setErrorMsg
+    setErrorMsg,
+    
 }) {
 
 
@@ -118,7 +120,7 @@ function ShortAnswerQuestion({
                 
                 <p>{answerMsg !== null && `Your answer:`} </p> {answerMsg !== null && questionInfo.details.checkAnswer === "check expression" ? <InlineMath math={simplify(answerValues).toTex().replace("~", "").replace('\\cdot', '').trim().replace("+-", "-")} /> : answerValues} 
                 
-                {answerMsg !== null 
+                {/* {answerMsg !== null 
                     ? 
                         questionInfo.details.checkAnswer === 'check expression' || questionInfo.details.checkAnswer === 'check permutation'
                         ?
@@ -134,7 +136,7 @@ function ShortAnswerQuestion({
                         </div>
                     :
                         ""
-                }
+                } */}
             </form>
         </div>
     )
