@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import generateQuizQuestions from './QuestionSet'
 import '../css/StartScreen.css'
 import { Button, Box } from '@material-ui/core';
+import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
 
 function StartScreen({
     gameStart,
@@ -107,7 +108,7 @@ function StartScreen({
             </div>
             
             <div className="startBtnContainer">
-                <Button variant='contained' color="primary" onClick={() => handleClick()} disabled={checkedTopics.length === 0}>
+                <Button variant='contained' color="primary" endIcon={<PlayCircleFilledWhiteIcon />} onClick={() => handleClick()} disabled={checkedTopics.length === 0}>
                     Start Quiz
                 </Button>
             </div>

@@ -888,6 +888,13 @@ let sinusoidalQuestion1 = new sinusoidalQuestion(
 
 sinusoidalQuestion1.generateExpression("sin", true) 
 
+sinusoidalQuestion1.details.solutionSteps = [
+    {type: "text", content: 'When a sinusoidal function is in the form of'},
+    {type: "math", content: `f(x)=a\\sin(k(x-d)+c)`},
+    {type: "text", content: 'then the amplitude is equal to |a|, so'},
+    {type: "math", content: `|a|=${sinusoidalQuestion1.verticalStretch === 1 ? Math.abs(sinusoidalQuestion1.a) : `\\frac{1}{${Math.abs(sinusoidalQuestion1.a)}}`}`}
+]
+
 addAnswers(
     sinusoidalQuestion1,
     [
@@ -920,6 +927,14 @@ let discreteDistributionQuestion1 = new discreteDistributionQuestion(
     }
 ) 
 
+discreteDistributionQuestion1.details.solutionSteps = [
+    {type: "text", content: "The definitions of the probability distributions are:"},
+    {type: "text", content: "Uniform: the probability of any outcome is equal"},
+    {type: "text", content: "Geometric: the random variable is the number the waiting time and the trials are independent"},
+    {type: "text", content: "Binomial: the random variable is the number of succcesses and the trials are independent"},
+    {type: "text", content: "Hypergeometric: the random variable is the number of succcesses and the trials are dependent"}
+]
+
 addAnswers(
     discreteDistributionQuestion1,
     discreteDistributionQuestion1.list.map(item => new Object({id: item.id, definition: item.definition, description: [item.description[0]]}))
@@ -935,6 +950,18 @@ let discreteDistributionQuestion2 = new discreteDistributionQuestion(
         questionInfo: 'Assess knowledge of characteristics of discrete probability disributions'
     }
 ) 
+
+discreteDistributionQuestion2.details.solutionSteps = [
+    {type: "text", content: "The expected value formulas for the probability distributions are:"},
+    {type: "text", content: "Uniform:"},
+    {text: "math", content: 'E(X)=\\frac{1}{n}(x_{1}+x_{2}+...x_{n})'},
+    {type: "text", content: "Geometric:"},
+    {text: "math", content: "E(X)=\\frac{q}{p}"},
+    {type: "text", content: "Binomial:"},
+    {text: "math", content: "E(X)=np"},
+    {type: "text", content: "Hypergeometric:"},
+    {text: "math", content: "E(X)=\\frac{ra}{n}"},
+]
 
 addAnswers(
     discreteDistributionQuestion2,
@@ -959,6 +986,15 @@ let discreteDistributionQuestion3 = new discreteDistributionQuestion(
 discreteDistributionQuestion3.generateDistribution()
 
 discreteDistributionQuestion3.details.tableValues = discreteDistributionQuestion3.distribution
+
+discreteDistributionQuestion3.details.solutionSteps = [
+    {type: "text", content: "To calculate the expected value of a probability distribution, we find"},
+    {type: "math", content: "\\displaystyle\\sum x \\cdot P(x)"},
+    {type: "math", content: `${discreteDistributionQuestion3.distribution.map(item => `${item.xValue} \\cdot ${item.yValue}+`).join(" ").slice(0, -1)}`},
+    {type: "math", content: `=${simplify(discreteDistributionQuestion3.distribution.reduce((acc, cur) => {
+        return acc + (cur.xValue * cur.yValue)
+    }, 0).toFixed(1)).toTex()}`},
+]
 
 addAnswers(
     discreteDistributionQuestion3,
