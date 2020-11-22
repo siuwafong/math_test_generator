@@ -239,7 +239,7 @@ function Quiz({
                 <ul >
                     {showSolution === true && quizQuestions[currentQuestion].details.solutionSteps.map(item => (
                         <li className={`solutionStep ${showSolution === true && `showSolutions`}`} >
-                            {item.type === `text` ? item.content : <InlineMath math={item.content} />}
+                            {item.type === `text` ? item.content : <BlockMath math={item.content} />}
                         </li>
                     ))}
                 </ul>

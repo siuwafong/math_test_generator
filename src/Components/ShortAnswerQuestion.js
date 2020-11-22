@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import { InlineMath, BlockMath } from 'react-katex';
 import { simplify, rationalize, evaluate } from 'mathjs'
 import '../css/ShortAnswerQuestion.css'
-import { Button, Box } from '@material-ui/core';
+import { Button, Box, Icon } from '@material-ui/core';
+import SendIcon from '@material-ui/icons/Send';
 
 function ShortAnswerQuestion({
     questionInfo, 
@@ -97,11 +98,11 @@ function ShortAnswerQuestion({
     }
 
     return (
-        <div>
+        <div className={`shortAnswerQuestionContainer slideoutDiv`}>
             <p>{questionInfo.question}</p>
             {questionInfo.desmosGraph.showGraph !== true && questionInfo.expression !== false && <p className="questionExpression"><InlineMath math={questionInfo.expression} /></p>}
             {errorMsg}
-            <form onSubmit={e => handleSubmit(e)}>
+            <form onSubmit={e => handleSubmit(e)} >
                 <div className="shortAnswerForm">
                     <label className="shortAnswerLabel" for="shortAnswer"><InlineMath math={questionInfo.details.label} /></label> 
                     <input name="shortAnswer" className="shortAnswerInput" maxlength="20" disabled={answerMsg !== null} value={shortAnswerResponse} type="text" onChange={e => handleChange(e)} placeholder="Type your answer here"></input>
@@ -113,7 +114,9 @@ function ShortAnswerQuestion({
                 </ul>
 
                 <div className="submitBtnContainer">
-                    <button type="submit" disabled={answerMsg !== null || gameOver === true || shortAnswerResponse === ""}>SUBMIT</button>
+                    <Button size="large" variant="contained" color="primary" endIcon={<SendIcon />} type="submit" disabled={answerMsg !== null || gameOver === true || shortAnswerResponse === ""}>
+                        SUBMIT
+                    </Button>
                 </div>
 
                 <h3> {answerMsg} </h3>

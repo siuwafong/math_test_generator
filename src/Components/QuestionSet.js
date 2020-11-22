@@ -461,8 +461,14 @@ let quadraticQuestion2 = new simpleFactoredQuadraticQuestion(
 
 quadraticQuestion2.generateExpression()
 
-quadraticQuestion2.solutionSteps = [
-
+quadraticQuestion2.details.solutionSteps = [
+    {type: 'text', content: 'We see that the x-intercepts are'},
+    {type: 'math', content: `x_1=${quadraticQuestion2.x1} \\hspace{20px} x_2=${quadraticQuestion2.x2} `},
+    {type: 'text', content: 'So the equation of the function can be in the form'},
+    {type: 'math', content: `a(${simplify(`x-${quadraticQuestion2.x1}`).toString()} )( ${simplify(`x-${quadraticQuestion2.x2}`).toString()})`},
+    {type: 'text', content: `We need one other point on the graph and we see that the y-intercept is ${quadraticQuestion2.negative === 0 ? (0, simplify(quadraticQuestion2.x1 * quadraticQuestion2.x2).toString()) : (0, simplify(-1 * quadraticQuestion2.x1 * quadraticQuestion2.x2).toString())}`},
+    {type: 'text', content: `So if we substitute the x- and y-values of the y-intercept into the equation of the function, we find ${quadraticQuestion2.negative === 1 ? 'a=-1' : 'a=1'}`},
+    {type: 'math', content: `\\therefore ${quadraticQuestion2.negative === 0 ? `f(x)=${rationalize(`(x-${quadraticQuestion2.x1})(x-${quadraticQuestion2.x2})`).toTex().replace("\\cdot", "")}` : `f(x)=${rationalize(`-1 * (x-${quadraticQuestion2.x1})(x-${quadraticQuestion2.x2})`).toTex().replace("\\cdot", "")}`}`}
 ]
 
 addAnswers(
@@ -494,6 +500,14 @@ let quadraticQuestion3 = new simpleFactoredQuadraticQuestion(
 )
 
 quadraticQuestion3.generateExpression();
+
+quadraticQuestion3.details.solutionSteps = [
+    {type: 'text', content: `${quadraticQuestion3.negative === 1 ? 'We see that the leading coefficient is -1, so we can factor that out, giving us:' : ""}`},
+    {type: 'math', content: `${quadraticQuestion3.negative === 1 ? `-(${rationalize(`(x-${quadraticQuestion3.x1})(x-${quadraticQuestion3.x2})`).toTex().replace('\\cdot', "")})` : "\\thinspace"}`},
+    {type: 'text', content: `We need to find two numbers that have a sum of ${-(quadraticQuestion3.x1 + quadraticQuestion3.x2)} and multiply to ${quadraticQuestion3.x1 * quadraticQuestion3.x2}`},
+    {type: 'math', content: `x_1=${simplify(`-1 * ${quadraticQuestion3.x1}`).toString()} \\hspace{20px} x_2=${simplify(`-1 * ${quadraticQuestion3.x2}`).toString()}`},
+    {type: 'math', content: `\\therefore ${quadraticQuestion3.negative === 0 ? `f(x)=${simplify(`(x-${quadraticQuestion3.x1})(x-${quadraticQuestion3.x2})`).toTex().replace("\\cdot", "")}` : `f(x)=${simplify(`(x-${quadraticQuestion3.x1})(x-${quadraticQuestion3.x2})`).toTex().replace("\\cdot", "").replace("((", "(").replace("))", ")")}` }`}
+]
 
 addAnswers(
     quadraticQuestion3,
@@ -527,6 +541,10 @@ let polynomialQuestion1 = new expandedPolynomialQuestion(
 
 polynomialQuestion1.generateExpression();
 
+polynomialQuestion1.details.solutionSteps = [
+    {type: 'math', content: `${polynomialQuestion1.xInts.map(xInt => `f(${xInt})=`).join("")}0` }
+]
+
 addAnswers(
     polynomialQuestion1, 
     polynomialQuestion1.xInts
@@ -548,6 +566,10 @@ let polynomialQuestion2 = new expandedPolynomialQuestion(
 
 polynomialQuestion2.generateExpression(true);
 
+polynomialQuestion2.details.solutionSteps = [
+    {type: 'math', content: `${polynomialQuestion2.xInts.map(xInt => `f(${xInt})=`).join("")}0` }
+]
+
 addAnswers(
     polynomialQuestion2,
     polynomialQuestion2.xInts
@@ -565,6 +587,10 @@ let polynomialQuestion3 = new expandedPolynomialQuestion(
 )
 
 polynomialQuestion3.generateExpression(true);
+
+polynomialQuestion3.details.solutionSteps = [
+    {type: "text", content: `The leading coefficient is ${polynomialQuestion3.leadingCoeff > 0 ? 'positive' : 'negative'} and the degree is ${polynomialQuestion3.degree % 2 === 0 ? 'even' : 'odd'}`},
+]
 
 addAnswers(
     polynomialQuestion3,
@@ -590,6 +616,12 @@ let rationalQuestion1 = new rationalQuestion(
 
 rationalQuestion1.generateExpression(0, 1)
 
+rationalQuestion1.details.solutionSteps = [
+    {type: "text", content: "The vertical asymptote exists at the values of x where the denominator is equal to zero, "},
+    {type: "text", content: "which is when"},
+    {type: "math", content: `x=${simplify(`${rationalQuestion1.c}/${rationalQuestion1.a}`).toTex()}`}
+]
+
 addAnswers(
     rationalQuestion1,
     [
@@ -613,6 +645,11 @@ let rationalQuestion2 = new rationalQuestion(
 )
 
 rationalQuestion2.generateExpression(0, 1)
+
+rationalQuestion2.details.solutionSteps = [
+    {type: "text", content: "The y-intercept exists where x is equal to zero"},
+    {type: "math", content: `(0, ${simplify(`1/-${rationalQuestion2.c}`).toTex()} )`}
+]
 
 addAnswers(
     rationalQuestion2,
@@ -638,6 +675,16 @@ let rationalQuestion3 = new rationalQuestion(
 
 rationalQuestion3.generateExpression(1, 1)
 
+rationalQuestion3.details.solutionSteps = [
+    {type: "text", content: "When a rational function is written in the form"},
+    {type: "math", content: '\\frac{ax+b}{cx+d}'},
+    {type: "text", content: "then the horizontal asymptote is where"},
+    {type: "math", content: `y=\\frac{a}{c}`},
+    {type: "math", content: `a=${rationalQuestion3.a} \\hspace{20px} c=${rationalQuestion3.c}`},
+    {type: "text", content: "so the horizontal asymptote is"},
+    {type: "math", content: `y=${simplify(`${rationalQuestion3.a}/${rationalQuestion3.c}`).toTex()}`}
+]
+
 addAnswers(
     rationalQuestion3,
     [
@@ -661,6 +708,12 @@ let rationalQuestion4 = new rationalQuestion(
 )
 
 rationalQuestion4.generateExpression(1, 1)
+
+rationalQuestion4.details.solutionSteps = [
+    {type: "text", content: "The vertical asymptote exists at the values of x where the denominator is equal to zero, "},
+    {type: "text", content: "which is when"},
+    {type: "math", content: `x=${simplify(`-${rationalQuestion4.d}/${rationalQuestion4.c}`).toTex()}`}
+]
 
 addAnswers(
     rationalQuestion4,
@@ -686,6 +739,11 @@ let rationalQuestion5 = new rationalQuestion(
 
 rationalQuestion5.generateExpression(1, 1)
 
+rationalQuestion5.details.solutionSteps = [
+    {type: "text", content: "The y-intercept exists where x is equal to zero"},
+    {type: "math", content: `(0, ${simplify(`${rationalQuestion5.b}/${rationalQuestion5.d}`).toTex()} )`}
+]
+
 addAnswers(
     rationalQuestion5,
     [
@@ -709,6 +767,13 @@ let rationalQuestion6 = new rationalQuestion(
 )
 
 rationalQuestion6.generateExpression(1, 1)
+
+rationalQuestion6.details.solutionSteps = [
+    {type: "text", content: "The x-intercept is when the value of the denominator is equal to zero"},
+    {type: "math", content: "ax+b=0"},
+    {type: "text", content: `In this case a=${rationalQuestion6.a} and b=${rationalQuestion6.b}`},
+    {type: "math", content: `(${simplify(`-${rationalQuestion6.b}/${rationalQuestion6.a}`).toTex()}, 0)`}
+]
 
 addAnswers(
     rationalQuestion6,
@@ -739,6 +804,21 @@ let rationalQuestion7 = new graphRationalQuestion(
 )
 
 rationalQuestion7.generateExpression(0, 1, true)
+
+rationalQuestion7.details.solutionSteps = [
+    {type: "text", content: "We see that the vertical asymptote is at"},
+    {type: "math", content: `x=${simplify(`${rationalQuestion7.c}/${rationalQuestion7.a}`).toTex()}`},
+    {type: "text", content: "so the denominator can be"},
+    {type: "math", content: `${simplify(`${rationalQuestion7.a}x-${rationalQuestion7.c}`).toTex()}`},
+    {type: "text", content: '(or any multiple of that)'},
+    {type: "text", content: "We can then solve for k in "},
+    {type: "math", content: `\\frac{k}{${simplify(`${rationalQuestion7.a}x-${rationalQuestion7.c}`).toTex().replace("\\cdot", "")}}` },
+    {type: "text", content: `We can then substitute another point on the graph into the equation`},
+    {type: "text", content: "Substituting the y-intercept, we get"},
+    {type: "math", content: `${simplify(`-${rationalQuestion7.k}/${rationalQuestion7.c}`).toTex()}=\\frac{k}{${simplify(`-${rationalQuestion7.c}`).toTex()}}`},
+    {type: "math", content: `k=${rationalQuestion7.k}`},
+    {type: "math", content: `\\therefore f(x)=${simplify(`${rationalQuestion7.k}/(${rationalQuestion7.a}x-${rationalQuestion7.c})`).toTex().replace("\\cdot", "")} `}
+]
 
 addAnswers(
     rationalQuestion7,
@@ -773,6 +853,14 @@ let rationalQuestion8 = new rationalQuestion(
 )
 
 rationalQuestion8.generateExpression(0, 2)
+
+rationalQuestion8.details.solutionSteps = [
+    {type: "text", content: "The vertical asymptotes are the values of x that make the denominator equal to zero"},
+    {type: "text", content: "Factoring the denominator, we get"},
+    {type: "math", content: `${simplify(`(${rationalQuestion8.a}x-${rationalQuestion8.b})(${rationalQuestion8.c}x-${rationalQuestion8.d})`).toTex()}`},
+    {type: "text", content: "The vertical asymptotes are the values of x that make a factor equal to zero"},
+    {type: "math", content: `\\therefore x=${simplify(`${rationalQuestion8.b}/${rationalQuestion8.a}`).toTex()}, ${simplify(`${rationalQuestion8.d}/${rationalQuestion8.c}`).toTex()}`}
+]
 
 addAnswers(
     rationalQuestion8,

@@ -1,6 +1,5 @@
 .shortAnswerForm {
     display: flex;
-    /* justify-content: center; */
     align-items: center;
 }
 
@@ -22,3 +21,37 @@
 .hint {
     font-size: 0.8rem;
 }
+
+.shortAnswerQuestionContainer {
+    animation-duration: 0.8s;
+    animation-name: slidein !important;
+}
+
+@keyframes slidein {
+    from {
+      margin-left: 100%;
+      width: 300%; 
+    }
+  
+    to {
+      margin-left: 0%;
+      width: 100%;
+    }
+  }
+
+  .slideoutDiv {
+    animation-duration: 0.8s;
+    animation-name: slideout !important;
+  }
+
+  @keyframes slideout {
+    from {
+      margin-left: 0%;
+      width: 300%; 
+    }
+  
+    to {
+      margin-right: 300%;
+      width: 100%;
+    }
+  }

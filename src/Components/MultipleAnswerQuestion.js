@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import "katex/dist/katex.min.css"
 import { InlineMath, BlockMath } from 'react-katex';
 import '../css/MultipleAnswerQuestion.css'
-import { Button, Box } from '@material-ui/core';
+import { Button, Box, Icon } from '@material-ui/core';
+import SendIcon from '@material-ui/icons/Send';
 
 function MultipleAnswerQuestion({
     questionInfo, 
@@ -77,9 +78,9 @@ function MultipleAnswerQuestion({
 
 
     return (
-        <div>
+        <div className={answered === false && 'questionContainer'}>
             <p>{questionInfo.question}</p>
-            {questionInfo.desmosGraph.showGraph !== true && questionInfo.expression !== false && <p><InlineMath math={questionInfo.expression} /></p>}
+            {questionInfo.desmosGraph.showGraph !== true && questionInfo.expression !== false && <p className="questionExpression"><InlineMath math={questionInfo.expression} /></p>}
             <form onSubmit={e => handleSubmit(e)}>
                 <ol type="a">
                     {optionsOrder.map(item => 
@@ -97,8 +98,10 @@ function MultipleAnswerQuestion({
                         </li>
                     )}
                 </ol>
-                <div className="submitContainer">
-                    <button type="submit" disabled={answered === true || selectedOptions.length === 0 || gameOver === true ? true : false}>SUBMIT</button>
+                <div className="submitBtnContainer">
+                    <Button size="large" variant="contained" color="primary" endIcon={<SendIcon />} type="submit" disabled={answered === true || selectedOptions.length === 0 || gameOver === true ? true : false}>
+                        SUBMIT
+                    </Button>
                 </div>
             </form>
             <h3>{answerMsg}</h3>

@@ -37,7 +37,9 @@ function StartScreen({
             }
     }
 
-    const handleClick = () => {
+    const handleClick = () => { 
+            
+            setTimeout( () => {
             let tempQuizQuestions = []
             for (let i = 0; i < checkedTopics.length; i++) {
                 const courseAndTopic = checkedTopics[i].split("-")
@@ -52,6 +54,7 @@ function StartScreen({
             }
             setQuizQuestions(() => tempQuizQuestions)
             setGameStart(true)
+        }, 0)
         }
     
 
@@ -61,7 +64,8 @@ function StartScreen({
     }
 
     return (
-        <div className="gameStartContainer">
+        <div className={gameStart === true && 'slideup'} >
+        <div className='gameStartContainer'>
             <div className="gameStartModal">
             <h2 className="gameTitle"> Math Quiz Generator</h2>
             <ul>
@@ -108,6 +112,7 @@ function StartScreen({
                 </Button>
             </div>
         </div>
+    </div>
     </div>
     )
 }

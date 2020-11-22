@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import "katex/dist/katex.min.css"
 import { InlineMath, BlockMath } from 'react-katex';
 import '../css/MultipleChoiceQuestion.css'
-import { Button, Box } from '@material-ui/core';
+import { Button, Box, Icon } from '@material-ui/core';
+import SendIcon from '@material-ui/icons/Send';
 
 function MultipleChoiceQuestion({
     questionInfo, 
@@ -49,7 +50,7 @@ function MultipleChoiceQuestion({
 
 
     return (
-        <div className={answered === false && 'questionContainer'}>
+        <div className={answerMsg === null && 'questionContainer'}>
             <p>{questionInfo.question}</p>
             {questionInfo.desmosGraph.showGraph !== true && questionInfo.expression !== false && <p className="questionExpression"><InlineMath  math={questionInfo.expression} /></p>}
             <form onSubmit={e => handleSubmit(e)}>
@@ -68,8 +69,10 @@ function MultipleChoiceQuestion({
                         </li>
                     )}
                 </ol>
-                <div className="submitContainer">
-                    <button type="submit" disabled={answered === true || selectedOption === null || gameOver === true ? true : false}>SUBMIT</button>
+                <div className="submitBtnContainer">
+                    <Button type="submit" size="large" variant="contained" color="primary" endIcon={<SendIcon />} disabled={answered === true || selectedOption === null || gameOver === true ? true : false}>
+                        SUBMIT
+                    </Button>
                 </div>
             </form>
             <h3>{answerMsg}</h3>

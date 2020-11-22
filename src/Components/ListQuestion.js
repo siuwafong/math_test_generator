@@ -60,7 +60,7 @@ function ListQuestion({
     }
 
     return (
-        <div>
+        <div className={answered === false && 'questionContainer'}>
             {questionInfo.question}
             <div className="listsContainer">
                 <div>

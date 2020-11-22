@@ -52,3 +52,20 @@ li {
       width: 100%;
     }
   }
+
+  .slideoutDiv {
+    animation-duration: 0.8s;
+    animation-name: slideout !important;
+  }
+
+  @keyframes slideout {
+    from {
+      margin-left: 0%;
+      width: 300%; 
+    }
+  
+    to {
+      margin-right: 300%;
+      width: 100%;
+    }
+  }
