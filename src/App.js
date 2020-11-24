@@ -30,6 +30,7 @@ function App() {
         setQuestionSet={setQuestionSet}
         time={time}
         setTime={setTime}
+        setGameOver={setGameOver}
       />}
 
       {gameStart === true && <Quiz 

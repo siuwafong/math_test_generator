@@ -39,6 +39,8 @@ function Quiz({
     const [timedQuestions, setTimedQuestions] = useState([])
     const [errorMsg, setErrorMsg] = useState(null)
     const [showSolution, setShowSolution] = useState(false)
+    const [correctItems, setCorrectItems] = useState([])
+    const [incorrectItems, setIncorrectItems]= useState([])
 
     console.log(questionsRemaining)
     console.log("current question # is...", currentQuestion)
@@ -114,6 +116,8 @@ function Quiz({
             setAnswerValues(null)
             setErrorMsg("")
             setShowSolution(false)
+            setCorrectItems([])
+            setIncorrectItems([])
         } else {
             if (gameType === "standard") {
                 setGameOver(() => true)
@@ -136,6 +140,7 @@ function Quiz({
     }
 
     const setHighScore = () => {
+        console.log('setting high score....')
         if (gameType === "standard") {
             (JSON.parse(localStorage.getItem('stdHighScore')) === "null" || Number(JSON.parse(localStorage.getItem('stdHighScore'))) < (score/quizQuestions.length).toFixed(2) ) && localStorage.setItem('stdHighScore', JSON.stringify((score/quizQuestions.length).toFixed(2)))
         } else if (gameType === "timed") {
@@ -214,6 +219,10 @@ function Quiz({
                     score={score} 
                     setScore={setScore}
                     gameOver={gameOver}
+                    correctItems={correctItems}
+                    setCorrectItems={setCorrectItems}
+                    incorrectItems={incorrectItems}
+                    setIncorrectItems={setIncorrectItems}
                 /> 
             }
             </div>
@@ -249,7 +258,7 @@ function Quiz({
             <div className="gameOverContainer">
                 <h3>GAME OVER!...Your score on this quiz for: </h3>
                         <ul>
-                        {checkedTopics.map((topic, idx) => <span className="checkedTopic" >{idx === checkedTopics.length - 1 ? `${topic}` : `${topic}, `} </span>)}  
+                        {checkedTopics.map((topic, idx) => <li className="checkedTopic" >{idx === checkedTopics.length - 1 ? `${topic}` : `${topic}, `} </li>)}  
                         </ul>
                 {gameType === "standard"
                 ?
@@ -258,7 +267,7 @@ function Quiz({
                 <p>{score}</p>
                 }
 
-            <Button onClick={() => restartGame()} variant="contained" color="secondary" endIcon={<RefreshIcon />}>
+                    <Button onClick={() => restartGame()} variant="contained" color="secondary" endIcon={<RefreshIcon />}>
                         Restart Game
                     </Button>
                     
@@ -268,15 +277,15 @@ function Quiz({
                     ? 
                         Number(JSON.parse(localStorage.getItem('stdHighScore'))) < Number((score/quizQuestions.length).toFixed(2)) 
                         ? 
-                        <p>{`You set a new high score for standard mode! You scored ${(score/quizQuestions.length).toFixed(2)}%` }</p>
+                        <p>You set a new high score for standard mode! You scored <span className="finalScore"> {((score/quizQuestions.length) * 100).toFixed(2)}% </span> </p>
                         :
-                        <p>{`Your high score for standard mode is ${parseInt(JSON.parse(localStorage.getItem('stdHighScore')))*100}%`}</p>
+                        <p>Your high score for standard mode is <span className="finalScore"> {parseInt((JSON.parse(localStorage.getItem('stdHighScore')))*100)}% </span></p>
                     :
                         Number(JSON.parse(localStorage.getItem('timedHighScore'))) < score
                         ?
-                        <p>{`You set a new high score for timed mode! You scored ${score} questions correct in ${time} minutes!` }</p>
+                        <p>You set a new high score for timed mode! You scored <span className="finalScore"> ${score} </span> `questions correct in ${time} minutes!`</p>
                         :
-                        <p>{`Your high score for timed mode is ${JSON.parse(localStorage.getItem('timedHighScore'))}`}</p>
+                        <p>`Your high score for timed mode is <span className="finalScore"> {JSON.parse(localStorage.getItem('timedHighScore'))} </span></p>
                     }
             </div>
             :

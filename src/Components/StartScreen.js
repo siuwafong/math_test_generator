@@ -16,7 +16,8 @@ function StartScreen({
     QuestionSet,
     setQuestionSet,
     time,
-    setTime
+    setTime,
+    setGameOver
 }) {
 
         const coursesSet = [...new Set(QuestionSet.map(item => (item.details.course).toUpperCase()))]
@@ -39,7 +40,7 @@ function StartScreen({
     }
 
     const handleClick = () => { 
-            
+            // TODO: input code for start screen animation
             setTimeout( () => {
             let tempQuizQuestions = []
             for (let i = 0; i < checkedTopics.length; i++) {
@@ -54,6 +55,7 @@ function StartScreen({
                 tempQuizQuestions = [...tempQuizQuestions, ...filteredQuestions]
             }
             setQuizQuestions(() => tempQuizQuestions)
+            setGameOver(false)
             setGameStart(true)
         }, 0)
         }

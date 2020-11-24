@@ -15,14 +15,16 @@ function ListQuestion({
     setScore,
     score,
     gameOver,
-    
+    correctItems,
+    setCorrectItems,
+    incorrectItems,
+    setIncorrectItems
 }) {
 
 
 
     const [listItems, updateListItems] = useState(questionInfo.answers);
-    const [correctItems, setCorrectItems] = useState([])
-    const [incorrectItems, setIncorrectItems]= useState([])
+
 
     function handleOnDragEnd(result) {
         if (!result.destination) return;
