@@ -227,7 +227,7 @@ function Quiz({
             }
             </div>
             
-            {quizQuestions[currentQuestion].desmosGraph.showGraph  && <DesmosGraph graphfunction={quizQuestions[currentQuestion].desmosGraph.graphfunction} answered={answered} />}
+            {quizQuestions[currentQuestion].desmosGraph.showGraph  && <DesmosGraph graphfunction={quizQuestions[currentQuestion].desmosGraph.graphfunction} answered={answered} xAxisStep={quizQuestions[currentQuestion].desmosGraph.xAxisStep} />}
             {quizQuestions[currentQuestion].details.table && <Table questionInfo={quizQuestions[currentQuestion]} />}
             {quizQuestions[currentQuestion].details.img && <Image imgSrc={quizQuestions[currentQuestion].details.imgSrc} imgDetails={quizQuestions[currentQuestion].details.imgDetails} /> }
 
@@ -267,26 +267,26 @@ function Quiz({
                 <p>{score}</p>
                 }
 
-                    <Button onClick={() => restartGame()} variant="contained" color="secondary" endIcon={<RefreshIcon />}>
-                        Restart Game
-                    </Button>
-                    
-                    {setHighScore()}
-                    
-                    {gameType === "standard" 
+                <Button onClick={() => restartGame()} variant="contained" color="secondary" endIcon={<RefreshIcon />}>
+                    Restart Game
+                </Button>
+                
+                {setHighScore()}
+                
+                {gameType === "standard" 
+                ? 
+                    Number(JSON.parse(localStorage.getItem('stdHighScore'))) < Number((score/quizQuestions.length).toFixed(2)) 
                     ? 
-                        Number(JSON.parse(localStorage.getItem('stdHighScore'))) < Number((score/quizQuestions.length).toFixed(2)) 
-                        ? 
-                        <p>You set a new high score for standard mode! You scored <span className="finalScore"> {((score/quizQuestions.length) * 100).toFixed(2)}% </span> </p>
-                        :
-                        <p>Your high score for standard mode is <span className="finalScore"> {parseInt((JSON.parse(localStorage.getItem('stdHighScore')))*100)}% </span></p>
+                    <p>You set a new high score for standard mode! You scored <span className="finalScore"> {((score/quizQuestions.length) * 100).toFixed(2)}% </span> </p>
                     :
-                        Number(JSON.parse(localStorage.getItem('timedHighScore'))) < score
-                        ?
-                        <p>You set a new high score for timed mode! You scored <span className="finalScore"> ${score} </span> `questions correct in ${time} minutes!`</p>
-                        :
-                        <p>`Your high score for timed mode is <span className="finalScore"> {JSON.parse(localStorage.getItem('timedHighScore'))} </span></p>
-                    }
+                    <p>Your high score for standard mode is <span className="finalScore"> {parseInt((JSON.parse(localStorage.getItem('stdHighScore')))*100)}% </span></p>
+                :
+                    Number(JSON.parse(localStorage.getItem('timedHighScore'))) < score
+                    ?
+                    <p>You set a new high score for timed mode! You scored <span className="finalScore"> ${score} </span> `questions correct in ${time} minutes!`</p>
+                    :
+                    <p>`Your high score for timed mode is <span className="finalScore"> {JSON.parse(localStorage.getItem('timedHighScore'))} </span></p>
+                }
             </div>
             :
             null    

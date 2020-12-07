@@ -64,6 +64,8 @@ const DesmosGraph = ({
         })
     }
 
+    console.log(graphfunction[0].latex)
+
     // document.body.prepend(elt)
 
     elt.classList.add("calcDiv")
@@ -96,14 +98,16 @@ const DesmosGraph = ({
     //     }
     // }
 
+const getState = () => {
+    const state = calculator.getState();
+    console.log(state)   
+}
     
 
 return (
         <div id="desmosgraphContainer">
             <div id="calcDiv">
-                {/* <div ref={calcRef} >
-
-                </div> */}
+                <button onClick={() => getState()}>Get State</button>
             </div>
         </div>
     )

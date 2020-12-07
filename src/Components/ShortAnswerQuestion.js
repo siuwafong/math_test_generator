@@ -46,21 +46,24 @@ function ShortAnswerQuestion({
                     setAnswerValues(() => shortAnswerResponse)
                     setShortAnswerResponse("")
                 } catch(err) {
+                    console.error()
                     setErrorMsg("Invalid Response!")
                 }
                 
             } else if (questionInfo.details.checkAnswer === 'check expression' ) {
                 try {
-                    console.log(rationalize(shortAnswerResponse.trim()).toTex().replace("~", ""), questionInfo.answers[0])
-                    // TODO: quadratic and rational are giving different answers
-                    console.log(simplify(shortAnswerResponse.trim()).toTex().replace("~", "").replace('\\cdot', '').trim(), questionInfo.answers[0])
+                    // console.log(rationalize(shortAnswerResponse.trim()).toTex().replace("~", ""), questionInfo.answers[0])
+                    // console.log(simplify(shortAnswerResponse.trim()).toTex().replace("~", "").replace('\\cdot', '').trim(), questionInfo.answers[0])
 
                     if (questionInfo.details.parseExpression !== undefined) {
                         console.log("checking parsed expression", questionInfo.details.parseExpression(shortAnswerResponse))
-                        if (questionInfo.details.parseExpression(shortAnswerResponse) === questionInfo.details.parseExpression(questionInfo.shortAnswerSolution)  ) {
+                        console.log(questionInfo.details.parseExpression(questionInfo.shortAnswerSolution))
+                        if (questionInfo.details.parseExpression(shortAnswerResponse) === questionInfo.details.parseExpression(questionInfo.shortAnswerSolution)) {
+                            console.log("checking expression...correct!")
                             setScore(() => score + 1)
                         setAnswerMsg(`Correct!`)
                         } else {
+                            console.log("checking expression....incorrect!")
                             setAnswerMsg("Incorrect")
                         }
                     }
@@ -74,6 +77,7 @@ function ShortAnswerQuestion({
                     setAnswerValues(() => shortAnswerResponse)
                     setShortAnswerResponse("")
                 } catch (err) {
+                    console.error()
                     setErrorMsg("Invalid Response!")
                 }
             } else if (questionInfo.details.checkAnswer === 'check permutation' ) {
@@ -89,6 +93,7 @@ function ShortAnswerQuestion({
                     setAnswerValues(() => shortAnswerResponse)
                     setShortAnswerResponse("")
                 } catch(err) {
+                    console.error()
                     setErrorMsg("Invalid Response!")
                 }
             }
