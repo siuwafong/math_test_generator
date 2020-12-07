@@ -1250,6 +1250,126 @@ sinusoidalQuestion7.details.solutionSteps = [
     {type: "math", content: `\\frac{2\\pi}{\\text{period}}=\\frac{2\\pi}{${simplify(` 2 * ${sinusoidalQuestion7.horizontalCompression === 0 ? sinusoidalQuestion7.k : `1/${sinusoidalQuestion7.k}`} * pi`).toTex().replace("\\cdot", "")}}=${sinusoidalQuestion7.horizontalCompression === 1 ? simplify(sinusoidalQuestion7.k).toTex(): simplify(`1/${sinusoidalQuestion7.k}`).toTex()}`},  
 ]
 
+let sinusoidalQuestion8 = new sinusoidalQuestion (
+    'What is the equation of this function as a sine function?',
+    MULTIPLE_CHOICE,
+    {
+        strand: 'Sinusoidal Functions',
+        course: MHF4U,
+        questionInfo: 'assess knowledge of equations of sinusoidal functions',
+    }
+)
+
+sinusoidalQuestion8.generateExpression("sin", true)
+
+
+addAnswers(
+    sinusoidalQuestion8,
+    [sinusoidalQuestion8.expression, 
+        simplify(`${sinusoidalQuestion8.verticalStretch === 1 || Math.abs(sinusoidalQuestion8.a) === 1 ? sinusoidalQuestion8.a : `1/${sinusoidalQuestion8.a}`}`)
+                                    .toTex()
+                                    .concat(`{\\text{${sinusoidalQuestion8.ratio}}}`)
+                                    .concat("(")
+                                    .concat(simplify(`${sinusoidalQuestion8.horizontalCompression === 1 ? sinusoidalQuestion8.k : `(1/${sinusoidalQuestion8.k})`}`).toTex())
+                                    .concat("(")
+                                    .concat(simplify(`x+${sinusoidalQuestion8.d}`).toTex())
+                                    .concat("))")
+                                    .concat(`${sinusoidalQuestion8.c !== 0 ? sinusoidalQuestion8.c > 0 ? `+${sinusoidalQuestion8.c}` : `${simplify(`${sinusoidalQuestion8.c}`)}` : ""}`)
+                                    .replace('\\cdot', '')
+                                    .replace("1{\\text{sin", "{\\text{sin")
+                                    .replace("1{\\text{cos", "{\\text{cos")
+                                    .replace("1{\\text{tan", "{\\text{tan")
+                                    .replace("1{\\text{csc", "{\\text{csc")
+                                    .replace("1{\\text{sec", "{\\text{sec")
+                                    .replace("1{\\text{cot", "{\\text{cot"),
+        simplify(`${sinusoidalQuestion8.verticalStretch === 1 || Math.abs(sinusoidalQuestion8.a) === 1 ? sinusoidalQuestion8.a : `1/${sinusoidalQuestion8.a}`}`)
+                                    .toTex()
+                                    .concat(`{\\text{${sinusoidalQuestion8.ratio}}}`)
+                                    .concat("(")
+                                    .concat(simplify(`${sinusoidalQuestion8.horizontalCompression === 0 ? sinusoidalQuestion8.k === 1 ? 2 : sinusoidalQuestion8.k : `(1/${sinusoidalQuestion8.k})`}`).toTex())
+                                    .concat("(")
+                                    .concat(simplify(`x+${sinusoidalQuestion8.d}`).toTex())
+                                    .concat("))")
+                                    .concat(`${sinusoidalQuestion8.c !== 0 ? sinusoidalQuestion8.c < 0 ? `+${Math.abs(sinusoidalQuestion8.c)}` : `-${simplify(`${sinusoidalQuestion8.c}`)}` : ""}`)
+                                    .replace('\\cdot', '')
+                                    .replace("1{\\text{sin", "{\\text{sin")
+                                    .replace("1{\\text{cos", "{\\text{cos")
+                                    .replace("1{\\text{tan", "{\\text{tan")
+                                    .replace("1{\\text{csc", "{\\text{csc")
+                                    .replace("1{\\text{sec", "{\\text{sec")
+                                    .replace("1{\\text{cot", "{\\text{cot"),
+        simplify(`${sinusoidalQuestion8.verticalStretch === 0 || Math.abs(sinusoidalQuestion8.a) === 1 ? sinusoidalQuestion8.a === 1 ? 2 : sinusoidalQuestion8.a : `1/${sinusoidalQuestion8.a}`}`)
+                                    .toTex()
+                                    .concat(`{\\text{${sinusoidalQuestion8.ratio}}}`)
+                                    .concat("(")
+                                    .concat(simplify(`${sinusoidalQuestion8.horizontalCompression === 1 ? sinusoidalQuestion8.k : `(1/${sinusoidalQuestion8.k})`}`).toTex())
+                                    .concat("(")
+                                    .concat(simplify(`x+${sinusoidalQuestion8.d}`).toTex())
+                                    .concat("))")
+                                    .concat(`${sinusoidalQuestion8.c !== 0 ? sinusoidalQuestion8.c < 0 ? `+${Math.abs(sinusoidalQuestion8.c)}` : `-${simplify(`${sinusoidalQuestion8.c}`)}` : ""}`)
+                                    .replace('\\cdot', '')
+                                    .replace("1{\\text{sin", "{\\text{sin")
+                                    .replace("1{\\text{cos", "{\\text{cos")
+                                    .replace("1{\\text{tan", "{\\text{tan")
+                                    .replace("1{\\text{csc", "{\\text{csc")
+                                    .replace("1{\\text{sec", "{\\text{sec")
+                                    .replace("1{\\text{cot", "{\\text{cot"),
+        simplify(`${Math.abs(sinusoidalQuestion8.c) === 0 ? 1 : sinusoidalQuestion8.c}`)
+                                    .toTex()
+                                    .concat(`{\\text{${sinusoidalQuestion8.ratio}}}`)
+                                    .concat("(")
+                                    .concat(simplify(`${sinusoidalQuestion8.horizontalCompression === 0 ? sinusoidalQuestion8.k === 1 ? 2 : sinusoidalQuestion8.k : `(1/${sinusoidalQuestion8.k})`}`).toTex())
+                                    .concat("(")
+                                    .concat(simplify(`x+${sinusoidalQuestion8.d}`).toTex())
+                                    .concat("))")
+                                    .concat(`${sinusoidalQuestion8.a === 0 ? "" : sinusoidalQuestion8.verticalStretch === 0 ? `+${Math.abs(sinusoidalQuestion8.a)}` : `+${simplify(`1/${Math.abs(sinusoidalQuestion8.a)}`).toTex()}` }`)
+                                    .replace('\\cdot', '')
+                                    .replace("1{\\text{sin", "{\\text{sin")
+                                    .replace("1{\\text{cos", "{\\text{cos")
+                                    .replace("1{\\text{tan", "{\\text{tan")
+                                    .replace("1{\\text{csc", "{\\text{csc")
+                                    .replace("1{\\text{sec", "{\\text{sec")
+                                    .replace("1{\\text{cot", "{\\text{cot"),
+
+    ],
+    [true, false, false, false, false],
+    {
+        showGraph: true,
+        expression: [
+            {
+                latex: `y=${sinusoidalQuestion8.verticalStretch === 1 ? sinusoidalQuestion8.a : `1/${sinusoidalQuestion8.a}`}\\sin(${sinusoidalQuestion8.horizontalCompression === 1 ? sinusoidalQuestion8.k : `1/${sinusoidalQuestion8.k}`}x ${sinusoidalQuestion8.d > 0 ? "-" : "+"} ${sinusoidalQuestion8.horizontalCompression === 1 ? sinusoidalQuestion8.k * Math.abs(sinusoidalQuestion8.d) : `${Math.abs(sinusoidalQuestion8.d)}/${sinusoidalQuestion8.k}`})+${sinusoidalQuestion8.c}`
+            }
+        ],
+        xAxisStep: 'pi'
+    }
+)
+
+sinusoidalQuestion8.details.solutionSteps = [
+    {type: "text", content: `${sinusoidalQuestion8.a > 0 ? `We see that the function is at the equation of the axis and increasing at x=${sinusoidalQuestion8.d}, so we can use a positive value for a and d can can equal ${sinusoidalQuestion8.d}` : `We see that the function is at the equation of the axis and decreasing at x=${sinusoidalQuestion8.d} so we can use a negtive value for a and d can can equal ${sinusoidalQuestion8.d}.`}`},
+    {type: "text", content: `We see that the maximum of the function is`},
+    {type: "math", content: `${sinusoidalQuestion8.verticalStretch === 1 ? Math.abs(sinusoidalQuestion8.a) + sinusoidalQuestion8.c : simplify(`1 / ${Math.abs(sinusoidalQuestion8.a)} + ${sinusoidalQuestion8.c}`).toTex()}`}, 
+    {type: "text", content: `and the minimum is `},
+    {type: "math", content: `${sinusoidalQuestion8.verticalStretch === 1 ? (Math.abs(sinusoidalQuestion8.a) * - 1) + sinusoidalQuestion8.c : simplify(`-1 / ${Math.abs(sinusoidalQuestion8.a)} + ${sinusoidalQuestion8.c}`).toTex()}`},
+    {type: "text", content: 'Therefore the amplitude of the function, |a|, is:'},
+    {type: "math", content: `\\vert \\frac{
+        ${sinusoidalQuestion8.verticalStretch === 1 ? Math.abs(sinusoidalQuestion8.a) + sinusoidalQuestion8.c : simplify(`1 / ${Math.abs(sinusoidalQuestion8.a)} + ${sinusoidalQuestion8.c}`).toTex()} - 
+        (${sinusoidalQuestion8.verticalStretch === 1 ? (Math.abs(sinusoidalQuestion8.a) * -1) + sinusoidalQuestion8.c : simplify(`-1 / ${Math.abs(sinusoidalQuestion8.a)} + ${sinusoidalQuestion8.c}`).toTex()})
+        }{2} \\vert 
+        = ${sinusoidalQuestion8.verticalStretch === 1 ? Math.abs(sinusoidalQuestion8.a) : simplify((`1 / ${Math.abs(sinusoidalQuestion8.a)}`)).toTex()}
+        `},
+    {type: "text", content: "The equation of the axis, c, is:"},
+    {type: "math", content: `\\frac{
+        ${sinusoidalQuestion8.verticalStretch === 1 ? Math.abs(sinusoidalQuestion8.a) + sinusoidalQuestion8.c : simplify(`1 / ${Math.abs(sinusoidalQuestion8.a)} + ${sinusoidalQuestion8.c}`).toTex()} + 
+        (${sinusoidalQuestion8.verticalStretch === 1 ? (Math.abs(sinusoidalQuestion8.a) * -1) + sinusoidalQuestion8.c : simplify(`-1 / ${Math.abs(sinusoidalQuestion8.a)} + ${sinusoidalQuestion8.c}`).toTex()})
+        }{2}
+        = ${sinusoidalQuestion8.c}
+        `},    
+    {type: "text", content: "The period is can be found by calculating the distance between two consecutive minimum or two consecutive maximum values."},
+    {type: "text", content: `So we see that the period is equal to `},
+    {type: "math", content: simplify(` 2 * ${sinusoidalQuestion8.horizontalCompression === 0 ? sinusoidalQuestion8.k : `1/${sinusoidalQuestion8.k}`} * pi`).toTex().replace("\\cdot", "")},
+    {type: "text", content: "k is equal to "},
+    {type: "math", content: `\\frac{2\\pi}{\\text{period}}=\\frac{2\\pi}{${simplify(` 2 * ${sinusoidalQuestion8.horizontalCompression === 0 ? sinusoidalQuestion8.k : `1/${sinusoidalQuestion8.k}`} * pi`).toTex().replace("\\cdot", "")}}=${sinusoidalQuestion8.horizontalCompression === 1 ? simplify(sinusoidalQuestion8.k).toTex(): simplify(`1/${sinusoidalQuestion8.k}`).toTex()}`},  
+]
 
 // Discrete Probability Distribution Questions -----------------------------------------
 

@@ -98,16 +98,17 @@ const DesmosGraph = ({
     //     }
     // }
 
-const getState = () => {
-    const state = calculator.getState();
-    console.log(state)   
-}
+// const getState = () => {
+//     const state = calculator.getState();
+//     console.log(state)   
+// }
     
 
 return (
         <div id="desmosgraphContainer">
             <div id="calcDiv">
-                <button onClick={() => getState()}>Get State</button>
+                {/* button for showing state */}
+                {/* <button onClick={() => getState()}>Get State</button> */}
             </div>
         </div>
     )
