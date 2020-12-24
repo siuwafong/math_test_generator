@@ -49,7 +49,7 @@ function StartScreen({
                 const selectedTopic = courseAndTopic[1]
                 const filteredQuestions = QuestionSet.filter(item => item.details.course.toUpperCase() === selectedCourse).filter(item => item.details.strand === selectedTopic)
                 // ---testing questions code---
-                // setQuizQuestions([QuestionSet[21]])
+                // setQuizQuestions([QuestionSet[30]])
 
                 // ---actual code---
                 tempQuizQuestions = [...tempQuizQuestions, ...filteredQuestions]

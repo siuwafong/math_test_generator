@@ -48,6 +48,9 @@ function App() {
       />}
 
       {/* <TestButton /> */}
+      <div className="credits">
+        <p> Created by Wilson Fong </p>
+      </div>
     </div>
   );
 }

@@ -98,10 +98,10 @@ const DesmosGraph = ({
     //     }
     // }
 
-// const getState = () => {
-//     const state = calculator.getState();
-//     console.log(state)   
-// }
+const getState = () => {
+    const state = calculator.getState();
+    console.log(state)   
+}
     
 
 return (

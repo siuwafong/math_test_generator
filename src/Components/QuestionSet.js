@@ -1,5 +1,6 @@
-import { evaluate, parse, simplify, rationalize, e } from 'mathjs'
+import { evaluate, parse, simplify, rationalize, e, pow, sqrt, asin, acos, atan, fraction } from 'mathjs'
 import DesmosGraph from './DesmosGraph'
+
 
 let QuestionSet
 
@@ -114,6 +115,20 @@ class expandedPolynomialQuestion extends polynomialQuestion {
                 }
             }
             this.expression = rationalize(this.expression).toString().replace(/\*/g, '')
+        }
+        this.constant = Math.floor(Math.random() * 2)
+        this.exponents = []
+        this.generateExpandedExpression = (degree) => {
+                for (let i = 0; i < degree; i++) {
+                    this.exponents.push(Math.ceil(Math.random() * degree))
+                }
+                let tempExpression = ""
+                for (let j = 0; j < degree; j++) {
+                    // tempExpression = "x"
+                    tempExpression = tempExpression + `${Math.ceil(Math.random() * 7)}x^${this.exponents[j]} + `
+                }
+                tempExpression = tempExpression + this.constant
+                this.expression = rationalize(tempExpression).toTex().replace(/\\cdot/g, "")
         } 
     }
 }
@@ -216,8 +231,447 @@ class sinusoidalQuestion extends QuestionClass {
         this.verticalStretch = Math.floor(Math.random() * 2)
         this.horizontalCompression = Math.floor(Math.random() * 2)
         this.expression = ""
+        this.answers = []
+        this.compoundAngleFormulas = [
+            {
+                id: 1,
+                expression: 'sin(x+y)',
+                formula: {
+                    type: "math",
+                    content: '\\sin x \\cos y + \\cos x \\sin y'
+                }
+            },
+            {
+                id: 2,
+                expression: 'sin(x-y)',
+                formula: {
+                    type: "math",
+                    content: '\\sin x \\cos y - \\cos x \\sin y'
+                }
+            },
+            {
+                id: 3,
+                expression: 'cos(x+y)',
+                formula: {
+                    type: 'math',
+                    content: '\\cos x \\cos y - \\sin x \\sin y'
+                }
+            },
+            {
+                id: 4,
+                expression: 'cos(x-y)',
+                formula: {
+                    type: "math",
+                    content: '\\cos x \\cos y + \\sin x \\sin y'
+                }
+            }
+        ]
+        this.list = [
+            {
+                id: 1,
+                definition: "sin",
+                description: [
+                    {
+                        type: "math",
+                        content: "\\frac{y}{r}"
+                    }
+                ]
+            },
+            {
+                id: 2,
+                definition: "cos",
+                description: [
+                    {
+                        type: "math",
+                        content: "\\frac{x}{r}"
+                    }
+                ]
+            },
+            {
+                id: 3,
+                definition: "tan",
+                description: [
+                    {
+                        type: "math",
+                        content: "\\frac{y}{x}"
+                    }
+                ]
+            },
+            {
+                id: 4,
+                definition: "csc",
+                description: [
+                    {
+                        type: "math",
+                        content: "\\frac{r}{y}"
+                    }
+                ]
+            },
+            {
+                id: 5,
+                definition: "sec",
+                description: [
+                    {
+                        type: "math",
+                        content: "\\frac{r}{x}"
+                    }
+                ]
+            },
+            {
+                id: 6,
+                definition: "cot",
+                description: [
+                    {
+                        type: "math",
+                        content: "\\frac{x}{y}"
+                    }
+                ]
+            },
+        ]
+        this.equationAngle = [
+            {
+                value: {
+                    text: 0,
+                    latex: 0
+                },
+                sin: {
+                    text:  [0, "pi", "2pi"],
+                    latex: [0, "\\pi", "2\\pi"]
+                },
+                cos: {
+                    text: ["pi/2", "3pi/2"],
+                    latex: ["\\frac{\\pi}{2}", "\\frac{3\\pi}{2}"]
+                }
+            },
+            {
+                value: {
+                    text: "1/2",
+                    latex: "\\frac{1}{2}"
+                },
+                sin: {
+                    text: ["pi/6", "5pi/6"],
+                    latex: ["\\frac{\\pi}{6}",  "\\frac{5\\pi}{6}"]
+                },
+                cos: {
+                    text: ["pi/3", "5pi/3"],
+                    latex: ["\\frac{\\pi}{3}", "\\frac{5\\pi}{3}"]
+                }
+            },
+            {
+                value: {
+                    text: "sqrt(2)/2",
+                    latex: "\\frac{\\sqrt{2}}{2}"
+                },
+                sin: {
+                    text: ["pi/4", "3pi/4"],
+                    latex: ["\\frac{\\pi}{4}", "\\frac{3\\pi}{4}"]
+                },
+                cos: {
+                    text: ["pi/4", "7pi/4"],
+                    latex: ["\\frac{\\pi}{4}", "\\frac{7\\pi}{4}"]
+                }
+            },
+            {
+                value: {
+                    text: "sqrt(3)/2",
+                    latex: "\\frac{\\sqrt{3}}{2}"
+                },
+                sin: {
+                    text: ["pi/3", "2pi/3"],
+                    latex: ["\\frac{\\pi}{3}", "\\frac{2\\pi}{3}"]
+                },
+                cos: {
+                    text: ["pi/6", "11pi/6"],
+                    latex: ["\\frac{\\pi}{6}", "\\frac{11\\pi}{6}"]
+                }
+            },
+            {
+                value: {
+                    text: 1,
+                    latex: 1
+                },
+                sin: {
+                    text: ["pi/2"],
+                    latex: ["\\frac{\\pi}{2}"]
+                },
+                cos: {
+                    text: [0, "2pi"],
+                    latex: [0, "2\\pi"]
+                }
+            },
+            {
+                value: {
+                    text: "-1/2",
+                    latex: "-\\frac{1}{2}"
+                },
+                sin: {
+                    text: ["7pi/6", "11pi/6"],
+                    latex: ["\\frac{7\\pi}{6}",  "\\frac{11\\pi}{6}"]
+                },
+                cos: {
+                    text: ["2pi/3", "4pi/3"],
+                    latex: ["\\frac{2\\pi}{3}", "\\frac{4\\pi}{3}"]
+                }
+            },
+            {
+                value: {
+                    text: "-sqrt(2)/2",
+                    latex: "-\\frac{\\sqrt{2}}{2}"
+                },
+                sin: {
+                    text: ["5pi/4", "7pi/4"],
+                    latex: ["\\frac{5\\pi}{4}", "\\frac{7\\pi}{4}"]
+                },
+                cos: {
+                    text: ["3pi/4", "5pi/4"],
+                    latex: ["\\frac{3\\pi}{4}", "\\frac{5\\pi}{4}"]
+                }
+            },
+            {
+                value: {
+                    text: "-sqrt(3)/2",
+                    latex: "-\\frac{\\sqrt{3}}{2}"
+                },
+                sin: {
+                    text: ["4pi/3", "5pi/3"],
+                    latex: ["\\frac{4\\pi}{3}", "\\frac{5\\pi}{3}"]
+                },
+                cos: {
+                    text: ["5pi/6", "7pi/6"],
+                    latex: ["\\frac{5\\pi}{6}", "\\frac{7\\pi}{6}"]
+                }
+            },
+            {
+                value: {
+                    text: "-1",
+                    latex: "-1"
+                },
+                sin: {
+                    text: ["-3pi/2"],
+                    latex: ["\\frac{3\\pi}{2}"]
+                },
+                cos: {
+                    text: ["pi"],
+                    latex: ["\\pi"]
+                }
+            }
+        ]
+        this.equationLeftSide = ""
+        this.equationRightSide = ""
+        this.equationConstant = 0
+        this.equationFactor = 0
+        this.chosenAngle = Math.floor(Math.random() * 9)
+        
+        this.generateSimpleEquation = (parameters = {}) => {
+            this.ratio = ["sin", "cos"][Math.floor(Math.random() * 2)]
+            while (this.equationConstant === 0 || this.equationFactor === 0) {
+                this.equationConstant = Math.floor(Math.random() * 10) - 10
+                this.equationFactor = Math.floor(Math.random() * 10) - 10
+            }
+            this.expression = `${Math.abs(this.equationFactor) !== 1 ? this.equationFactor : this.equationFactor === -1 ? "-" : ""}\\text{${this.ratio}}\\theta  ${this.equationConstant > 0 ? `+ ${this.equationConstant}` : `${this.equationConstant}`}=${rationalize(`${this.equationAngle[this.chosenAngle].value.text} * ${this.equationFactor} + ${this.equationConstant}`).toTex().slice(0, 8)} \\hspace{10px} \\theta\\in[0, 2\\pi]`
+        }
+
+        this.generateQuadraticEquation = (parameters = {}) => {
+            while (this.a === 0 || this.k === 0 || this.d === 0 || this.c === 0 || (Math.abs(this.k / this.a) > 1 && Math.abs(this.c / this.d) > 1 && this.ratio !== "tan")  ) {
+                this.a = Math.ceil(Math.random() * 10) - 5
+                this.k = Math.ceil(Math.random() * 10) - 5
+                this.d = Math.ceil(Math.random() * 10) - 5
+                this.c = Math.ceil(Math.random() * 10) - 5
+            }
+            console.log(`a=${this.a}, k=${this.k}, d=${this.d}, c=${this.c}, ${Math.abs(this.k / this.a) > 1}, ${Math.abs(this.c / this.d) > 1}`)
+            this.ratio = ["sin", "cos", "tan"][Math.floor(Math.random() * 3)]
+            this.expression = `${rationalize(`(${this.a}x+${this.k})(${this.d}x+${this.c})`).toTex().replace("{ x}^{2}", `\\${this.ratio}^{2} \\theta `).replace("x", `\\${this.ratio} \\theta`).replace(/\\cdot/g, "")}=0 \\hspace{15px} \\theta \\in [0, 2\\pi]`        
+            let pi = parseFloat(3.14159)
+            let quadraticEquationAnswers = []
+            console.log(Math.abs(this.a) === Math.abs(this.k), Math.abs(this.d) === Math.abs(this.c), ((this.a > 0 && this.k < 0) || (this.a < 0 && this.k > 0)), ((this.a > 0 && this.k > 0) || (this.a < 0 && this.k < 0)), ((this.c > 0 && this.d < 0) || (this.c < 0 && this.d > 0)), ((this.c > 0 && this.d > 0) || (this.c < 0 && this.d < 0)) )
+            if (this.ratio === "sin") {
+                if (Math.abs(this.k) === Math.abs(this.a)) {
+                    // TODO: fix this if statement (MOVE it to the top of the main if statement)
+                    if ((this.a > 0 && this.k < 0) || (this.a < 0 && this.k > 0)) {
+                        console.log("sin of the first factor is equal to 1")
+                        quadraticEquationAnswers = quadraticEquationAnswers.concat([1.57])
+                    } else if ((this.a > 0 && this.k > 0) || (this.a < 0 && this.k < 0)) {
+                        console.log("sin of the first factor is equal to -1")
+                        quadraticEquationAnswers = quadraticEquationAnswers.concat([4.71])
+                    }
+                } 
+                    else if (Math.abs(this.k / this.a) <= 1) {
+                    let relatedAcuteAngle = Number(asin(Math.abs(this.k / this.a)))
+                    console.log("relatedAcuteAngle for sin(-k/a)",  Number(relatedAcuteAngle.toFixed(2)) + pi)
+                    if ((-this.k / this.a) < 0) {
+                        let solution1 = (pi + Number(relatedAcuteAngle) ).toFixed(2)
+                        let solution2 = (2 * pi - Number(relatedAcuteAngle)).toFixed(2)
+                        console.log(solution1, typeof solution1, solution2, typeof solution2)
+                        
+                        quadraticEquationAnswers = quadraticEquationAnswers.concat([solution1, solution2])
+
+                    } else if ((-this.k / this.a) > 0) {
+                        let solution1 = Number(relatedAcuteAngle).toFixed(2)
+                        let solution2 = (pi - Number(relatedAcuteAngle)).toFixed(2)
+                        console.log(solution1, typeof solution1, solution2, typeof solution2)
+                        
+                        quadraticEquationAnswers = quadraticEquationAnswers.concat([solution1, solution2])
+  
+                    }  
+                }
+
+                if (Math.abs(this.c / this.d) <= 1) {
+                    let relatedAcuteAngle = asin(Math.abs(this.c / this.d))
+                    console.log("relatedAcuteAngle for sin(-c/d)",  (relatedAcuteAngle) + pi)    
+                    if (Math.abs(this.c) === Math.abs(this.d)) {
+                        // TODO: fix this if statement
+                        if ((this.c > 0 && this.d < 0) || (this.c < 0 && this.d > 0)) {
+                            console.log("sin of the second factor is equal to 1")
+                            quadraticEquationAnswers = quadraticEquationAnswers.concat([1.57])
+                        } else if ((this.c > 0 && this.d > 0) || (this.c < 0 && this.d < 0)) {
+                            console.log("sin of the second factor is equal to -1")
+                            quadraticEquationAnswers = quadraticEquationAnswers.concat([4.71])
+                        }
+                    } 
+                    else if ((-this.c / this.d) < 0) {
+                            let solution1 = (Number(relatedAcuteAngle) + pi).toFixed(2)
+                            let solution2 = (2 * pi - Number(relatedAcuteAngle)).toFixed(2)
+                            console.log(solution1, typeof solution1, solution2, typeof solution2)
+                            
+                            quadraticEquationAnswers = quadraticEquationAnswers.concat([solution1, solution2])
+
+                        } else if ((-this.k / this.a) > 0) {
+                            let solution1 = Number(relatedAcuteAngle).toFixed(2)
+                            let solution2 = (pi - Number(relatedAcuteAngle)).toFixed(2)
+                            console.log(solution1, typeof solution1, solution2, typeof solution2)
+                            
+                            quadraticEquationAnswers = quadraticEquationAnswers.concat([solution1, solution2])
+
+                        }  
+                }
+                console.log(quadraticEquationAnswers)
+                this.answers = quadraticEquationAnswers.map(item => Number(item))
+            } 
+            else if (this.ratio === "cos") {
+                if (Math.abs(this.k / this.a) <= 1) {
+                    let relatedAcuteAngle = acos(Math.abs(this.k / this.a))
+                    console.log("relatedAcuteAngle for cos(-k/a)",  relatedAcuteAngle)
+                    if (Math.abs(this.k) === Math.abs(this.a)) {
+                        if ((this.a > 0 && this.k < 0) || (this.a < 0 && this.k > 0)) {
+                            console.log("cos of the first factor is equal to 1")
+                            quadraticEquationAnswers = quadraticEquationAnswers.concat([0, 6.28])
+                        } else if ((this.a > 0 && this.k > 0) || (this.a < 0 && this.k < 0)) {
+                            console.log("cos of the first factor is equal to -1")
+                            quadraticEquationAnswers = quadraticEquationAnswers.concat([3.14])
+                        }
+                    } 
+                    else if ((-this.k / this.a) < 0) {
+                        let solution1 = (pi - parseFloat(relatedAcuteAngle)).toFixed(2)
+                        let solution2 = (pi + parseFloat(relatedAcuteAngle)).toFixed(2)
+                        console.log(solution1, typeof solution1, solution2, typeof solution2)
+                        
+                        quadraticEquationAnswers = quadraticEquationAnswers.concat([solution1, solution2])
+
+                    } else if ((-this.k / this.a) > 0) {
+                        let solution1 = parseFloat(relatedAcuteAngle).toFixed(2)
+                        let solution2 = (2 * pi - parseFloat(relatedAcuteAngle)).toFixed(2)
+                        console.log(solution1, typeof solution1, solution2, typeof solution2)
+                        
+                        quadraticEquationAnswers = quadraticEquationAnswers.concat([solution1, solution2])
+
+                    }  
+
+                }
+                if (Math.abs(this.c / this.d) <= 1) {
+                    let relatedAcuteAngle = parseFloat(acos(Math.abs(this.c / this.d))).toFixed(2)
+                    console.log("relatedAcuteAngle for cos(-c/d)",  relatedAcuteAngle)
+                    if (Math.abs(this.c) === Math.abs(this.d)) {
+                        if ((this.c > 0 && this.d < 0) || (this.c < 0 && this.d > 0)) {
+                            console.log("cos of the first factor is equal to 1")
+                            quadraticEquationAnswers = quadraticEquationAnswers.concat([0, 6.28])
+                        } else if ((this.c > 0 && this.d > 0) || (this.c < 0 && this.d < 0)) {
+                            console.log("cos of the first factor is equal to -1")
+                            quadraticEquationAnswers = quadraticEquationAnswers.concat([3.14])
+                        }
+                    } 
+                    else if ((-this.c / this.d) < 0) {
+                        let solution1 = (pi - parseFloat(relatedAcuteAngle)).toFixed(2)
+                        let solution2 = (pi + parseFloat(relatedAcuteAngle)).toFixed(2)
+                        console.log(solution1, typeof solution1, solution2, typeof solution2)
+                        
+                        quadraticEquationAnswers = quadraticEquationAnswers.concat([solution1, solution2])
+
+                    } else if ((-this.c / this.d) > 0) {
+                        let solution1 = parseFloat(relatedAcuteAngle).toFixed(2)
+                        let solution2 = (2 * pi - parseFloat(relatedAcuteAngle)).toFixed(2)
+                        console.log(solution1, typeof solution1, solution2, typeof solution2)
+                        
+                        quadraticEquationAnswers = quadraticEquationAnswers.concat([solution1, solution2])
+                    }  
+
+                }
+                console.log(quadraticEquationAnswers)
+                this.answers = quadraticEquationAnswers.map(item => Number(item))
+            } 
+            else if (this.ratio === "tan") {
+                let relatedAcuteAngle1 = atan(Math.abs(this.c / this.d))
+                let relatedAcuteAngle2 = atan(Math.abs(this.k / this.a))
+                console.log("relatedAcuteAngle for tan(-k/a)",  relatedAcuteAngle2)
+                console.log("relatedAcuteAngle for tan(-c/d)",  relatedAcuteAngle1)
+                if (Math.abs(this.k) === Math.abs(this.a)) {
+                    if ((this.a > 0 && this.k < 0) || (this.a < 0 && this.k > 0)) {
+                        console.log("tan of the first factor is equal to 1")
+                        quadraticEquationAnswers = quadraticEquationAnswers.concat([0.79, 3.92])
+                    } else if ((this.a > 0 && this.k > 0) || (this.a < 0 && this.k < 0)) {
+                        console.log("tan of the first factor is equal to -1")
+                        quadraticEquationAnswers = quadraticEquationAnswers.concat([2.36, 5.50])
+                    }
+                } 
+
+                else if ((-this.k / this.a) < 0) {
+                    let solution1 = (pi - parseFloat(relatedAcuteAngle2)).toFixed(2)
+                    let solution2 = (2 * pi - parseFloat(relatedAcuteAngle2)).toFixed(2)
+                    console.log(solution1, typeof solution1, solution2, typeof solution2)
+                    
+                    quadraticEquationAnswers = quadraticEquationAnswers.concat([solution1, solution2])
+
+                } else if ((-this.k / this.a) > 0) {
+                    let solution1 = parseFloat(relatedAcuteAngle2).toFixed(2)
+                    let solution2 = (pi + parseFloat(relatedAcuteAngle2)).toFixed(2)
+                    console.log(solution1, typeof solution1, solution2, typeof solution2)
+                    
+                    quadraticEquationAnswers = quadraticEquationAnswers.concat([solution1, solution2])
+
+                }  
+                // 1 --> 0.79, 3.92; -1 --> 2.36, 5.50
+                if (Math.abs(this.c) === Math.abs(this.d)) {
+                    if ((this.c > 0 && this.d < 0) || (this.c < 0 && this.d > 0)) {
+                        console.log("tan of the first factor is equal to 1")
+                        quadraticEquationAnswers = quadraticEquationAnswers.concat([0.79, 3.92])
+                    } else if ((this.c > 0 && this.d > 0) || (this.c < 0 && this.d < 0)) {
+                        console.log("tan of the first factor is equal to -1")
+                        quadraticEquationAnswers = quadraticEquationAnswers.concat([2.36, 5.50])
+                    }
+                } 
+                else if ((-this.c / this.d) < 0) {
+                    let solution1 = (pi - parseFloat(relatedAcuteAngle1)).toFixed(2)
+                    let solution2 = (2 * pi - parseFloat(relatedAcuteAngle1)).toFixed(2)
+                    console.log(solution1, typeof solution1, solution2, typeof solution2)
+                    
+                    quadraticEquationAnswers = quadraticEquationAnswers.concat([solution1, solution2])
+
+                } else if ((-this.c / this.d) > 0) {
+                    let solution1 = parseFloat(relatedAcuteAngle1).toFixed(2)
+                    let solution2 = (pi + parseFloat(relatedAcuteAngle1)).toFixed(2)
+                    console.log(solution1, typeof solution1, solution2, typeof solution2)
+                    
+                    quadraticEquationAnswers = quadraticEquationAnswers.concat([solution1, solution2])
+
+                }  
+
+                console.log(quadraticEquationAnswers)
+                this.answers = quadraticEquationAnswers.map(item => Number(item))
+            }
+        }
+        
+            
         this.generateExpression = (ratio, d = false) => {
-            if (ratio === "sin" || ratio === "cos" || ratio === "tan" || ratio === "csc" || ratio === "sec") {
+            if (ratio === "sin" || ratio === "cos" || ratio === "tan" || ratio === "csc" || ratio === "sec" || ratio === "cot") {
                 this.ratio = ratio
                 while (this.a === 0 || this.k === 0 || this.d === 0 || Math.abs(this.k) === 1 || Math.abs(this.a) === Math.abs(this.k) || Math.abs(this.k) === Math.abs(this.d) || Math.abs(this.d) === Math.abs(this.c) || Math.abs(this.a) === Math.abs(this.d) || Math.abs(this.k) === Math.abs(this.c) || Math.abs(this.a) === Math.abs(this.c)) {
                     this.a = Math.ceil(Math.random() * 10 ) - 5
@@ -241,10 +695,53 @@ class sinusoidalQuestion extends QuestionClass {
                                     .replace("1{\\text{csc", "{\\text{csc")
                                     .replace("1{\\text{sec", "{\\text{sec")
                                     .replace("1{\\text{cot", "{\\text{cot")
-
-
-
+                }
             }
+
+        }
+    }
+
+class sinusoidalWordProblem extends sinusoidalQuestion {
+    constructor(question, type, details, desmosGraph, answers) {
+        super(question, type, details, desmosGraph, answers)
+        this.max = 0
+        this.min = 0
+        this.eoa = 0
+        this.start = ""
+        this.direction = ""
+        this.period = 0
+        
+        this.generateSinusoidalWordProblemExpression = (parameters = {}) => {
+            this.min = Math.ceil(Math.random() * 5)
+            this.max = Math.ceil(Math.random() * 5) + 20
+            this.c = (this.max + this.min) / 2
+            this.eoa = this.c
+            this.a = (this.max - this.min) / 2
+            this.start = ["bottom", "middle", "top"][Math.floor(Math.random() * 3)]
+            
+            if (this.start === "middle") {
+                this.direction = ["up", "down"][Math.floor(Math.random() * 2)]
+            } else if (this.start === "top") {
+                this.direction = "down"
+            } else if (this.start === "bottom") {
+                this.direction = "up"
+            }
+            
+            if (this.start === "middle") {
+                this.ratio = "sin"
+                if (this.direction === "down") {
+                    this.a = this.a * -1
+                }
+            } else if (this.start === "bottom") {
+                this.ratio = "cos"
+                this.a = this.a * -1
+            } else if (this.start === "top") {
+                this.ratio = "cos"
+            }
+
+            this.period = Math.ceil(Math.random() * 3) + 3
+            this.expression = "\\text{}"
+            this.shortAnswerSolution = `${this.a}${this.ratio}(${simplify(`2 / ${this.period}`).toString()}pit)+${this.c}`
         }
     }
 }
@@ -346,6 +843,39 @@ class discreteDistributionQuestion extends QuestionClass {
                     xValue: xList[k],
                     yValue: pList[k]
                 })
+            }
+        }
+    }
+}
+
+class logarithmQuestion extends QuestionClass {
+    constructor(question, type, details, desmosGraph, answers) {
+        super(question, type, details, desmosGraph, answers)
+        this.base = Math.ceil(Math.random() * 3) + 2
+        this.power = 1
+        this.exp = Math.ceil(Math.random() * 4)
+        this.a = 1
+        this.k = 1
+        this.d = 0
+        this.c = 0
+        this.base = 1
+        this.exp = 1
+        this.expression = ""
+        this.generateExpression = (parameters = {}) => {
+            while (this.base === this.exp || this.exp === 1 || this.base === 1 || this.exp === 0) {
+                this.base = Math.ceil(Math.random() * 5)
+                if(parameters.negativeBase === true) {
+                    this.exp = Math.ceil(Math.random() * 8) - 8
+                } else {
+                    this.exp = Math.ceil(Math.random() * 8)
+                }
+            }
+            let powerRuleExp = ""
+            if(parameters.powerRuleExp === true) {
+                powerRuleExp = Math.ceil(Math.random() * 4) + 1  
+            }
+            if (this.exp > 0) { 
+                this.expression = `x=\\log_{${this.base}}${pow(this.base, this.exp)}^{${powerRuleExp}}`
             }
         }
     }
@@ -521,7 +1051,6 @@ addAnswers(
     ,
     []
 )
-// checking sets converts the expressions to numbers, which leads to an error
 
 
 // -----------------------------------------------------------------------------------
@@ -602,6 +1131,31 @@ addAnswers(
         polynomialQuestion3.leadingCoeff < 0 &&  polynomialQuestion3.degree % 2 === 1 ? true : false, 
         polynomialQuestion3.leadingCoeff > 0 &&  polynomialQuestion3.degree % 2 === 1 ? true : false, 
         polynomialQuestion3.leadingCoeff < 0 &&  polynomialQuestion3.degree % 2 === 0 ? true : false, 
+    ]
+)
+
+let polynomialQuestion4 = new expandedPolynomialQuestion (
+    'Is this function odd, even, or neither?',
+    MULTIPLE_CHOICE,
+    {
+        strand: 'Polynomial Functions',
+        course: MHF4U,
+        questionInfo: 'assess line or point symmetry of polynomial functions'
+    }
+)
+
+// polynomialQuestion4.generateExpression(true)
+polynomialQuestion4.generateExpandedExpression(3)
+
+
+console.log(polynomialQuestion4.exponents.filter(item => item % 2 === 1), polynomialQuestion4.exponents.length)
+addAnswers(
+    polynomialQuestion4,
+    ["\\text{odd}", "\\text{even}", "\\text{neither odd nor even}"],
+    [
+        (polynomialQuestion4.exponents.filter(item => item % 2 === 1).length === polynomialQuestion4.exponents.length) && polynomialQuestion4.constant === 0, 
+        (polynomialQuestion4.exponents.filter(item => item % 2 === 0).length === polynomialQuestion4.exponents.length) && polynomialQuestion4.constant !== 0,
+        (polynomialQuestion4.exponents.filter(item => item % 2 === 0).length !== polynomialQuestion4.exponents.length) && (polynomialQuestion4.exponents.filter(item => item % 2 === 1).length !== polynomialQuestion4.exponents.length)
     ]
 )
 
@@ -1250,6 +1804,7 @@ sinusoidalQuestion7.details.solutionSteps = [
     {type: "math", content: `\\frac{2\\pi}{\\text{period}}=\\frac{2\\pi}{${simplify(` 2 * ${sinusoidalQuestion7.horizontalCompression === 0 ? sinusoidalQuestion7.k : `1/${sinusoidalQuestion7.k}`} * pi`).toTex().replace("\\cdot", "")}}=${sinusoidalQuestion7.horizontalCompression === 1 ? simplify(sinusoidalQuestion7.k).toTex(): simplify(`1/${sinusoidalQuestion7.k}`).toTex()}`},  
 ]
 
+// Q21
 let sinusoidalQuestion8 = new sinusoidalQuestion (
     'What is the equation of this function as a sine function?',
     MULTIPLE_CHOICE,
@@ -1370,6 +1925,380 @@ sinusoidalQuestion8.details.solutionSteps = [
     {type: "text", content: "k is equal to "},
     {type: "math", content: `\\frac{2\\pi}{\\text{period}}=\\frac{2\\pi}{${simplify(` 2 * ${sinusoidalQuestion8.horizontalCompression === 0 ? sinusoidalQuestion8.k : `1/${sinusoidalQuestion8.k}`} * pi`).toTex().replace("\\cdot", "")}}=${sinusoidalQuestion8.horizontalCompression === 1 ? simplify(sinusoidalQuestion8.k).toTex(): simplify(`1/${sinusoidalQuestion8.k}`).toTex()}`},  
 ]
+
+// Q22
+let sinusoidalQuestion9 = new sinusoidalQuestion (
+    'What is the equation of this function?',
+    MULTIPLE_CHOICE,
+    {
+        strand: 'Sinusoidal Functions',
+        course: MHF4U,
+        questionInfo: 'assess knowledge of equations of sinusoidal functions',
+    }
+)
+
+sinusoidalQuestion9.generateExpression(["tan", "csc", "sec", "cot"][Math.floor(Math.random() * 4)], true)
+
+addAnswers(
+    sinusoidalQuestion9,
+    ['f(x)=\\text{tan}(x)', 'f(x)=\\text{csc}(x)', 'f(x)=\\text{sec}(x)', 'f(x)=\\text{cot}(x)'],
+    [
+        sinusoidalQuestion9.ratio === "tan" ? true : false,
+        sinusoidalQuestion9.ratio === "csc" ? true : false,
+        sinusoidalQuestion9.ratio === "sec" ? true : false,
+        sinusoidalQuestion9.ratio === "cot" ? true : false,
+    ],
+    {
+        showGraph: true,
+            expression: [
+                {
+                latex: `y=\\${sinusoidalQuestion9.ratio}{x}`
+                }
+            ],
+            xAxisStep: "pi"
+    }
+)
+
+sinusoidalQuestion9.details.solutionSteps = [
+    {type: "text", content: "We see that the range of this function is:"},
+    {type: "math", content: sinusoidalQuestion9.ratio === "cot" || sinusoidalQuestion9.ratio === "tan" ? `(-\\infty, \\infty)` : `(-\\infty, 1] \\cup [1, \\infty]`},
+    {type: "text", content: sinusoidalQuestion9.ratio === "cot" || sinusoidalQuestion9.ratio === "tan" ? `so the function is tan or cot.` : `so the function is csc or csc.`},
+    {type: "text", content: "There is a vertical asymptote at"},
+    {type: "math", content: sinusoidalQuestion9.ratio === "tan" || sinusoidalQuestion9.ratio === "sec" ? `x=\\frac{\\pi}{2}` : `x=0`},
+    {type: "text", content: "So the equation of the function is: "},
+    {type: "math", content: `f(x)=\\text{${sinusoidalQuestion9.ratio}}(x)`}
+]
+
+let sinusoidalQuestion10 = new sinusoidalQuestion (
+    'Match each trigonometric ratio with its definition',
+    SORT_LIST,
+    {
+        strand: 'Sinusoidal Functions',
+        course: MHF4U,
+        questionInfo: 'assess knowledge of equations of sinusoidal functions',
+    }
+)
+
+addAnswers(
+    sinusoidalQuestion10,
+    sinusoidalQuestion10.list.map(item => new Object({id: item.id, definition: item.definition, description: [item.description[0]]}))
+)
+
+sinusoidalQuestion10.details.solutionSteps = [
+    {type: "text", content: "The definitions of each trigonometric ratio are:"},
+    {type: "math", content: "\\sin\\theta=\\frac{y}{r}"},
+    {type: "math", content: "\\cos\\theta=\\frac{x}{r}"},
+    {type: "math", content: "\\tan\\theta=\\frac{y}{x}"},
+    {type: "math", content: "\\csc\\theta=\\frac{r}{y}"},
+    {type: "math", content: "\\sec\\theta=\\frac{r}{x}"},
+    {type: "math", content: "\\cot\\theta=\\frac{x}{y}"},
+]
+
+let sinusoidalQuestion11 = new sinusoidalQuestion (
+    'Solve for the angle(s) in the equation',
+    MULTIPLE_ANSWERS,
+    {
+        strand: 'Sinusoidal Functions',
+        course: MHF4U,
+        questionInfo: 'sinusoidal equations',
+
+    }, 
+)
+
+sinusoidalQuestion11.generateSimpleEquation()
+
+addAnswers(
+    sinusoidalQuestion11,
+    ["0", "\\frac{\\pi}{6}", "\\frac{\\pi}{4}", "\\frac{\\pi}{3}", "\\frac{\\pi}{2}", "\\frac{2\\pi}{3}", "\\frac{3\\pi}{4}", "\\frac{5\\pi}{6}", "\\pi", "\\frac{7\\pi}{6}", "\\frac{5\\pi}{4}", "\\frac{4\\pi}{3}", "\\frac{3\\pi}{2}", "\\frac{5\\pi}{3}",  "\\frac{7\\pi}{4}", "\\frac{11\\pi}{6}", "2\\pi"],
+    [
+        sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex.includes("0"),
+        sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex.includes("\\frac{\\pi}{6}"),
+        sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex.includes("\\frac{\\pi}{4}"),
+        sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex.includes("\\frac{\\pi}{3}"),
+        sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex.includes("\\frac{\\pi}{2}"),
+        sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex.includes("\\frac{2\\pi}{3}"),
+        sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex.includes("\\frac{3\\pi}{4}"),
+        sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex.includes("\\frac{5\\pi}{6}"),
+        sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex.includes("\\pi"),
+        sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex.includes("\\frac{7\\pi}{6}"),
+        sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex.includes("\\frac{5\\pi}{4}"),
+        sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex.includes("\\frac{4\\pi}{3}"),
+        sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex.includes("\\frac{3\\pi}{2}"),
+        sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex.includes("\\frac{5\\pi}{3}"),
+        sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex.includes("\\frac{7\\pi}{4}"),
+        sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex.includes("\\frac{11\\pi}{6}"),
+        sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex.includes("2\\pi"),
+    ]
+)
+
+sinusoidalQuestion11.details.solutionSteps = [
+    {type: "text", content: "Isolating the trigonometric ratio, we get"},
+    {type: "math", content: `\\${sinusoidalQuestion11.ratio}\\theta=${sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle].value.latex}`},
+    {type: "text", content: `${(sinusoidalQuestion11.chosenAngle >  4 && sinusoidalQuestion11.chosenAngle !== 8 ) ? "Next we get the related acute angle" : "Solving for the angle, we get"}`},
+    {type: "math", content: (sinusoidalQuestion11.chosenAngle > 4 && sinusoidalQuestion11.chosenAngle !== 8) 
+                            ?
+                            `\\${sinusoidalQuestion11.ratio}^{-1}${sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle % 4].value.latex}=${sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle % 4][sinusoidalQuestion11.ratio].latex[0]}`
+                            :
+                            `\\${sinusoidalQuestion11.ratio}^{-1}${sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle].value.latex}=${sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex[0]}`
+
+    },
+    {type: "text", content: 
+                            (sinusoidalQuestion11.chosenAngle !== 4 && sinusoidalQuestion11.chosenAngle !== 8)
+                            ?
+                                sinusoidalQuestion11.chosenAngle > 4 
+                                ?
+                                    sinusoidalQuestion11.ratio === "sin" 
+                                    ?
+                                    `sin is negative in the 3rd and 4th quadrants` 
+                                    :
+                                    `cos is negative in the 2nd and 3rd quadrants`
+                                : 
+                                    sinusoidalQuestion11.ratio === "sin"
+                                    ?
+                                    `sin is also positive in the 2nd quadrant`
+                                    :
+                                    `cos is also positive in the 4th quadrant`
+                            :
+                            ""
+    },
+    {type: "math", content: 
+                            (sinusoidalQuestion11.chosenAngle !== 4 && sinusoidalQuestion11.chosenAngle !== 8)
+                            ?
+                                sinusoidalQuestion11.chosenAngle > 4 
+                                ?
+                                    sinusoidalQuestion11.ratio === "sin" 
+                                    ?
+                                    `\\theta = 2\\pi - ${sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle % 4][sinusoidalQuestion11.ratio].latex[0]}=${sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex[0]}, \\pi + ${sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle % 4][sinusoidalQuestion11.ratio].latex[0]} = ${sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex[1]}`
+                                    :
+                                    `\\theta = \\pi - ${sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle % 4][sinusoidalQuestion11.ratio].latex[0]}=${sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex[0]}, \\pi + ${sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle % 4][sinusoidalQuestion11.ratio].latex[0]} = ${sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex[1]}`
+                                : 
+                                    sinusoidalQuestion11.ratio === "sin"
+                                    ?
+                                    `\\theta = \\pi - ${sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle % 4][sinusoidalQuestion11.ratio].latex[0]}=${sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex[1]}`
+                                    :
+                                    `\\theta = 2\\pi - ${sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle % 4][sinusoidalQuestion11.ratio].latex[0]}=${sinusoidalQuestion11.equationAngle[sinusoidalQuestion11.chosenAngle][sinusoidalQuestion11.ratio].latex[1]}`
+                            :
+                            ""
+    }
+]
+
+let sinusoidalQuestion12 = new sinusoidalQuestion (
+    'Match each compounded angle formula with its expanded form',
+    SORT_LIST,
+    {
+        strand: 'Sinusoidal Functions',
+        course: MHF4U,
+        questionInfo: 'assess knowledge of equations of sinusoidal functions',
+    }
+)
+
+addAnswers(
+    sinusoidalQuestion12,
+    sinusoidalQuestion12.compoundAngleFormulas.map(item => new Object({id: item.id, definition: item.expression, description: [item.formula]}))
+)
+
+sinusoidalQuestion12.details.solutionSteps = [
+    {type: "math", content: `\\sin(x+y)=\\sin x \\cos y + \\cos x \\sin y`},
+    {type: "math", content: `\\sin(x-y)=\\sin x \\cos y - \\cos x \\sin y`},
+    {type: "math", content: `\\cos(x+y)=\\cos x \\cos y - \\sin x \\sin y`},
+    {type: "math", content: `\\cos(x-y)=\\cos x \\cos y + \\sin x \\sin y`}
+]
+
+let sinusoidalQuestion13 = new sinusoidalQuestion (
+    'Solve for the angle(s) in the equation',
+    SHORT_ANSWER,
+    {
+        checkAnswer: CHECK_SETS,
+        strand: 'Sinusoidal Functions',
+        course: MHF4U,
+        questionInfo: 'assess knowledge of equations of sinusoidal equations',
+        label: "\\theta =",
+        hints: ["Round your answers to two decimal places", "If the second decimal number is 0 after rounding, do not type it"]
+    }
+)
+
+sinusoidalQuestion13.generateQuadraticEquation()
+
+addAnswers(
+    sinusoidalQuestion13,
+    [...sinusoidalQuestion13.answers]
+)
+
+sinusoidalQuestion13.details.solutionSteps = [
+    {type: "text", content: "Once we've isolated one side of the equation, we can factor it. Factoring, we get"},
+    {type: "math", content: `${sinusoidalQuestion13.a < 0 && sinusoidalQuestion13.k < 0 && sinusoidalQuestion13.d < 0 && sinusoidalQuestion13.c < 0 
+                            ?
+                            `(${Math.abs(sinusoidalQuestion13.a) === 1 ? "" : Math.abs(sinusoidalQuestion13.a)} \\${sinusoidalQuestion13.ratio} \\theta +${Math.abs(sinusoidalQuestion13.k)})(${Math.abs(sinusoidalQuestion13.d) === 1 ? "" : Math.abs(sinusoidalQuestion13.d)} \\${sinusoidalQuestion13.ratio} \\theta +${Math.abs(sinusoidalQuestion13.c)})`
+                            :
+                            `(${Math.abs(sinusoidalQuestion13.a) === 1 ? sinusoidalQuestion13.a === -1 ? "-" : "" : sinusoidalQuestion13.a} \\${sinusoidalQuestion13.ratio} \\theta ${sinusoidalQuestion13.k > 0 ? `+${sinusoidalQuestion13.k}` : sinusoidalQuestion13.k})(${Math.abs(sinusoidalQuestion13.d) === 1 ? sinusoidalQuestion13.d === -1 ? "-" : "" : sinusoidalQuestion13.d} \\${sinusoidalQuestion13.ratio} \\theta ${sinusoidalQuestion13.c > 0 ? `+${sinusoidalQuestion13.c}` : sinusoidalQuestion13.c} )`
+                            }`
+    
+    },
+    {type: "text", content: `Isolating the ${sinusoidalQuestion13.ratio} ratio from each factor, we get`},
+    {type: "math", content: `\\${sinusoidalQuestion13.ratio} \\theta = \\frac{${sinusoidalQuestion13.k > 0 ? `-${sinusoidalQuestion13.k}` : Math.abs(sinusoidalQuestion13.k)}}{${sinusoidalQuestion13.a}}  \\hspace{25px}  \\${sinusoidalQuestion13.ratio} \\theta = \\frac{${sinusoidalQuestion13.c > 0 ? `-${sinusoidalQuestion13.c}` : Math.abs(sinusoidalQuestion13.c)}}{${sinusoidalQuestion13.d}} `},
+    {type: "text", content: `Next we can use the inverse ${sinusoidalQuestion13.ratio} to solve for the angle`},
+    {type: "math", content: ` \\theta = \\${sinusoidalQuestion13.ratio}^{-1} \\frac{${sinusoidalQuestion13.k > 0 ? `-${sinusoidalQuestion13.k}` : Math.abs(sinusoidalQuestion13.k)}}{${sinusoidalQuestion13.a}}  \\hspace{25px}  \\theta = \\${sinusoidalQuestion13.ratio}^{-1} \\frac{${sinusoidalQuestion13.c > 0 ? `-${sinusoidalQuestion13.c}` : Math.abs(sinusoidalQuestion13.c)}}{${sinusoidalQuestion13.d}} `}, 
+    {type: "math", content: `\\theta = ${[...sinusoidalQuestion13.answers].toString()}`}
+]
+
+let sinusoidalQuestion14 = new sinusoidalQuestion (
+    'Convert the following angle from degrees to radians',
+    MULTIPLE_CHOICE,
+    {
+        strand: 'Sinusoidal Functions',
+        course: MHF4U,
+        questionInfo: 'assess knowledge of radian measure'
+    }
+)
+
+sinusoidalQuestion14.chosenAngle = Math.ceil(Math.random() * 340) + 20
+sinusoidalQuestion14.expression = `${sinusoidalQuestion14.chosenAngle}^{\\circ}`
+
+addAnswers(
+    sinusoidalQuestion14,
+    [`${(sinusoidalQuestion14.chosenAngle / 180).toFixed(2)}\\pi`, `${sinusoidalQuestion14.chosenAngle}\\pi`, `${(sinusoidalQuestion14.chosenAngle / 360).toFixed(2)}\\pi`, `${sinusoidalQuestion14.chosenAngle * 180}\\pi`],
+    [true, false, false, false]
+)
+
+sinusoidalQuestion14.details.solutionSteps = [
+    {type: "text", content: "To convert an angle from degrees to radians we take the angle and multiply by"},
+    {type: "math", content: "\\frac{\\pi}{180}"},
+    {type: "text", content: "Therefore, "},
+    {type: "math", content: `${sinusoidalQuestion14.expression} \\times \\frac{\\pi}{180} = ${(sinusoidalQuestion14.chosenAngle / 180).toFixed(2)}\\pi \\hspace{20px} \\text{(when rounded to two decimal places)}`}
+]
+
+let sinusoidalQuestion15 = new sinusoidalQuestion (
+    'Convert the following angle from radians to degrees',
+    MULTIPLE_CHOICE,
+    {
+        strand: 'Sinusoidal Functions',
+        course: MHF4U,
+        questionInfo: 'assess knowledge of radian measure'
+    }
+)
+
+sinusoidalQuestion15.chosenAngle = Math.ceil(Math.random() * 20) / 10
+sinusoidalQuestion15.expression = `${sinusoidalQuestion15.chosenAngle}\\pi`
+
+addAnswers(
+    sinusoidalQuestion15,
+    [`${parseInt(sinusoidalQuestion15.chosenAngle * 180)}^{\\circ}`, `${parseInt(sinusoidalQuestion15.chosenAngle * 360)}^{\\circ}`, `${parseInt(sinusoidalQuestion15.chosenAngle * 90)}^{\\circ}`, `${parseInt(sinusoidalQuestion15.chosenAngle * 2)}^{\\circ}`],
+    [true, false, false, false]
+)
+
+sinusoidalQuestion15.details.solutionSteps = [
+    {type: "text", content: "To convert an angle from radians to degrees we take the angle and multiply by"},
+    {type: "math", content: "\\frac{180}{\\pi}"},
+    {type: "text", content: "Therefore, "},
+    {type: "math", content: `${sinusoidalQuestion15.expression} \\times \\frac{180}{\\pi} = ${parseInt(sinusoidalQuestion15.chosenAngle * 180)}^{\\circ}`}
+]
+
+let sinusoidalQuestion16 = new sinusoidalWordProblem (
+    `A Ferris wheel...Write a ... function to model this situation`,
+    SHORT_ANSWER,
+    {
+        checkAnswer: CHECK_EXPRESSION,
+        img: true,
+        imgSrc: '/img/ferris-wheel.jpg',
+        imgDetails: [],
+        parseExpression: function(expression) {
+            return simplify(expression).toTex().replace("~", "").replace('\\cdot', '').trim()
+        },
+        strand: 'Sinusoidal Functions',
+        course: MHF4U,
+        questionInfo: 'solve real-world problems modelled by sinusoidal functions',
+        label: "h(t)=",
+        hints: ["Write your function as asin(kt)+c (if the question asks for sin) or acos(kt)+c (if the question asks for cos)", "Use only decimal numbers for your values of a and c", "Type 'pi' instead of the symbol", "Write k as a fraction and do not put 'pi' in the numerator"]
+    }
+)
+
+sinusoidalQuestion16.generateSinusoidalWordProblemExpression()
+sinusoidalQuestion16.question = `
+    A Ferris wheel ride ${[
+        `reaches a maximum height of ${sinusoidalQuestion16.max} m and a minimum height of ${sinusoidalQuestion16.min} m.`, 
+        `has a centre that is ${sinusoidalQuestion16.eoa} m above the ground and reaches a maximum height of ${sinusoidalQuestion16.max} m. `,
+        `has a centre that is ${sinusoidalQuestion16.eoa} m above the ground and reaches a minimum height of ${sinusoidalQuestion16.min} m.`    
+    ][Math.floor(Math.random() * 3)]}
+    A person starts the ride at the ${sinusoidalQuestion16.start} and goes ${sinusoidalQuestion16.direction}. 
+    It takes the rider 
+    ${[`${sinusoidalQuestion16.period} min to go around the Ferris wheel once`, `${sinusoidalQuestion16.period / 2} min to go from the bottom to the top.`][Math.floor(Math.random() * 2)]}. 
+    Write a ${sinusoidalQuestion16.ratio} function, h(t), to model the rider's height (h), in m, over time (t), in min.
+    `
+
+addAnswers(
+    sinusoidalQuestion16,
+    sinusoidalQuestion16.expression,
+    [],
+)
+
+sinusoidalQuestion16.details.solutionSteps = [
+    {type: "text", content: "|a| is the amplitude, which can be found by finding half of the difference between the maximum or minimum"},
+    {type: "math", content: `|a|=\\frac{${sinusoidalQuestion16.max} - ${sinusoidalQuestion16.min}}{2}=${Math.abs(sinusoidalQuestion16.a)}`},
+    {type: "text", content: "Alternatively, |a| can also be the distance between the maximum or minimum and the centre"},
+    {type: "math", content: `|a|=|${sinusoidalQuestion16.max}-${sinusoidalQuestion16.eoa}| \\times 2 = |${sinusoidalQuestion16.min} - ${sinusoidalQuestion16.eoa}| \\times 2 = ${Math.abs(sinusoidalQuestion16.a)}`},
+    {type: "text", content: `${sinusoidalQuestion16.a < 0 ? `If a sin function starts in the middle and goes down or if a cos function starts at the bottom and goes up then the value of a should be negative` : "`If a sin function starts in the middle and goes up or if a cos function starts at the top and goes down then the value of a should be positive"}`},
+    {type: "math", content: `a=${sinusoidalQuestion16.a}`},
+    {type: "text", content: `The equation of the axis, c, is the centre of the Ferris wheel, or the sum of the maximum or minimum, divided by 2`},
+    {type: "math", content: `c=\\frac{${sinusoidalQuestion16.max}+${sinusoidalQuestion16.min}}{2}=${sinusoidalQuestion16.eoa}`},
+    {type: "text", content: "The value of k is equal to"},
+    {type: "math", content: `\\frac{2 \\pi }{\\text{period}}=\\frac{2 \\pi}{${sinusoidalQuestion16.period}}=${simplify(`2 / ${sinusoidalQuestion16.period}`).toTex()} `},
+    {type: "text", content: "where the period is the time it takes for the Ferris wheel to make one full rotation, or two times the time it takes to go between the minimum and maximum."},
+    {type: "text", content: "Therefore, the equation of the function is"},
+    {type: "math", content: `${sinusoidalQuestion16.a} \\${sinusoidalQuestion16.ratio}(${simplify(`2 / ${sinusoidalQuestion16.period}`).toTex()} \\pi t)+${sinusoidalQuestion16.c}`}
+]
+
+
+// Q24
+let logarithmQuestion1 = new logarithmQuestion (
+    'Solve for x',
+    MULTIPLE_CHOICE,
+    {
+        strand: 'Exponential and Logarithmic Functions',
+        course: MHF4U,
+        questionInfo: 'assess knowledge of equations of logarithms',
+    }
+)
+
+
+logarithmQuestion1.generateExpression()
+
+addAnswers(
+    logarithmQuestion1,
+    [`x=${simplify(logarithmQuestion1.exp).toTex()}`, `x=${simplify(logarithmQuestion1.exp * logarithmQuestion1.base).toTex()}`, `x=${simplify(logarithmQuestion1.base * pow(logarithmQuestion1.base, logarithmQuestion1.exp)).toTex()}`, logarithmQuestion1.exp === 2 ? `x=${simplify("1 + 0").toTex()}` : `x=${simplify(pow(logarithmQuestion1.base, logarithmQuestion1.exp - 1)).toTex()}`],
+    [true, false, false, false]
+)
+
+logarithmQuestion1.details.solutionSteps = [
+    {type: "text", content: "Rearranging to exponential form, we get"},
+    {type: "math", content: `${logarithmQuestion1.base}^{x}=${pow(logarithmQuestion1.base, logarithmQuestion1.exp)}`},
+    {type: "text", content: `This means we need to solve for the exponent x for a power with a base of ${logarithmQuestion1.base} that simplifies to ${pow(logarithmQuestion1.base, logarithmQuestion1.exp).toString()}`},
+    {type: "text", content: `So x=${logarithmQuestion1.exp}`}
+]
+
+let logarithmQuestion2 = new logarithmQuestion (
+    'What is the following in exponential form?',
+    MULTIPLE_CHOICE,
+    {
+        strand: 'Exponential and Logarithmic Functions',
+        course: MHF4U,
+        questionInfo: 'assess knowledge of equations of logarithms'
+    }
+)
+
+logarithmQuestion2.generateExpression()
+
+addAnswers(
+    logarithmQuestion2,
+    [`${logarithmQuestion2.base}^{x}=${pow(logarithmQuestion2.base, logarithmQuestion2.exp)}`, `${logarithmQuestion2.exp}^{x}=${pow(logarithmQuestion2.base, logarithmQuestion2.exp)}`, `${pow(logarithmQuestion2.base, logarithmQuestion2.exp)}^{x}=${logarithmQuestion2.exp}`, `${logarithmQuestion2.base}=x^{${pow(logarithmQuestion2.base, logarithmQuestion2.exp)}}`],
+    [true, false, false, false]
+)
+
+logarithmQuestion2.details.solutionSteps = [
+    {type: "text", content: "To convert to exponential form, x is the exponent, the small number in the logarithm is the base, and the large number in the logarithm is the simplified power."},
+    {type: "text", content: "Rearranging to exponential form, we get"},
+    {type: "math", content: `${logarithmQuestion2.base}^{x}=${pow(logarithmQuestion2.base, logarithmQuestion2.exp)}`},
+]
+
 
 // Discrete Probability Distribution Questions -----------------------------------------
 

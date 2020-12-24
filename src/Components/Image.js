@@ -5,7 +5,7 @@ function Image({imgSrc, imgDetails}) {
 
     return (
         <div className="container">
-            <img src={imgSrc} alt='quizImage'/>
+            <img className="image" src={imgSrc} alt='quizImage'/>
             {imgDetails.map(item => (
                 <div style={item.position}>{item.text} </div>
             ))}

@@ -110,7 +110,7 @@ function ShortAnswerQuestion({
             <form onSubmit={e => handleSubmit(e)} >
                 <div className="shortAnswerForm">
                     <label className="shortAnswerLabel" for="shortAnswer"><InlineMath math={questionInfo.details.label} /></label> 
-                    <input name="shortAnswer" className="shortAnswerInput" maxlength="20" disabled={answerMsg !== null} value={shortAnswerResponse} type="text" onChange={e => handleChange(e)} placeholder="Type your answer here"></input>
+                    <input name="shortAnswer" className="shortAnswerInput" maxlength="30" disabled={answerMsg !== null} value={shortAnswerResponse} type="text" onChange={e => handleChange(e)} placeholder="Type your answer here"></input>
                 </div>
                 <ul>
                     {questionInfo.details.hints && questionInfo.details.hints.map(item => 
@@ -126,7 +126,7 @@ function ShortAnswerQuestion({
 
                 <h3> {answerMsg} </h3>
                 
-                <p>{answerMsg !== null && `Your answer:`} </p> {answerMsg !== null && questionInfo.details.checkAnswer === "check expression" ? <InlineMath math={simplify(answerValues).toTex().replace("~", "").replace('\\cdot', '').trim().replace("+-", "-")} /> : answerValues} 
+                <p>{answerMsg !== null && `Your answer:`} </p> {answerMsg !== null && questionInfo.details.checkAnswer === "check expression" ? <InlineMath math={simplify(answerValues).toTex().replace("~", "").replace('\\cdot', '').trim().replace("+-", "-").replace("pi", "\\pi ")} /> : answerValues} 
                 
                 {/* {answerMsg !== null 
                     ? 

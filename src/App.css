@@ -3,3 +3,10 @@
 * {
     /* font-family: 'Roboto', sans-serif; */
 }
+
+.credits {
+    position: absolute;
+    top: 3px;
+    right: 10px;
+    font-size: 0.8rem;
+}
