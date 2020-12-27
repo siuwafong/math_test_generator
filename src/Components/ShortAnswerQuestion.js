@@ -126,7 +126,7 @@ function ShortAnswerQuestion({
 
                 <h3> {answerMsg} </h3>
                 
-                <p>{answerMsg !== null && `Your answer:`} </p> {answerMsg !== null && questionInfo.details.checkAnswer === "check expression" ? <InlineMath math={simplify(answerValues).toTex().replace("~", "").replace('\\cdot', '').trim().replace("+-", "-").replace("pi", "\\pi ")} /> : answerValues} 
+                <p>{answerMsg !== null && `Your answer:`} </p> {answerMsg !== null && questionInfo.details.checkAnswer === "check expression" ? <InlineMath math={simplify(answerValues).toTex().replace("~", "").replace('\\cdot', '').trim().replace("+-", "-").replace("pit", "pi t")} /> : answerValues} 
                 
                 {/* {answerMsg !== null 
                     ? 

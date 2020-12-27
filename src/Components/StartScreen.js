@@ -49,12 +49,12 @@ function StartScreen({
                 const selectedTopic = courseAndTopic[1]
                 const filteredQuestions = QuestionSet.filter(item => item.details.course.toUpperCase() === selectedCourse).filter(item => item.details.strand === selectedTopic)
                 // ---testing questions code---
-                // setQuizQuestions([QuestionSet[30]])
+                setQuizQuestions([QuestionSet[34]])
 
                 // ---actual code---
-                tempQuizQuestions = [...tempQuizQuestions, ...filteredQuestions]
+                // tempQuizQuestions = [...tempQuizQuestions, ...filteredQuestions]
             }
-            setQuizQuestions(() => tempQuizQuestions)
+            // setQuizQuestions(() => tempQuizQuestions)
             setGameOver(false)
             setGameStart(true)
         }, 0)
