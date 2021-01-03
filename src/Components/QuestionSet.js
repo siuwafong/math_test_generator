@@ -865,6 +865,12 @@ class logarithmQuestion extends QuestionClass {
         this.sideWithExp = ["left", "right"][Math.floor(Math.random() * 2)]
         this.expression = ""
         this.shortAnswerSolution = ""
+        this.operator = ""
+        this.moveLog = [true, false][Math.floor(Math.random() * 2)]
+        this.addBothSides = [true, false][Math.floor(Math.random() * 2)]
+        this.coeff = 0
+        this.solution1 = 0
+        this.solution2 = 0
         this.generateExpression = (parameters = {}) => {
             while (this.base === this.exp || this.exp === 1 || this.base === 1 || this.exp === 0) {
                 this.base = Math.ceil(Math.random() * 5)
@@ -936,6 +942,178 @@ class logarithmQuestion extends QuestionClass {
             this.d = Math.ceil(Math.random() * 10) - 10
             this.expression = `${this.a}^{x}=${this.k}^{${simplify(`x+${this.d}`)}}`
             this.shortAnswerSolution = `${this.d}log${this.k}/(log${this.a}-log${this.k})`
+        }
+        this.generateExponentialEquation3 = (parameters = {}) => {
+            this.base = [2, 3, 5][Math.floor(Math.random() * 3)]
+            this.d = Math.floor(Math.random() * 4)
+            if (this.base === 2) {
+                this.exp = Math.ceil(Math.random() * 5)
+            } else {
+                this.exp = Math.ceil(Math.random() * 4)
+            }
+            this.operator = ["add", "minus"][Math.floor(Math.random() * 2)]
+            this.addBothSides = [true, false][Math.floor(Math.random() * 2)]
+            if (this.addBothSides === true) {
+                this.c = Math.ceil(Math.random() * 10)
+            }
+            this.expression = `${rationalize(`(x-${pow(this.base, this.exp)})(x${this.operator === "add" ? `+` : `-`}${pow(this.base, this.d)}) + ${this.c}`).toTex().replace("\\cdot", "").replace(/\x/g, `(${this.base}^{x})`)}=${this.c}`
+
+            if (this.operator === "minus") {
+                this.shortAnswerSolution = [this.exp, this.d]
+            } else {
+                this.shortAnswerSolution = [this.exp]
+            }
+        }
+
+        this.extraneousRoots = []
+        this.generateLogarithmicEquation = (parameters = {}) => {
+            while (this.k === this.a || this.k === 0 || this.d === 0 || this.d === this.exp) {
+                this.k = Math.floor(Math.random() * 6) - 2
+                this.a = Math.ceil(Math.random() * 8)
+                this.d = Math.floor(Math.random() * 5) - 5
+                this.exp = Math.ceil(Math.random() * 2) + 1
+            }
+            this.base = Math.ceil(Math.random() * 2) + 2
+            this.coeff = Math.ceil(Math.random() * 3)
+            // this.expression = `\\log_{${this.base}}{(${simplify(`x+${this.k}`).toTex()})}`
+            if (parameters.type === "add") {
+                this.operator = "add"
+            } else {
+                this.operator = "minus"
+            }
+            if (this.operator === "add") {
+                if (this.addBothSides === true) {
+                    if (this.moveLog === true) {
+                        this.expression = `${this.d} + \\log_{${this.base}}{(${simplify(`(${this.coeff}x)+${this.a}`).toTex().replace("\\cdot", "")})} = ${simplify(`${this.exp} + ${this.d}`).toTex()} -\\log_{${this.base}}{(${simplify(`x+${this.k}`).toTex()})} `
+                    }
+                    else if (this.moveLog === false) {
+                        this.expression = `${this.d} + \\log_{${this.base}}{(${simplify(`(${this.coeff}x)+${this.a}`).toTex().replace("\\cdot", "")})} + \\log_{${this.base}}{(${simplify(`x+${this.k}`).toTex()})} = ${simplify(`${this.exp} + ${this.d}`).toTex()}`
+                    }
+                } else if (this.addBothSides === false) {
+                    if (this.moveLog === true) {
+                        this.expression = `\\log_{${this.base}}{(${simplify(`(${this.coeff}x)+${this.a}`).toTex().replace("\\cdot", "")})} = ${this.exp} - \\log_{${this.base}}{(${simplify(`x+${this.k}`).toTex()})}`
+                    }
+                    else if (this.moveLog === false) {
+                        this.expression = `\\log_{${this.base}}{(${simplify(`(${this.coeff}x)+${this.a}`).toTex().replace("\\cdot", "")})} + \\log_{${this.base}}{(${simplify(`x+${this.k}`).toTex()})} = ${this.exp}`
+                    }
+                }
+            } else if (this.operator === "minus") {
+                if (this.addBothSides === true) {
+                    if (this.moveLog === true) {
+                        this.expression = `${this.d} + \\log_{${this.base}}{(${simplify(`(${this.coeff}x)+${this.a}`).toTex().replace("\\cdot", "")})} = ${simplify(`${this.exp} + ${this.d}`).toTex()} + \\log_{${this.base}}{(${simplify(`x+${this.k}`).toTex()})}`
+                    }
+                    else if (this.moveLog === false) {
+                        this.expression = `${this.d} + \\log_{${this.base}}{(${simplify(`(${this.coeff}x)+${this.a}`).toTex().replace("\\cdot", "")})} - \\log_{${this.base}}{(${simplify(`x+${this.k}`).toTex()})} = ${simplify(`${this.exp} + ${this.d}`).toTex()}`
+                    }
+                } else if (this.addBothSides === false) {
+                    if (this.moveLog === true) {
+                        this.expression = `\\log_{${this.base}}{(${simplify(`(${this.coeff}x)+${this.a}`).toTex().replace("\\cdot", "")})} = ${this.exp} + \\log_{${this.base}}{(${simplify(`x+${this.k}`).toTex()})}`
+                    }
+                    else if (this.moveLog === false) {
+                        this.expression = `\\log_{${this.base}}{(${simplify(`(${this.coeff}x)+${this.a}`).toTex().replace("\\cdot", "")})} - \\log_{${this.base}}{(${simplify(`x+${this.k}`).toTex()})} = ${this.exp}`
+                    }
+                }
+            }
+            
+            if (this.operator === "add") {
+                this.shortAnswerSolution = []
+                let a = 1 * this.coeff
+                let b = this.a + (this.coeff * this.k)
+                let c = this.a * this.k - pow(this.base, this.exp)
+                console.log(`a: ${a}`, `b: ${b}`, `c: ${c}`)
+                
+                let solution1 = (-1 * b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a)
+                this.solution1 = solution1.toFixed(2)
+                if ((this.coeff * solution1 + this.k) <= 0 || (solution1 + this.a) <= 0) {
+                    this.extraneousRoots.push(Number(solution1.toFixed(2)))
+                } else {
+                    this.shortAnswerSolution.push(Number(solution1.toFixed(2)))
+                }
+                let solution2 = (-1 * b - Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a)
+                this.solution2 = solution2.toFixed(2)
+                if ((this.coeff * solution2 + this.k) <= 0 || (solution2 + this.a) <= 0) {
+                    this.extraneousRoots.push(Number(solution2.toFixed(2)))
+                } else {
+                    this.shortAnswerSolution.push(Number(solution2.toFixed(2)))
+                }
+            } else if (this.operator === "minus") {
+                let numerator = this.a - (pow(this.base, this.exp) * this.k)
+                let denominator = (pow(this.base, this.exp) - this.coeff)
+                console.log(`numerator: ${numerator}, denominator: ${denominator}`)
+                let solution1 = numerator / denominator
+                this.solution1 = Number(solution1.toFixed(2))
+                console.log(solution1)
+                this.shortAnswerSolution = []
+                if ((this.coeff * solution1 + this.a) <= 0 || (solution1 + this.k) <=0 ) {
+                    this.extraneousRoots.push(Number(solution1.toFixed(2)))
+                } else {               
+                    this.shortAnswerSolution = [Number(solution1.toFixed(2))]
+                }
+            }
+        }
+        this.generateCompoundInterestQuestion = (parameters = {}) => {
+            // let c be the compounding rate
+            // let k be the final amount
+            // let exp be the number of compounding periods per year
+            // let a be the the initial amount
+            // let d be the the interest rate
+            this.a = Math.ceil(Math.random() * 4) * 1000
+            this.k = Math.ceil(Math.random() * 4) * 1000 + 4000
+            this.d = Number((Math.ceil(Math.random() * 3) * 5.2).toFixed(1))
+            this.exp = [2, 4, 12, 52][Math.floor(Math.random() * 4)]
+            if (this.exp === 2) {
+                this.c = "semi-annually"
+            } else if (this.exp === 4) {
+                this.c = "quarterly"
+            } else if (this.exp === 12) {
+                this.c = "monthly"
+            } else if (this.exp === 52) {
+                this.c = "weekly"
+            }
+            this.expression = "\\hspace{0px}"
+            let numerator = log( this.k / this.a , (1 + this.d * 0.01 / this.exp))
+            let denominator = this.exp
+            console.log(numerator, denominator)
+            this.shortAnswerSolution =  (numerator / denominator).toFixed(2)
+        }
+        this.generateGraphFunction = (parameters = {}) => {
+            let verticalCompression = [true, false][Math.floor(Math.random() * 2)]
+            let horizontalStretch = [true, false][Math.floor(Math.random() * 2)]
+    
+            while (this.a === 0 || this.a === 1 || this.k === 0 || this.k === 1 ||this.d === 0 || this.c === 0) 
+            
+            {
+                if (verticalCompression === false) {
+                    this.a = Math.ceil(Math.random() * 6) - 3
+                } else {
+                    this.a = "\\frac{1}{2}"
+                }
+
+                if (horizontalStretch === false) {
+                    this.k = Math.ceil(Math.random() * 6) - 3
+                } else {
+                    this.k = "\\frac{1}{2}"
+                }
+
+                this.d = Math.ceil(Math.random() * 8) - 4
+                this.c = Math.ceil(Math.random() * 8) - 4
+            }
+            this.solution1 = Math.floor(Math.random() * 4) 
+            this.expression = [
+                `${this.a}\\log(x-${this.d})`, 
+                `${this.a}\\log(x)+${this.c}`, 
+                `\\log(${this.k}(x-${this.d}))`, 
+                `\\log(${this.k}x)+${this.c}`][this.solution1]
+        }
+        this.generatePowerLawExpression = (parameters = {}) => {
+            this.a = ["root", "exp"][Math.floor(Math.random() * 2)]
+            this.base = Math.ceil(Math.random() * 4) + 1
+            this.exp = Math.ceil(Math.random() * 3) + 1
+            if (this.a === "exp") {
+                this.expression = `\\log_{${this.base}}{${pow(this.base, this.exp)}^{x}}`
+            } else if (this.a === "root") {
+                this.expression = `\\sqrt[x]{\\log_${this.base}{${pow(this.base, this.exp)}}}`
+            }
         }
     }
 }
@@ -2455,6 +2633,289 @@ logarithmQuestion4.details.solutionSteps = [
     {type: "math", content: `x(\\log${logarithmQuestion4.a}-\\log${logarithmQuestion4.k})=${Math.abs(logarithmQuestion1.d) === 1 ? logarithmQuestion1.d === 1 ? "" : `-` : logarithmQuestion4.d > 0 ? `+${logarithmQuestion4.d}` : `${logarithmQuestion4.d}`}\\log ${logarithmQuestion4.k}`},
     {type: "math", content: `x=\\frac{${Math.abs(logarithmQuestion1.d) === 1 ? logarithmQuestion1.d === 1 ? "" : `-` : logarithmQuestion4.d > 0 ? `+${logarithmQuestion4.d}` : `${logarithmQuestion4.d}`}\\log ${logarithmQuestion4.k}}{\\log${logarithmQuestion4.a}-\\log${logarithmQuestion4.k}}`}
 ]
+
+let logarithmQuestion5 = new logarithmQuestion (
+    'Solve for x. Ignore extraneous roots',
+    SHORT_ANSWER,
+    {
+        checkAnswer: CHECK_SETS,
+        parseExpression: function(expression) {
+            return rationalize(expression).toTex().replace("~", "").replace('\\cdot', '').trim()
+        },
+        label: "x=",
+        strand: 'Exponential and Logarithmic Functions',
+        course: MHF4U,
+        questionInfo: 'solve logarithmic equations',
+        hints: ["If all the solutions are extraneous roots, type 'none' as your answer", "Round answers to two decimal places"]
+    }
+)
+
+logarithmQuestion5.generateLogarithmicEquation({type: "add"})
+
+addAnswers(
+    logarithmQuestion5,
+    logarithmQuestion5.shortAnswerSolution.filter(item => !isNaN(item)).length === 0 ? "none" : logarithmQuestion5.shortAnswerSolution.filter(item => !isNaN(item)),
+    []
+)
+
+logarithmQuestion5.details.solutionSteps = [
+    {type: "text", content: (logarithmQuestion5.moveLog === true || logarithmQuestion5.addBothSides === true) ? `We first need to isolate the logarithm expressions` : ""},
+    {type: "text", content: logarithmQuestion5.addBothSides === true ? logarithmQuestion5.d > 0 ? `We need to subtract both sides by ${Math.abs(logarithmQuestion5.d)}` : `We need to add both sides by ${Math.abs(logarithmQuestion5.d)}` : ""},
+    {type: "math", content: logarithmQuestion5.addBothSides === true ? logarithmQuestion5.moveLog === true ? `\\log_{${logarithmQuestion5.base}}{(${simplify(`${logarithmQuestion5.coeff}x+${logarithmQuestion5.a}`).toTex()})} = ${logarithmQuestion5.exp} - \\log_{${logarithmQuestion5.base}}{(${simplify(`x+${logarithmQuestion5.k}`).toTex()})}` : `\\log_{${logarithmQuestion5.base}}{(${simplify(`${logarithmQuestion5.coeff}x+${logarithmQuestion5.a}`).toTex()})} + \\log_{${logarithmQuestion5.base}}{(${simplify(`x+${logarithmQuestion5.k}`).toTex()})} = ${logarithmQuestion5.exp}` : "\\text{}"},
+    {type: "text", content: logarithmQuestion5.moveLog === true ? `We need to add both sides by ` : ""},
+    {type: "math", content: logarithmQuestion5.moveLog === true ? `\\log_{${logarithmQuestion5.base}}{(${simplify(`x+${logarithmQuestion5.k}`).toTex()})}` : "\\text{}"},
+    // {type: "math", content: `\\log_{${logarithmQuestion5.base}}{(${simplify(`(${logarithmQuestion5.coeff}x)+${logarithmQuestion5.a}`).toTex().replace("\\cdot", "")})} + \\log_{${logarithmQuestion5.base}}{(${simplify(`x+${logarithmQuestion5.k}`).toTex()})} = ${logarithmQuestion5.exp}`},
+    {type: "text", content: "Once the logarithms are isolated, we can apply the product law of logarithms and multiply the powers"},
+    {type: "math", content: `\\log_{${logarithmQuestion5.base}}{(${rationalize(`(${logarithmQuestion5.coeff}x+${logarithmQuestion5.a})(x+${logarithmQuestion5.k})`).toTex().replace(/\\cdot/g, "")})} = ${logarithmQuestion5.exp}`},
+    {type: "text", content: "Next, we need to convert the logarithmic equation to exponential form"},
+    {type: "math", content: `${rationalize(`((${logarithmQuestion5.coeff}x)+${logarithmQuestion5.a})(x+${logarithmQuestion5.k})`).toTex().replace(/\\cdot/g, "")}=${pow(logarithmQuestion5.base, logarithmQuestion5.exp)}`},
+    {type: "text", content: `Then we can rewrite the equation so that one side is equal to zero`},
+    {type: "math", content: `${rationalize(`((${logarithmQuestion5.coeff}x)+${logarithmQuestion5.a})(x+${logarithmQuestion5.k}) - ${logarithmQuestion5.base}^${logarithmQuestion5.exp}`).toTex().replace(/\\cdot/g, "")}=0`},
+    {type: "text", content: "We can now use the quadratic formula to solve for x"},
+    {type: "math", content: `x=\\frac{-(${logarithmQuestion5.a + (logarithmQuestion5.coeff * logarithmQuestion5.k)}) \\pm \\sqrt{(${logarithmQuestion5.a + (logarithmQuestion5.coeff * logarithmQuestion5.k)})^{2}-4(${logarithmQuestion5.coeff})(${logarithmQuestion5.a * logarithmQuestion5.k - pow(logarithmQuestion5.base, logarithmQuestion5.exp)})}}{2(${logarithmQuestion5.coeff})} \\approx ${logarithmQuestion5.solution1}, ${logarithmQuestion5.solution2}`},
+    {type: "text", content: "Lastly, we should check for extraneous roots"},
+    {type: "math", content: `${logarithmQuestion5.coeff !== 1 ? logarithmQuestion5.coeff : ""}(${logarithmQuestion5.solution1})${logarithmQuestion5.a < 0 ? logarithmQuestion5.coeff : `+${logarithmQuestion5.coeff}`} ${(logarithmQuestion5.coeff * logarithmQuestion5.solution1) + logarithmQuestion5.a > 0 ? `> 0` : ` <= 0` } \\hspace{20px}  (${logarithmQuestion5.solution1})${logarithmQuestion5.k < 0 ? logarithmQuestion5.k : `+${logarithmQuestion5.k}`} ${logarithmQuestion5.solution1 + logarithmQuestion5.k > 0 ? `> 0` : ` < 0` }`},
+    {type: "math", content: `${logarithmQuestion5.coeff !== 1 ? logarithmQuestion5.coeff : ""}(${logarithmQuestion5.solution2})+${logarithmQuestion5.a < 0 ? logarithmQuestion5.coeff : `+${logarithmQuestion5.coeff}`} ${(logarithmQuestion5.coeff * logarithmQuestion5.solution2) + logarithmQuestion5.a > 0 ? `> 0` : ` <= 0` } \\hspace{20px}  (${logarithmQuestion5.solution2})+${logarithmQuestion5.k < 0 ? logarithmQuestion5.k : `+${logarithmQuestion5.k}`} ${logarithmQuestion5.solution2 + logarithmQuestion5.k > 0 ? `> 0` : ` < 0` }`},
+    {type: "text", content: `${logarithmQuestion5.shortAnswerSolution.length > 0 ? `Therefore, the solution(s) is/are x=${logarithmQuestion5.shortAnswerSolution}` : "The solutions resolve to a negative power for at least one of the logarithmic expressions, so there are no solutions"}` },
+    {type: "text", content: `${logarithmQuestion5.extraneousRoots.length > 0 ? `The extraneous root(s) is/are x=${logarithmQuestion5.extraneousRoots}` : "All the questions lead to powers greater than 0 in the logarithmic expressions, so there are no  extraneous roots."}`}
+]
+
+let logarithmQuestion6 = new logarithmQuestion (
+    'Solve for x. Ignore extraneous roots',
+    SHORT_ANSWER,
+    {
+        checkAnswer: CHECK_SETS,
+        parseExpression: function(expression) {
+            return rationalize(expression).toTex().replace("~", "").replace('\\cdot', '').trim()
+        },
+        label: "x=",
+        strand: 'Exponential and Logarithmic Functions',
+        course: MHF4U,
+        questionInfo: 'solve logarithmic equations',
+        hints: ["If all the solutions are extraneous roots, type 'none' as your answer", "Round answers to two decimal places"]
+    }
+)
+
+logarithmQuestion6.generateLogarithmicEquation({type: "minus"})
+
+addAnswers(
+    logarithmQuestion6,
+    logarithmQuestion6.shortAnswerSolution.filter(item => !isNaN(item)).length === 0 ? ["none"] : logarithmQuestion6.shortAnswerSolution.filter(item => !isNaN(item)),
+    []
+)
+
+logarithmQuestion6.details.solutionSteps = [
+    {type: "text", content: (logarithmQuestion6.moveLog === true || logarithmQuestion6.addBothSides === true) ? `We first need to isolate the logarithm expressions` : ""},
+    {type: "text", content: logarithmQuestion6.addBothSides === true ? logarithmQuestion6.d > 0 ? `We need to subtract both sides by ${Math.abs(logarithmQuestion6.d)}` : `We need to add both sides by ${Math.abs(logarithmQuestion6.d)}` : ""},
+    {type: "math", content: logarithmQuestion6.addBothSides === true ? logarithmQuestion6.moveLog === true ? `\\log_{${logarithmQuestion6.base}}{(${simplify(`${logarithmQuestion6.coeff}x+${logarithmQuestion6.a}`).toTex()})} = ${logarithmQuestion6.exp} - \\log_{${logarithmQuestion6.base}}{(${simplify(`x+${logarithmQuestion6.k}`).toTex()})}` : `\\log_{${logarithmQuestion6.base}}{(${simplify(`${logarithmQuestion6.coeff}x+${logarithmQuestion6.a}`).toTex()})} - \\log_{${logarithmQuestion6.base}}{(${simplify(`x+${logarithmQuestion6.k}`).toTex()})} = ${logarithmQuestion6.exp}` : "\\text{}"},
+    {type: "text", content: logarithmQuestion6.moveLog === true ? `We need to add both sides by ` : ""},
+    {type: "math", content: logarithmQuestion6.moveLog === true ? `\\log_{${logarithmQuestion6.base}}{(${simplify(`x+${logarithmQuestion6.k}`).toTex()})}` : "\\text{}"},
+    // {type: "math", content: `\\log_{${logarithmQuestion6.base}}{(${simplify(`(${logarithmQuestion6.coeff}x)+${logarithmQuestion6.a}`).toTex().replace("\\cdot", "")})} - \\log_{${logarithmQuestion6.base}}{(${simplify(`x+${logarithmQuestion6.k}`).toTex()})} = ${logarithmQuestion6.exp}`},
+    {type: "text", content: "Once the logarithms are isolated, we can apply the quotient law of logarithms and divide the powers"},
+    {type: "math", content: `\\log_{${logarithmQuestion6.base}}{(\\frac{${simplify(`(${logarithmQuestion6.coeff}x)+${logarithmQuestion6.a}`).toTex().replace("\\cdot", "")}}{${simplify(`x+${logarithmQuestion6.k}`).toTex()}})}=${logarithmQuestion6.exp}`},
+    {type: "text", content: "Next, we need to convert the logarithmic equation to exponential form"},
+    {type: "math", content: `\\frac{${simplify(`(${logarithmQuestion6.coeff}x)+${logarithmQuestion6.a}`).toTex().replace("\\cdot", "")}}{${simplify(`x+${logarithmQuestion6.k}`).toTex()}}=${logarithmQuestion6.base}^${logarithmQuestion6.exp}`},
+    {type: "text", content: "We can now algebraically solve for x"},
+    {type: "math", content: `${simplify(`(${logarithmQuestion6.coeff}x)+${logarithmQuestion6.a}`).toTex().replace("\\cdot", "")}= ${rationalize(`(${logarithmQuestion6.base}^${logarithmQuestion6.exp}x)+ (${logarithmQuestion6.base}^${logarithmQuestion6.exp}) * ${logarithmQuestion6.k}`).toTex().replace('\\cdot', "")}`},
+    {type: "math", content: `${logarithmQuestion6.coeff - pow(logarithmQuestion6.base, logarithmQuestion6.exp)}x = ${(pow(logarithmQuestion6.base, logarithmQuestion6.exp) * logarithmQuestion6.k) - logarithmQuestion6.a}`},
+    {type: "math", content: `x \\approx ${logarithmQuestion6.solution1}`},
+    {type: "text", content: "Lastly, we need to check for extraneous roots"},
+    {type: "math", content: `${logarithmQuestion6.coeff !== 1 ? logarithmQuestion6.coeff : ""}(${logarithmQuestion6.solution1})${logarithmQuestion6.a < 0 ? logarithmQuestion6.a : `+${logarithmQuestion6.a}`} ${(logarithmQuestion6.coeff * logarithmQuestion6.solution1 + logarithmQuestion6.a) > 0 ? `> 0` : `<= 0`} `},
+    {type: "math", content: `(${logarithmQuestion6.solution1})${logarithmQuestion6.k < 0 ? logarithmQuestion6.k : `+${logarithmQuestion6.k}`} ${logarithmQuestion6.solution1 + logarithmQuestion6.k > 0 ? `> 0` : `<= 0`} `},
+    {type: "text", content: `${logarithmQuestion6.shortAnswerSolution.length !== 0 ? `Therefore, x=${logarithmQuestion6.solution1}` : `Therefore, ${logarithmQuestion6.solution1} is an extraneous root.`}`}
+]
+
+let logarithmQuestion7 = new logarithmQuestion (
+    'Solve for x',
+    SHORT_ANSWER,
+    {
+        checkAnswer: CHECK_SETS,
+        parseExpression: function(expression) {
+            return rationalize(expression).toTex().replace("~", "").replace('\\cdot', '').trim()
+        },
+        label: "x=",
+        strand: 'Exponential and Logarithmic Functions',
+        course: MHF4U,
+        questionInfo: 'assess knowledge of exponential equations',
+        hints: ["Round answers to two decimal places if necessary. Sepeate each answer with a comma"]
+    }
+)
+
+logarithmQuestion7.generateExponentialEquation3()
+
+addAnswers (
+    logarithmQuestion7,
+    logarithmQuestion7.shortAnswerSolution,
+    []
+)
+
+logarithmQuestion7.details.solutionSteps = [
+    {type: "text", content: `${logarithmQuestion7.addBothSides === true ? `We need to first isolate all the terms by subtracting both sides by ${logarithmQuestion7.c}` : ""}`},
+    {type: "math", content: `${logarithmQuestion7.addBothSides === true ? `${rationalize(`(x-${pow(logarithmQuestion7.base, logarithmQuestion7.exp)})(x${logarithmQuestion7.operator === "add" ? `+` : `-`}${pow(logarithmQuestion7.base, logarithmQuestion7.d)})`).toTex().replace("\\cdot", "").replace(/\x/g, `(${logarithmQuestion7.base}^{x})`)}=0` : "\\text{}"}`},
+    {type: "text", content: `We can factor the left side. We need to find two numbers that add to ${logarithmQuestion7.operator === "minus" ? (pow(logarithmQuestion7.base, logarithmQuestion7.exp) + pow(logarithmQuestion7.base, logarithmQuestion7.d)) * -1 : pow(logarithmQuestion7.base, logarithmQuestion7.d) - pow(logarithmQuestion7.base, logarithmQuestion7.exp)} and multiply to
+        ${logarithmQuestion7.operator === "minus" ? pow(logarithmQuestion7.base, logarithmQuestion7.exp) * pow(logarithmQuestion7.base, logarithmQuestion7.d) : `-${pow(logarithmQuestion7.base, logarithmQuestion7.exp) * pow(logarithmQuestion7.base, logarithmQuestion7.d)}`}
+        `},
+    {type: "text", content: `These numbers are -${pow(logarithmQuestion7.base, logarithmQuestion7.exp)} and ${logarithmQuestion7.operator === "add" ? pow(logarithmQuestion7.base, logarithmQuestion7.d) : -1 * (pow(logarithmQuestion7.base, logarithmQuestion7.d))}. So when we factor the left side, we get`},
+    {type: "math", content: `(
+        ${logarithmQuestion7.base}^{x} - ${pow(logarithmQuestion7.base, logarithmQuestion7.exp)})(${logarithmQuestion7.base}^{x} ${logarithmQuestion7.operator === "add" ? "+" : "-"} ${pow(logarithmQuestion7.base, logarithmQuestion7.d)}) `},
+    {type: "text", content: "Isolating the powers for each factor, we get"},
+    {type: "math", content: `${logarithmQuestion7.base}^{x}=${pow(logarithmQuestion7.base, logarithmQuestion7.exp)} \\hspace{20px} ${logarithmQuestion7.base}^{x}= ${logarithmQuestion7.operator === "add" ? `-${pow(logarithmQuestion7.base, logarithmQuestion7.d)}` : pow(logarithmQuestion7.base, logarithmQuestion7.d) }
+        `},
+    {type: "text", content: logarithmQuestion7.operator === "add" ? `The equation on the right has no solution because there is no exponent with a positive base that will result in a negative power` : "" },
+    {type: "text", content: "We can now convert to logarithmic form and solve"},
+    {type: "math", content: `x=\\log_{${logarithmQuestion7.base}}{${pow(logarithmQuestion7.base, logarithmQuestion7.exp)}}=${logarithmQuestion7.exp} \\hspace{20px} ${logarithmQuestion7.operator === "add" ? "\\hspace{0px}" : `x=\\log_{${logarithmQuestion7.base}}{${pow(logarithmQuestion7.base, logarithmQuestion7.d)}}=${logarithmQuestion7.d}`}`},
+    {type: "text", content: `${logarithmQuestion7.operator === "add" || (logarithmQuestion7.exp === logarithmQuestion7.d) ? `Therefore the solution to the equation is x=${logarithmQuestion7.exp}` : `Therefore the solutions to the equation are x=${logarithmQuestion7.exp}, ${logarithmQuestion7.d} `}`}
+]
+
+let logarithmQuestion8 = new logarithmQuestion (
+    ``,
+    SHORT_ANSWER,
+    {
+        checkAnswer: CHECK_EXPRESSION,
+        parseExpression: function(expression) {
+            return rationalize(expression).toTex().replace("~", "").replace('\\cdot', '').trim()
+        },
+        label: "t=",
+        strand: 'Exponential and Logarithmic Functions',
+        course: MHF4U,
+        questionInfo: 'solve for the exponent in an exponential function word problem',
+        hints: ["Write your answer as a decimal number and round to two decimal places"]
+    }
+)
+
+logarithmQuestion8.generateCompoundInterestQuestion()
+logarithmQuestion8.question = `
+    A person invests $${logarithmQuestion8.a} in an investment that pays ${logarithmQuestion8.d}% interest, compounded ${logarithmQuestion8.c}. Solve for t where t is the number of years it will take for the investment to reach $${logarithmQuestion8.k}.
+`
+
+addAnswers(
+    logarithmQuestion8,
+    logarithmQuestion8.shortAnswerSolution,
+    []
+)
+
+logarithmQuestion8.details.solutionSteps = [
+    {type: "text", content: "First, we should write the function to model this situation. The function can be written as"},
+    {type: "math", content: "A(t)=P(1+\\frac{i}{n})^{nt}"},
+    {type: "text", content: "Where P is the principal, i is the interest rate, n is the number of compounding periods per year, and A(t) is the future value in t years"},
+    {type: "math", content: `${logarithmQuestion8.k}=${logarithmQuestion8.a}(1+\\frac{${(logarithmQuestion8.d * 0.01).toFixed(3)}}{${logarithmQuestion8.exp}})^{${logarithmQuestion8.exp}t}`},
+    {type: "text", content: `First we need to isolate the power. We can divide both sides by ${logarithmQuestion8.a}`},
+    {type: "math", content: `${simplify(`${logarithmQuestion8.k} / ${logarithmQuestion8.a}`).toTex()}=(${(1+(logarithmQuestion8.d * 0.01 / logarithmQuestion8.exp)).toFixed(3)})^{${logarithmQuestion8.exp}t}`},
+    {type: "text", content: "Lastly we can rewrite the equation to logarithmic form and solve for t"},
+    {type: "math", content: `${logarithmQuestion8.exp}t=\\log_{${(1+(logarithmQuestion8.d * 0.01 / logarithmQuestion8.exp)).toFixed(3)}}{(    ${simplify(`${logarithmQuestion8.k} / ${logarithmQuestion8.a}`).toTex()}
+    )}`},
+    {type: "math", content: `t=\\frac{\\log_{${(1+(logarithmQuestion8.d * 0.01 / logarithmQuestion8.exp)).toFixed(3)}}{(    ${simplify(`${logarithmQuestion8.k} / ${logarithmQuestion8.a}`).toTex()}
+    )}}{${logarithmQuestion8.exp}} \\approx ${logarithmQuestion8.shortAnswerSolution}`}
+]
+
+let logarithmQuestion9 = new logarithmQuestion(
+    'Simplify the logarithm',
+    MULTIPLE_CHOICE,
+    {
+        strand: 'Exponential and Logarithmic Functions',
+        course: MHF4U,
+        questionInfo: 'assess knowledge of the laws of logarithms'
+    }
+)
+
+logarithmQuestion9.generatePowerLawExpression()
+
+addAnswers(
+    logarithmQuestion9,
+    [
+        `${logarithmQuestion9.exp}x`, 
+        `\\frac{${logarithmQuestion9.exp}}{x}`, 
+        `x^{${logarithmQuestion9.exp}}`, 
+        `\\frac{x}{${logarithmQuestion9.exp}}`
+    ],
+    [
+        logarithmQuestion9.a === "exp" ? true : false, 
+        logarithmQuestion9.a === "root" ? true : false, 
+        false, 
+        false
+    ]
+)
+
+logarithmQuestion9.details.solutionSteps = [
+    {type: "text", content: "Recall the power law of logarithms"},
+    {type: "math", content: "\\log_{b}{P^{x}} = x\\log_{b}{P}"},
+    {type: "text", content: `${logarithmQuestion9.a === "root" ? `The xth root of an expression is the same as raising it to the power of 1/x` : `The exponent in this case is x`}`},
+    {type: "text", content: "So the simplified expression is equal to "},
+    {type: "math", content: `${logarithmQuestion9.a === "exp" ? `x \\times \\log_{${logarithmQuestion9.base}}{${pow(logarithmQuestion9.base, logarithmQuestion9.exp)}}=${logarithmQuestion9.exp}x` : 
+        `\\frac{1}{x} \\times \\log_{${logarithmQuestion9.base}}{${pow(logarithmQuestion9.base, logarithmQuestion9.exp)}}=\\frac{${logarithmQuestion9.exp}}{x}`
+    }`},
+]
+
+let logarithmQuestion10 = new logarithmQuestion (
+    'What is the equation of this transformed function?',
+    MULTIPLE_CHOICE,
+    {
+        parseExpression: function(expression) {
+            return simplify(expression.trim()).toTex().replace("~", "").replace('\\cdot', '').trim().replace("+-", "-").replace("-(", "(").replace("x)", "x")
+        },
+        strand: 'Rational Functions',
+        course: MHF4U,
+        questionInfo: 'assess knowledge of the reciprocal of linear functions',
+        label: 'f(x)=',
+        hints: ['The base of the logarithmic function is 10', 'Write your function as alog(k(x-d))+c']
+    }  
+)
+
+logarithmQuestion10.generateGraphFunction()
+
+addAnswers(
+    logarithmQuestion10,
+    [
+        `f(x)=${logarithmQuestion10.a === -1 ? "-" : logarithmQuestion10.a}\\log(x${logarithmQuestion10.d > 0 ? `-${logarithmQuestion10.d}` : logarithmQuestion10.d === 0 ? "" : `+${Math.abs(logarithmQuestion10.d)}`})`, 
+        `f(x)=${logarithmQuestion10.a === -1 ? "-" : logarithmQuestion10.a}\\log(x)${logarithmQuestion10.c > 0 ? `+${logarithmQuestion10.c}` : `${logarithmQuestion10.c}`}`, 
+        `f(x)=\\log(${logarithmQuestion10.k === -1 ? "-" : logarithmQuestion10.k}(x${logarithmQuestion10.d > 0 ? `-${logarithmQuestion10.d}` : logarithmQuestion10.d === 0 ? "" : `+${Math.abs(logarithmQuestion10.d)}`}))`, 
+        `f(x)=\\log(${logarithmQuestion10.k === -1 ? "-" : logarithmQuestion10.k}x)${logarithmQuestion10.c > 0 ? `+${logarithmQuestion10.c}` : `${logarithmQuestion10.c}`}`,
+        `f(x)=${logarithmQuestion10.a === -1 ? "-" : logarithmQuestion10.a}\\log(x${logarithmQuestion10.d > 0 ? `+${logarithmQuestion10.d}` : logarithmQuestion10.d === 0 ? "" : `-${Math.abs(logarithmQuestion10.d)}`})`,
+        `f(x)=${logarithmQuestion10.a === -1 ? "-" : logarithmQuestion10.a}\\log(x)${logarithmQuestion10.c > 0 ? `-${logarithmQuestion10.c}` : `+${Math.abs(logarithmQuestion10.c)}`}`,
+        `f(x)=${logarithmQuestion10.a === "\\frac{1}{2}" ? 2 : "\\frac{1}{2}"}\\log(x${logarithmQuestion10.d > 0 ? `-${logarithmQuestion10.d}` : logarithmQuestion10.d === 0 ? "" : `+${Math.abs(logarithmQuestion10.d)}`})`,
+        `f(x)=\\log(${logarithmQuestion10.k === "\\frac{1}{2}" ? 2 : "\\frac{1}{2}"}x)${logarithmQuestion10.c > 0 ? `+${logarithmQuestion10.c}` : `${logarithmQuestion10.c}`}`, 
+    ],
+    [
+        logarithmQuestion10.solution1 === 0 ? true : false,
+        logarithmQuestion10.solution1 === 1 ? true : false,
+        logarithmQuestion10.solution1 === 2 ? true : false,
+        logarithmQuestion10.solution1 === 3 ? true : false,
+        false,
+        false,
+        false,
+        false
+    ],
+    {
+        showGraph: true,
+        expression: [
+            {
+                latex: logarithmQuestion10.expression,
+                style: "solid"
+            },
+            {
+                latex: `x=${logarithmQuestion10.d}`,
+                style: 'dashed',
+                color: 'black'
+            }
+        ]
+    }
+)
+
+logarithmQuestion10.details.solutionSteps = [
+    {type: "text", content: (logarithmQuestion10.solution1 === 0 || logarithmQuestion10.solution1 === 2) ? `We see that the vertical asymptote is x=${logarithmQuestion10.d}, so d=${logarithmQuestion10.d}` : ""},
+    {type: "text", content: (logarithmQuestion10.solution1 === 2 || logarithmQuestion10.solution1 === 3) ? logarithmQuestion10.k < 0 ? `The graph is to the left of the vertical asymptote, so k is negative` : `The graph is to the right of the vertical asymptote, so k is positive` : ""},
+    {type: "text", content: (logarithmQuestion10.solution1 === 2 || logarithmQuestion10.solution1 === 3) ? logarithmQuestion10.k === "\\frac{1}{2}" ? `There is a horizontal stretch by a factor of 2, so k=1/2` : `There is a horizontal compression by a factor of ${Math.abs(logarithmQuestion10.k)} so k=${logarithmQuestion10.k}` : ""},
+    {type: "text", content: (logarithmQuestion10.solution1 === 0 || logarithmQuestion10.solution1 === 1) ? logarithmQuestion10.a === "\\frac{1}{2}" ? `There is a vertical compression by a factor of 2, so a=1/2` : `There is a vertical stretch by a factor of ${Math.abs(logarithmQuestion10.a)} so a=${logarithmQuestion10.a}` : ""},
+    {type: "text", content: (logarithmQuestion10.solution1 === 1 || logarithmQuestion10.solution1 === 3) ? `The graph is shifted ${Math.abs(logarithmQuestion10.c)} units ${logarithmQuestion10.c > 0 ? "up" : "down"}, so c=${logarithmQuestion10.c}` : ""},
+    {type: "text", content: `Therefore the equation of the function is `},
+    {type: "math", content: [
+        `f(x)=${logarithmQuestion10.a === -1 ? "-" : logarithmQuestion10.a}\\log(x${logarithmQuestion10.d > 0 ? `-${logarithmQuestion10.d}` : logarithmQuestion10.d === 0 ? "" : `+${Math.abs(logarithmQuestion10.d)}`})`, 
+        `f(x)=${logarithmQuestion10.a === -1 ? "-" : logarithmQuestion10.a}\\log(x)${logarithmQuestion10.c > 0 ? `+${logarithmQuestion10.c}` : `${logarithmQuestion10.c}`}`, 
+        `f(x)=\\log(${logarithmQuestion10.k === -1 ? "-" : logarithmQuestion10.k}(x${logarithmQuestion10.d > 0 ? `-${logarithmQuestion10.d}` : logarithmQuestion10.d === 0 ? "" : `+${Math.abs(logarithmQuestion10.d)}`}))`, 
+        `f(x)=\\log(${logarithmQuestion10.k === -1 ? "-" : logarithmQuestion10.k}x)${logarithmQuestion10.c > 0 ? `+${logarithmQuestion10.c}` : `${logarithmQuestion10.c}`}`][logarithmQuestion10.solution1]
+    }
+]
+
 
 // Discrete Probability Distribution Questions -----------------------------------------
 

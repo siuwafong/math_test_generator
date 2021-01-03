@@ -37,11 +37,12 @@ const DesmosGraph = ({
 
     // elt = document.createElement('div')
     elt.style.width = '500px'
-    elt.style.height = '350px'
+    elt.style.height = '400px'
 
     let calculator = Desmos.GraphingCalculator(elt, {
         keypad: keypad,
-        expressions: expressions,
+        // set 'expressions' to true will allow input of functions
+        expressions: true,
         xAxisArrowMode: Desmos.AxisArrowModes.POSITIVE,
         yAxisArrowMode: Desmos.AxisArrowModes.POSITIVE,
         lockViewport: lockViewport,

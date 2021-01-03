@@ -34,7 +34,7 @@ function ShortAnswerQuestion({
             // setAnswered(true)
             if (questionInfo.details.checkAnswer === 'check sets') {
                 try {
-                    let responseSet = new Set(shortAnswerResponse.trim().split(',').map(item => item.includes("/") ? Number(rationalize(item).toString()) : Number(item)))
+                    let responseSet = new Set(shortAnswerResponse.trim().split(',').map(item => item.includes("/") ? Number(rationalize(item).toString()) : item === "none" ? "none" : Number(item)))
                     console.log(responseSet, questionInfo.answers)
                     if (responseSet.size === questionInfo.answers.size && [...responseSet].every(value => questionInfo.answers.has(value))) {
                     setScore(() => score + 1)
