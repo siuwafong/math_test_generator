@@ -42,7 +42,7 @@ const DesmosGraph = ({
     let calculator = Desmos.GraphingCalculator(elt, {
         keypad: keypad,
         // set 'expressions' to true will allow input of functions
-        expressions: true,
+        expressions: expressions,
         xAxisArrowMode: Desmos.AxisArrowModes.POSITIVE,
         yAxisArrowMode: Desmos.AxisArrowModes.POSITIVE,
         lockViewport: lockViewport,

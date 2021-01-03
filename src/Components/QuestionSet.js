@@ -1115,6 +1115,81 @@ class logarithmQuestion extends QuestionClass {
                 this.expression = `\\sqrt[x]{\\log_${this.base}{${pow(this.base, this.exp)}}}`
             }
         }
+        this.generateDecibelQuestion = (parameters = {}) => {
+            // let a be the type of question
+            // let k be the louder sound
+            // let d be the quieter sound
+
+            this.a = ["solveForI2I1", "solveForI2I1", "solveForHigherDecibels", "solveforLowerDecibels"][Math.floor(Math.random() * 4)]
+            this.k = [
+                {
+                    type: "a rocket",
+                    decibels: 200
+                }, 
+                {
+                    type: "a jet engine", 
+                    decibels: 160
+                }, 
+                {
+                    type: "a rock concert speaker", 
+                    decibels: 150
+                },
+                {
+                    type: "a symphony (peak)", 
+                    decibels: 120
+                },
+                {
+                    type: "maximum stereo output",
+                    decibels: 100
+                }]
+            this.d = [
+                {
+                    type: "Niagara Falls", 
+                    decibels: 90
+                },
+                {
+                    type: "normal city traffic", 
+                    decibels: 85
+                },
+                {
+                    type: "a shout", 
+                    decibels: 80
+                },
+                {
+                    type: "a normal conversation", 
+                    decibels: 60
+                },
+                {
+                    type:"a whisper", 
+                    decibels: 30
+                },
+                {
+                    type: "the rustle of leaves",
+                    decibels: 10
+                }]
+            this.c = Math.floor(Math.random() * 30) * 2 + 20
+            this.solution1 = Math.floor(Math.random() * 5)
+            this.k = this.k[this.solution1]
+            this.solution2 = Math.floor(Math.random() * 6)
+            this.d = this.d[this.solution2]
+            this.expression = "\\beta_{2} - \\beta_{1} = 10\\log{(\\frac{I_{2}}{I_{1}})}"
+            if (this.a === "solveForI2I1") {
+                let betaDifference = (this.k.decibels - this.d.decibels) / 10
+                this.shortAnswerSolution = pow(10, betaDifference).toFixed(2)
+            
+            } else if (this.a === "solveForHigherDecibels") {
+                this.shortAnswerSolution = Number((10 * log(this.c, 10) + this.d.decibels).toFixed(2))
+
+            } else if (this.a === "solveforLowerDecibels") {
+                this.shortAnswerSolution = Number((this.k.decibels - 10 * log(this.c, 10)).toFixed(2))
+            }
+        }
+        this.generatepHQuestion = (parameters={}) =>{
+            this.a = ["solveForpH", "solveForConcentration"][Math.floor(Math.random() * 2)]
+            this.exp = Math.ceil(Math.random() * 14) * -1
+            this.expression = "\\text{pH}=-\\log{[H^{+}]}"
+            this.shortAnswerSolution = logarithmQuestion12.a === "solveForpH" ? logarithmQuestion12.exp * -1 : pow(10, logarithmQuestion12.exp).toFixed(logarithmQuestion12.exp * -1)
+        }
     }
 }
 
@@ -2916,6 +2991,126 @@ logarithmQuestion10.details.solutionSteps = [
     }
 ]
 
+let logarithmQuestion11 = new logarithmQuestion (
+    "", 
+    SHORT_ANSWER,
+    {
+        checkAnswer: CHECK_EXPRESSION,
+        img: true,
+        imgSrc: '/img/decibel_graph.png',
+        imgDetails: [],
+        parseExpression: function(expression) {
+            return rationalize(expression).toTex().replace("~", "").replace('\\cdot', '').trim()
+        },
+        label: "",
+        strand: 'Exponential and Logarithmic Functions',
+        course: MHF4U,
+        questionInfo: 'solve real-world application problems involving logarithms',
+        hints: ["Use the formula for comparing decibels above to help you solve the problem", "Write your answer as a decimal number and round to two decimal places", "'Beta1' is the number of decibels of the louder sound", "'Beta2' is the number of decibels of the quieter sound", "(I2/I1) is the relative intensity of the sound"]
+    }
+)
+
+logarithmQuestion11.generateDecibelQuestion()
+logarithmQuestion11.details.label = logarithmQuestion11.a === "solveForI2I1" ? "\\frac{I_2}{I_1}=" : logarithmQuestion11.a === "solveForHigherDecibels" ? "\\beta_{2}=" : "\\beta_{1}="
+logarithmQuestion11.question = logarithmQuestion11.a === "solveForI2I1" 
+                                                            ? `How many times as intense is ${logarithmQuestion11.k.type} compared to ${logarithmQuestion11.d.type}?`
+                                                            : logarithmQuestion11.a === "solveForHigherDecibels"
+                                                                ? `How loud (in decibels) is a sound that is ${logarithmQuestion11.c} times louder than ${logarithmQuestion11.d.type}?`
+                                                                : `How loud (in decibels) is a sound that is ${logarithmQuestion11.c} times quieter than ${logarithmQuestion11.k.type}?`
+    
+addAnswers(
+    logarithmQuestion11,
+    logarithmQuestion11.shortAnswerSolution,
+    []
+)
+
+logarithmQuestion11.details.solutionSteps = 
+    logarithmQuestion11.a === "solveForI2I1" 
+    ?
+    // Steps for solving for relative intensity
+    [
+        {type: "text", content: "We are given the decibels for both sounds, so we need to solve for the relative density"},
+        {type: "math", content: "\\frac{I_{2}}{I_{1}}"},
+        {type: "text", content: "First we can simplify the left side"},
+        {type: "math", content: `\\beta_{2} - \\beta_{1} = ${logarithmQuestion11.k.decibels} - ${logarithmQuestion11.d.decibels} = ${logarithmQuestion11.k.decibels - logarithmQuestion11.d.decibels}`},
+        {type: "text", content: "Then we can solve for the relative intensity. First divide both sides by 10"},
+        {type: "math", content: `${((logarithmQuestion11.k.decibels - logarithmQuestion11.d.decibels) / 10).toFixed(1)}= \\log{\\frac{I_{2}}{I_{1}}}`},
+        {type: "text", content: "then we can rewrite the equation in exponential form and solve for the relative intensity"},
+        {type: "math", content: `\\frac{I_{2}}{I_{1}} = 10^{${((logarithmQuestion11.k.decibels - logarithmQuestion11.d.decibels) / 10).toFixed(1)}} = ${pow(10, ((logarithmQuestion11.k.decibels - logarithmQuestion11.d.decibels) / 10).toFixed(1))}`}
+    ]
+    :
+        logarithmQuestion11.a === "solveForHigherDecibels"
+        ?
+        // Steps for solving for B_2
+        [
+            {type: "text", content: "We are given the decibels for the quieter sound and the relative intensity, so we need to solve for"},
+            {type: "math", content: "\\beta_{2}"},
+            {type: "text", content: "First we can substitute the values into the formula"},
+            {type: "math", content: `\\beta_{2}- ${logarithmQuestion11.d.decibels} = 10 \\log{${logarithmQuestion11.c}}`},
+            {type: "text", content: `Next we can add both sides by ${logarithmQuestion11.d.decibels}`},
+            {type: "math", content: `\\beta_{2} = 10 \\log{${logarithmQuestion11.c} + ${logarithmQuestion11.d.decibels}}`},
+            {type: "math", content: `\\beta_{2} \\approx ${Number((10 * log(logarithmQuestion11.c, 10) + logarithmQuestion11.d.decibels).toFixed(2))}`}
+        ]
+        :
+        // Steps for solving for B_1
+        [
+            {type: "text", content: "We are given the decibels for the louder sound and the relative intensity, so we need to solve for"},
+            {type: "math", content: "\\beta_{1}"},
+            {type: "text", content: "First we can substitute the values into the formula"},
+            {type: "math", content: `${logarithmQuestion11.k.decibels}- \\beta_{1} = 10 \\log{${logarithmQuestion11.c}}`},
+            {type: "text", content: `Next we can isolate the term we need to solve for and solve for the number of deibels for the quieter sound`},
+            {type: "math", content: `\\beta_{1} = ${logarithmQuestion11.k.decibels} - 10 \\log{${logarithmQuestion11.c}} \\approx ${Number((logarithmQuestion11.k.decibels - 10 * log(logarithmQuestion11.c, 10)).toFixed(2))}`}
+        ]
+
+let logarithmQuestion12 = new logarithmQuestion(
+    "xxx", 
+    SHORT_ANSWER,
+    {
+        checkAnswer: CHECK_EXPRESSION,
+        img: true,
+        imgSrc: '/img/pH_scale.png',
+        imgDetails: [],
+        parseExpression: function(expression) {
+            return rationalize(expression).toTex().replace("~", "").replace('\\cdot', '').trim()
+        },
+        label: "",
+        strand: 'Exponential and Logarithmic Functions',
+        course: MHF4U,
+        questionInfo: 'solve real-world application problems involving logarithms',
+        hints: ["use the formula above to help you solve the problem", "type your answer as a decimal number", "round to two decimal places if necessary"]
+    }
+)
+
+logarithmQuestion12.generatepHQuestion()
+logarithmQuestion12.details.label = 
+    logarithmQuestion12.a === "solveForpH" ? "\\text{pH}=" : "H^{+}=" 
+logarithmQuestion12.question = 
+    logarithmQuestion12.a === "solveForpH" 
+        ?
+        `A substance has a hydronium ion concentration of approximately ${pow(10, logarithmQuestion12.exp).toFixed(logarithmQuestion12.exp * -1)}. What is its pH?`
+        :
+        `A substance has has a pH of approximately ${logarithmQuestion12.exp * -1}. What is the concentration of hydronium ions of this substance?` 
+
+addAnswers(
+    logarithmQuestion12,
+    logarithmQuestion12.shortAnswerSolution,
+    []
+)
+
+logarithmQuestion12.details.solutionSteps = 
+        logarithmQuestion12.a === "solveForpH"
+    ?
+        [
+            {type: "text", content: "We can susbstitute the hydronimum ion concentration in the formula to solve for the pH"},
+            {type: "math", content: `\\text{pH}=-\\log[${pow(10, logarithmQuestion12.exp).toFixed(logarithmQuestion12.exp * -1)}]=${logarithmQuestion12.exp * -1}`}
+        ]
+    :
+        [
+            {type: "text", content: "We can susbstitute the hydronimum ion concentration in the formula to solve for the pH"},
+            {type: "math", content: `${logarithmQuestion12.exp * -1} = -\\log[H^{+}]`},
+            {type: "text", content: "Next we can convert the equation to exponential form to solve for the hydronimum ion concentration"},
+            {type: "math", content: `H^{+}=10^{${logarithmQuestion12.exp}}= ${pow(10, logarithmQuestion12.exp).toFixed(logarithmQuestion12.exp * -1)}`}
+        ]
 
 // Discrete Probability Distribution Questions -----------------------------------------
 
