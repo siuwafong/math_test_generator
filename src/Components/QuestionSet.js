@@ -140,14 +140,18 @@ class expandedPolynomialQuestion extends polynomialQuestion {
             let tempExpression = this.leadingCoeff
             for (let i = 0; i < 3; i++) {
                 this.degree.push([1, 1, 1, 2, 2][Math.floor(Math.random() * 5)])
-                let tempxInt
+                let tempxInt = 0
                 if (i === 0) {
                     tempxInt = [-3, -1, 1, 3][Math.floor(Math.random() * 4)]
                 } else {
-                    tempxInt =  Math.ceil(Math.random() * 8) - 4
+                    while (tempxInt === 0) {
+                        tempxInt =  Math.ceil(Math.random() * 8) - 4
+                    }
                 }
                 while (this.xInts.includes(tempxInt)) {
-                    tempxInt =  Math.ceil(Math.random() * 10) - 5
+                    while (tempxInt === 0) {
+                        tempxInt =  Math.ceil(Math.random() * 10) - 5
+                    }
                 }
                 this.xInts.push(tempxInt)
             }
