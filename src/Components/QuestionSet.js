@@ -97,6 +97,7 @@ class expandedPolynomialQuestion extends polynomialQuestion {
         super(question, type, details, desmosGraph, answers)
         this.xInts = []
         this.leadingCoeff = 0
+        this.coeff = 0
         this.expression = ""
         this.generateExpression = (nonOneCoeff = false ) => {
             for (let i=0; i < this.degree; i++) {
@@ -129,6 +130,37 @@ class expandedPolynomialQuestion extends polynomialQuestion {
                 }
                 tempExpression = tempExpression + this.constant
                 this.expression = rationalize(tempExpression).toTex().replace(/\\cdot/g, "")
+        }
+        this.generateExpandedGraphFunction = () => {
+            while (this.leadingCoeff === 0 || this.coeff === 0) {
+                this.leadingCoeff = (Math.ceil(Math.random() * 4) - 2) * 0.5
+                this.coeff = Math.ceil(Math.random() * 2)
+            }
+            this.degree = []
+            let tempExpression = this.leadingCoeff
+            for (let i = 0; i < 3; i++) {
+                this.degree.push([1, 1, 1, 2, 2][Math.floor(Math.random() * 5)])
+                let tempxInt
+                if (i === 0) {
+                    tempxInt = [-3, -1, 1, 3][Math.floor(Math.random() * 4)]
+                } else {
+                    tempxInt =  Math.ceil(Math.random() * 8) - 4
+                }
+                while (this.xInts.includes(tempxInt)) {
+                    tempxInt =  Math.ceil(Math.random() * 10) - 5
+                }
+                this.xInts.push(tempxInt)
+            }
+            for (let j=0; j<3; j++) {
+                if (j === 0) {
+                    tempExpression = tempExpression + `(${this.coeff}x-${this.xInts[j]})^${this.degree[j]}`
+                } else {
+                    tempExpression = tempExpression + `(x-${this.xInts[j]})^${this.degree[j]}`
+                }
+            }
+            console.log(tempExpression)
+            this.expression = "\\text{}"
+            this.shortAnswerSolution = tempExpression
         } 
     }
 }
@@ -1460,8 +1492,6 @@ let polynomialQuestion4 = new expandedPolynomialQuestion (
 // polynomialQuestion4.generateExpression(true)
 polynomialQuestion4.generateExpandedExpression(3)
 
-
-console.log(polynomialQuestion4.exponents.filter(item => item % 2 === 1), polynomialQuestion4.exponents.length)
 addAnswers(
     polynomialQuestion4,
     ["\\text{odd}", "\\text{even}", "\\text{neither odd nor even}"],
@@ -1471,6 +1501,54 @@ addAnswers(
         (polynomialQuestion4.exponents.filter(item => item % 2 === 0).length !== polynomialQuestion4.exponents.length) && (polynomialQuestion4.exponents.filter(item => item % 2 === 1).length !== polynomialQuestion4.exponents.length)
     ]
 )
+
+let polynomialQuestion5 = new expandedPolynomialQuestion(
+    'What is the equation of this function in factored form?',
+    SHORT_ANSWER,
+    {
+        checkAnswer: CHECK_EXPRESSION,
+        parseExpression: function(expression) {
+            return rationalize(expression).toTex().replace("~", "").replace('\\cdot', '').trim()
+        },
+        strand: 'Polynomial Functions',
+        course: MHF4U,
+        questionInfo: 'identify the equation of a logarithmic function from its graph',
+        label: "f(x)=",
+        hints: ["Write your answers as k(x-a)(x-b)(x-c)", "All numbers in the factors should be whole numbers. For example, write 2(2x+5) instead of 4(x+2.5)", "All zeros are of degree 1 or 2"]
+    }
+)
+
+polynomialQuestion5.generateExpandedGraphFunction()
+
+addAnswers(
+    polynomialQuestion5,
+    polynomialQuestion5.shortAnswerSolution,
+    [],
+    {
+        showGraph: true,
+        expression: [
+                {
+                    latex: polynomialQuestion5.shortAnswerSolution, 
+                    style: 'solid'
+                },
+            ],
+    }
+)
+
+polynomialQuestion5.details.solutionSteps = [
+    {type: "text", content: `We can first identify the x-intercepts. They are ${polynomialQuestion5.coeff !== 1 ? `${polynomialQuestion5.xInts[0]}/2` : polynomialQuestion5.xInts[0]}, ${polynomialQuestion5.xInts[1]} and ${polynomialQuestion5.xInts[2]} `},
+    {type: "text", content: `Next we can find the degree of each zero. If they go through the x-axis, then the degree is 1. If they bounce off the x-axis the degeree is 2`},
+    {type: "text", content: `The degree for ${simplify(`(x-${polynomialQuestion5.xInts[0]})`).toTex()} is ${polynomialQuestion5.degree[0]}, for ${simplify(`(x-${polynomialQuestion5.xInts[1]})`).toTex()} is ${polynomialQuestion5.degree[1]} and for ${simplify(`(x-${polynomialQuestion5.xInts[2]})`).toTex()} is ${polynomialQuestion5.degree[2]} `},
+    {type: "text", content: "So the equation of the function is"},
+    {type: "math", content: `k${polynomialQuestion5.degree[0] === 1 ? `(${simplify(`${polynomialQuestion5.coeff}x-${polynomialQuestion5.xInts[0]}`).toTex()})` : `(${simplify(`x-${polynomialQuestion5.xInts[0]}`).toTex()})^{${polynomialQuestion5.degree[0]}}`}${polynomialQuestion5.degree[1] === 1 ? `(${simplify(`x-${polynomialQuestion5.xInts[1]}`).toTex()})` : `(${simplify(`x-${polynomialQuestion5.xInts[1]}`).toTex()})^{${polynomialQuestion5.degree[1]}}`}${polynomialQuestion5.degree[2] === 1 ? `(${simplify(`x-${polynomialQuestion5.xInts[2]}`).toTex()})` : `(${simplify(`x-${polynomialQuestion5.xInts[2]}`).toTex()})^{${polynomialQuestion5.degree[2]}}`} ` },
+    {type: "text", content: "Lastly, we need to solve for k. We can do this by finding the y-intercept"},
+    {type: "text", content: `We see that the y-intercept is (0, ${pow(polynomialQuestion5.xInts[0], polynomialQuestion5.degree[0]) * pow(polynomialQuestion5.xInts[1], polynomialQuestion5.degree[1]) * pow(polynomialQuestion5.xInts[2], polynomialQuestion5.degree[2]) * Number(polynomialQuestion5.leadingCoeff)}     )`},
+    {type: "text", content: "We can substitute 0 for x and then solve"},
+    {type: "math", content: `${pow(polynomialQuestion5.xInts[0], polynomialQuestion5.degree[0]) * pow(polynomialQuestion5.xInts[1], polynomialQuestion5.degree[1]) * pow(polynomialQuestion5.xInts[2], polynomialQuestion5.degree[2]) * Number(polynomialQuestion5.leadingCoeff)}=${pow(polynomialQuestion5.xInts[0], polynomialQuestion5.degree[0]) * pow(polynomialQuestion5.xInts[1], polynomialQuestion5.degree[1]) * pow(polynomialQuestion5.xInts[2], polynomialQuestion5.degree[2])}k` },
+    {type: "math", content: `k=${polynomialQuestion5.leadingCoeff}`},
+    {type: "math", content: `f(x)=${polynomialQuestion5.leadingCoeff}${polynomialQuestion5.degree[0] === 1 ? `(${simplify(`${polynomialQuestion5.coeff}x-${polynomialQuestion5.xInts[0]}`).toTex()})` : `(${simplify(`x-${polynomialQuestion5.xInts[0]}`).toTex()})^{${polynomialQuestion5.degree[0]}}`}${polynomialQuestion5.degree[1] === 1 ? `(${simplify(`x-${polynomialQuestion5.xInts[1]}`).toTex()})` : `(${simplify(`x-${polynomialQuestion5.xInts[1]}`).toTex()})^{${polynomialQuestion5.degree[1]}}`}${polynomialQuestion5.degree[2] === 1 ? `(${simplify(`x-${polynomialQuestion5.xInts[2]}`).toTex()})` : `(${simplify(`x-${polynomialQuestion5.xInts[2]}`).toTex()})^{${polynomialQuestion5.degree[2]}}`}`}
+]
+
 
 // Q6
 let rationalQuestion1 = new rationalQuestion(
