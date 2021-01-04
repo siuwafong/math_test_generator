@@ -1502,6 +1502,18 @@ addAnswers(
     ]
 )
 
+polynomialQuestion4.details.solutionSteps = 
+    (polynomialQuestion4.exponents.filter(item => item % 2 === 1).length === polynomialQuestion4.exponents.length) && polynomialQuestion4.constant === 0
+    ?
+    {type: "text", content: `The exponents of all the terms are odd, so the function is odd` }
+    :
+        (polynomialQuestion4.exponents.filter(item => item % 2 === 0).length === polynomialQuestion4.exponents.length) && polynomialQuestion4.constant !== 0
+        ?
+        {type: "text", content: `The exponents of all the terms are even, so the function is even`}
+        :
+        {type: "text", content: `The terms have a mix of odd and even exponents, so the function is neither odd nor even.`}
+
+
 let polynomialQuestion5 = new expandedPolynomialQuestion(
     'What is the equation of this function in factored form?',
     SHORT_ANSWER,
@@ -1549,6 +1561,9 @@ polynomialQuestion5.details.solutionSteps = [
     {type: "math", content: `f(x)=${polynomialQuestion5.leadingCoeff}${polynomialQuestion5.degree[0] === 1 ? `(${simplify(`${polynomialQuestion5.coeff}x-${polynomialQuestion5.xInts[0]}`).toTex()})` : `(${simplify(`x-${polynomialQuestion5.xInts[0]}`).toTex()})^{${polynomialQuestion5.degree[0]}}`}${polynomialQuestion5.degree[1] === 1 ? `(${simplify(`x-${polynomialQuestion5.xInts[1]}`).toTex()})` : `(${simplify(`x-${polynomialQuestion5.xInts[1]}`).toTex()})^{${polynomialQuestion5.degree[1]}}`}${polynomialQuestion5.degree[2] === 1 ? `(${simplify(`x-${polynomialQuestion5.xInts[2]}`).toTex()})` : `(${simplify(`x-${polynomialQuestion5.xInts[2]}`).toTex()})^{${polynomialQuestion5.degree[2]}}`}`}
 ]
 
+// TODO
+// solve polynomial inequality
+// solve for unknown coefficients
 
 // Q6
 let rationalQuestion1 = new rationalQuestion(
