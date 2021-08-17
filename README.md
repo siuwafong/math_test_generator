@@ -1,3 +1,5 @@
+![gif](/math-quiz-game.gif)
+
 # Math Test Generator
 
 This is a math quiz generator designed to give grade 9-12 students practice questions to improve their knowledge and understanding of course material. The questions are based on the Ontario curriculum math courses (academic for grades 9-10 and university level for grades 11-12).
